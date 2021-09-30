@@ -1,4 +1,5 @@
-// LeetCode URL: https://leetcode.com/problems/random-pick-index/
+// LeetCode Question URL: https://leetcode.com/problems/random-pick-index/
+// LeetCode Discuss URL: https://leetcode.com/problems/random-pick-index/discuss/1493137/Java-or-O(N)-pick-O(1)-space-OR-O(1)-pick-O(N)-space-or-Two-Approaches-or-Reservoir-Sampling-or-HashMap
 
 import java.util.*;
 
