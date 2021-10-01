@@ -18,39 +18,43 @@
  */
 public class Solution extends Reader4 {
 
-    char[] tempBuf = new char[4];
-    int tempBufPointer = 0;
-    int tempBufSize = 0;
-    boolean eof = false;
+    char[] buf4;
+    int bufferSize;
+    int bufferPointer;
+
+    public Solution() {
+        buf4 = new char[4];
+        bufferSize = 0;
+        bufferPointer = 0;
+    }
 
     /**
      * @param buf Destination buffer
      * @param n   Number of characters to read
      * @return The number of actual characters read
      */
-    public int read(char[] buf, int n) throws IllegalArgumentException {
-        if (buf == null || n == 0) {
+    public int read(char[] buf, int n) {
+        if (buf == null) {
+            throw new IllegalArgumentException("Input buff is null");
+        }
+        if (n == 0) {
             return 0;
         }
 
         int totalRead = 0;
 
-        while (!eof && totalRead < n) {
-            if (tempBufPointer == tempBufSize) {
-                tempBufPointer = 0;
-                tempBufSize = read4(tempBuf);
-                if (tempBufSize == 0) {
-                    eof = true;
-                    break;
-                }
+        while (totalRead < n) {
+            if (bufferPointer == bufferSize) {
+                bufferSize = read4(buf4);
+                bufferPointer = 0;
             }
 
-            // optional condition in while-loop
-            // totalRead < buf.length
-            while (tempBufPointer < tempBufSize && totalRead < n && totalRead < buf.length) {
-                buf[totalRead] = tempBuf[tempBufPointer];
-                totalRead++;
-                tempBufPointer++;
+            while (bufferPointer < bufferSize && totalRead < n) {
+                buf[totalRead++] = buf4[bufferPointer++];
+            }
+
+            if (bufferSize < 4) {
+                break;
             }
         }
 
