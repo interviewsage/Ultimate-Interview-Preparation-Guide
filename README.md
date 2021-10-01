@@ -1,3 +1,3 @@
 # leetcode-solutions
 
-Leetcode Solutions
+LeetCode Solutions
