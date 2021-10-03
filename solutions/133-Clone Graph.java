@@ -1,5 +1,5 @@
 // LeetCode Question URL: https://leetcode.com/problems/clone-graph/
-// LeetCode Discuss URL:
+// LeetCode Discuss URL: https://leetcode.com/problems/clone-graph/discuss/1496599/Java-or-TC:-O(V+E)-or-SC:-O(V)-or-Both-BFS-and-DFS-Solutions
 
 import java.util.*;
 

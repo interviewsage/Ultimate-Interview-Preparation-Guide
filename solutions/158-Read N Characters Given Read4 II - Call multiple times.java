@@ -1,4 +1,5 @@
-// LeetCode URL: https://leetcode.com/problems/read-n-characters-given-read4-ii-call-multiple-times/
+// LeetCode Question URL: https://leetcode.com/problems/read-n-characters-given-read4-ii-call-multiple-times/
+// LeetCode Discuss URL: https://leetcode.com/problems/read-n-characters-given-read4-ii-call-multiple-times/discuss/1496462/Java-or-TC:-O(N)-or-SC:-O(1)-or-Clean-and-concise-solution
 
 /**
  * The read4 API is defined in the parent class Reader4.
