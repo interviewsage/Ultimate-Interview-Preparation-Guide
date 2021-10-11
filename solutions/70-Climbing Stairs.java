@@ -56,8 +56,8 @@ class Solution2 {
         }
 
         int[][] q = { { 1, 1 }, { 1, 0 } };
-        int[][] result = { { 1, 0 }, { 0, 1 } }; // Identity Matrix
-
+        int[][] result = q;
+        n--; // As we have already solved for n = 1. q[0][0] points to 2nd Fibonacci Number.
         while (n > 0) {
             if (n % 2 == 1) {
                 result = multiplyMatrix(result, q);
@@ -70,7 +70,6 @@ class Solution2 {
             q = multiplyMatrix(q, q);
             n /= 2;
         }
-
         return result[0][0];
     }
 
