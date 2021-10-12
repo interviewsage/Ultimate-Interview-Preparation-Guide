@@ -8,10 +8,9 @@
  * <pre>
  * Time Complexity:
  * O(N/2) -> for rotating along horizontal axis (swap rows). Only rows reference will be visited not the whole rows.
- * O(N*N - N*sqrt(2)) -> Transpose of the matrix. All elements will be visited once except the diagonal.
- * Diagonal has N * sqrt(2) elements (as per Pythagoras' theorem)
+ * O(N*N - N) -> Transpose of the matrix. All elements will be visited once except the diagonal. Diagonal has N elements
  *
- * Total time complexity = O(N/2 + N*N - N*sqrt(2)) ~ O(N^2)
+ * Total time complexity = O(N/2 + N*N - N) ~ O(N^2)
  * </pre>
  *
  * Space Complexity: O(1)
