@@ -1,6 +1,6 @@
 # LeetCode Solutions
 
-| #    | <center>Question Title + Solution Link</center>                                                                                                                                                                                              |
+| #    | Question Title + Solution Link                                                                                                                                                                                                               |
 | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 3    | [Longest Substring Without Repeating Characters](<https://leetcode.com/problems/longest-substring-without-repeating-characters/discuss/1500874/Java-or-TC:-O(N)-or-SC:-O(1)-or-Sliding-Window-using-HashMap-and-Two-Pointers>)               |
 | 5    | [Longest Palindromic Substring](<https://leetcode.com/problems/longest-palindromic-substring/discuss/1539190/Java-or-TC:-O(N2)-or-SC:-O(1)-or-Two-Optimized-solutions-with-Early-Exit-Condition>)                                            |
