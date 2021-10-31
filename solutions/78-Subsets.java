@@ -1,0 +1,78 @@
+// LeetCode Question URL: https://leetcode.com/problems/subsets/
+// LeetCode Discuss URL: https://leetcode.com/problems/subsets/discuss/1549657/Java-or-TC:-O(N*2N)-or-SC:-O(1)-or-Constant-Space-Iterative-and-Backtracking-solutions
+
+import java.util.*;
+
+/**
+ * Backtracking (Recursion)
+ *
+ * <pre>
+ * S(n) = (0 × (n C 0) + 1 × (n C 1) + 2 × (n C 2) + … + n × (n C n))
+ * Note that (n C k) = (n C n-k). Therefore:
+ * S(n) = 0 × (n C n) + 1 × (n C n-1) + 2 × (n C n-2) + … + n × (n C 0)
+ * If we add these two together, we get
+ * 2S(n) = n × (n C 0) + n × (n C 1) + … + n × (n C n)
+ *       = n × (n C 0 + n C 1 + … + n C n)
+ * As per binomial theorem, (n C 0 + n C 1 + … + n C n) = 2^n, so
+ * 2*S(n) = n * 2^n => S(n) = n * 2^(n-1)
+ *
+ * Refer https://stackoverflow.com/a/20711498
+ * </pre>
+ *
+ * Time Complexity: O(S(N) + n C 0) = O(N * 2^(N-1) + 1) = O(N * 2^N)
+ *
+ * Space Complexity: O(N) (Recursion Depth + TempList)
+ *
+ * N = Length of input nums array
+ */
+class Solution1 {
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (nums == null) {
+            return result;
+        }
+
+        subsetsHelper(nums, 0, new ArrayList<>(), result);
+        return result;
+    }
+
+    private void subsetsHelper(int[] nums, int start, List<Integer> temp, List<List<Integer>> result) {
+        result.add(new ArrayList<>(temp));
+
+        for (int i = start; i < nums.length; i++) {
+            temp.add(nums[i]);
+            subsetsHelper(nums, i + 1, temp, result);
+            temp.remove(temp.size() - 1);
+        }
+    }
+}
+
+/**
+ * Constant Space Iterative Solution
+ *
+ * Time Complexity: O(N * 2 ^ N) Refer to above explanation
+ *
+ * Space Complexity: O(1) (Excluding the result space)
+ *
+ * N = Length of input nums array
+ */
+class Solution2 {
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (nums == null) {
+            return result;
+        }
+
+        result.add(new ArrayList<>());
+        for (int n : nums) {
+            int size = result.size();
+            for (int i = 0; i < size; i++) {
+                List<Integer> temp = new ArrayList<>(result.get(i));
+                temp.add(n);
+                result.add(temp);
+            }
+        }
+
+        return result;
+    }
+}

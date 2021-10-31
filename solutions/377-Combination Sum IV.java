@@ -1,5 +1,5 @@
 // LeetCode Question URL: https://leetcode.com/problems/combination-sum-iv/
-// LeetCode Discuss URL:
+// LeetCode Discuss URL: https://leetcode.com/problems/combination-sum-iv/discuss/1546467/Java-or-TC:-O(N*T)-or-SC:-O(T)-or-DP-(BottomUp-and-TopDown)-w-FollowUp
 
 import java.util.*;
 
@@ -84,7 +84,9 @@ class Solution2 {
 
 /**
  * This solution is for Follow-Up where both Negative And Positive Numbers can
- * be given in the input nums array.
+ * be given in the input nums array. Since we can have infinite length
+ * combinations, we will restrict the search by setting a maximum length of the
+ * combinations.
  *
  * Dynamic Programming Top Down - Recursive Approach
  *

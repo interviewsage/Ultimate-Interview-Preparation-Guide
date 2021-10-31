@@ -1,12 +1,14 @@
 // LeetCode Question URL: https://leetcode.com/problems/count-and-say/
-// LeetCode Discuss URL:
+// LeetCode Discuss URL: https://leetcode.com/problems/count-and-say/discuss/1546382/Java-or-Simple-Iterative-solution-generating-all-states-from-1-to-N.
 
 /**
+ * Find each state starting from 1st to nth.
+ *
  * Time Complexity: O(L(1) + L(2) + L(3) + ... + L(N-1) + L(N))
  *
  * Space Complexity: O(L(N-1) + L(N))
  *
- * N = Input number.
+ * N = Input number. L(N) = Length of Nth state
  *
  * <pre>
  * DISCARD THIS COMPLEXITY ANALYSIS
@@ -40,6 +42,7 @@ class Solution1 {
         StringBuilder nextSb = new StringBuilder();
         int len = curSb.length();
         int i = 0;
+
         while (i < len) {
             char c = curSb.charAt(i++);
             int count = 1;
@@ -49,6 +52,7 @@ class Solution1 {
             }
             nextSb.append(count).append(c);
         }
+
         return nextSb;
     }
 }

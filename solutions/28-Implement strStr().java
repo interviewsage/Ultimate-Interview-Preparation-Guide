@@ -1,5 +1,5 @@
 // LeetCode Question URL: https://leetcode.com/problems/implement-strstr/
-// LeetCode Discuss URL:
+// LeetCode Discuss URL: https://leetcode.com/problems/implement-strstr/discuss/1545167/Java-or-BruteForce-greater-TC:O(M*N)-SC:-O(1)-or-KMP-greater-TC:-O(M+N)-SC:O(N)or-Two-Solutions
 
 /**
  * Brute Force string matching.
@@ -57,7 +57,6 @@ class Solution2 {
 
         int nLen = needle.length();
         int hLen = haystack.length();
-
         if (nLen == 0) {
             return 0;
         }
@@ -66,7 +65,6 @@ class Solution2 {
         }
 
         int[] table = kmpLookupTable(needle);
-
         int i = 0;
         int j = 0;
         while (i < hLen && j < nLen) {
@@ -85,7 +83,6 @@ class Solution2 {
         if (j == nLen) {
             return i - j;
         }
-
         return -1;
     }
 
@@ -93,7 +90,6 @@ class Solution2 {
         int[] table = new int[s.length()];
         int i = 1;
         int index = 0;
-
         while (i < s.length()) {
             if (s.charAt(i) == s.charAt(index)) {
                 table[i] = index + 1;
@@ -108,7 +104,6 @@ class Solution2 {
                 }
             }
         }
-
         return table;
     }
 }

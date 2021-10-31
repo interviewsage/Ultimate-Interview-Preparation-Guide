@@ -1,5 +1,5 @@
 // LeetCode Question URL: https://leetcode.com/problems/combination-sum-ii/
-// LeetCode Discuss URL:
+// LeetCode Discuss URL: https://leetcode.com/problems/combination-sum-ii/discuss/1546439/Java-or-Backtracking-optimized-for-duplicate-candidates-(Detailed-TC-explanation-added)
 
 import java.util.*;
 
@@ -58,21 +58,11 @@ class Solution1 {
 }
 
 /**
- * Optimized Backtracking using a countMap and unique num list.
+ * Optimized Backtracking by using a Count Map and Unique Num List
  *
- * <pre>
- * Time Complexity:
- * 1. The length of the potential combinations can vary from 1 to k where k = min(T/M , N).
- * 2. Total number of combinations of size k is C(N,k) and time to add each such combination in the result list is O(K).
- * Therefore the total time complexity will be O(1*C(N,1) + 2*C(N,2) + ... + k*C(N,k))
- *                                             = (i = 1 -> k) ∑ (i * C(N, i)).
- * If k = N, then above time complexity becomes O(N * 2^(N-1))
- * Refer https://stackoverflow.com/a/20711498/2905022
- * </pre>
- *
- * Space Complexity: O(min(T/M , N))
- *
- * N = Length of input array. T = Target. M = Minimum value in the input array.
+ * Time & Space Complexity explanation is same as above. We will only need to
+ * add time & space required for creating the count map and a sorted list of
+ * unique candidates.
  */
 class Solution2 {
     public List<List<Integer>> combinationSum2(int[] candidates, int target) {

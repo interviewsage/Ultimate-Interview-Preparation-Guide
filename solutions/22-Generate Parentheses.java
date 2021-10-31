@@ -1,5 +1,5 @@
 // LeetCode Question URL: https://leetcode.com/problems/generate-parentheses/
-// LeetCode Discuss URL:
+// LeetCode Discuss URL: https://leetcode.com/problems/generate-parentheses/discuss/1545154/Java-or-TC:-O(4Nsqrt(N))-or-SC:-O(N)-or-Backtracking-and-Iterative-Solutions
 
 import java.util.*;
 

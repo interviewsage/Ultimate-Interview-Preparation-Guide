@@ -1,5 +1,5 @@
 // LeetCode Question URL: https://leetcode.com/problems/coin-change/
-// LeetCode Discuss URL:
+// LeetCode Discuss URL: https://leetcode.com/problems/coin-change/discuss/1549625/Java-or-TC:-O(C*A)-or-SC:-O(A)-or-DP-(Botton-Up-and-Top-Down-approaches)
 
 import java.util.*;
 

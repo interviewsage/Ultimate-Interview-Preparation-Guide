@@ -1,5 +1,5 @@
 // LeetCode Question URL: https://leetcode.com/problems/combination-sum/
-// LeetCode Discuss URL:
+// LeetCode Discuss URL: https://leetcode.com/problems/combination-sum/discuss/1546400/Java-or-Backtracking-w-Early-Exit-(Detailed-Time-Complexity-explanation-added)
 
 import java.util.*;
 
@@ -89,36 +89,8 @@ class Solution1 {
  * exit from the recursion if the current number is greater than the remaining
  * target.
  *
- * Since this question allows same number to be used unlimited times, candidates
- * array cannot have zero and negative numbers. As it will lead to infinite
- * number of combinations. For example: candidates = [-1, 0, 1] and target = 1.
- * This case will result in infinite solutions if same number can be used
- * multiple times.
- *
- * <pre>
- * Time Complexity:
- * - Here DFS is creating a N-ary Tree. (Since each number can be used multiple times).
- * - Total Number of Nodes in a N-ary Tree of height h = (N^(h+1) - 1) / (N-1)
- * - Number of Non-Leaf (Internal) Nodes = (N^h - 1) / (N-1)
- * - Number of Leaf Nodes = N^h
- *
- * At each non-leaf node we are taking O(1) time to process.
- * At each leaf node we are taking O(h) time to make a copy of the combination.
- *
- * Thus Total Time Complexity = O(h * N^h + (N^h - 1) / (N-1)) + O(N*logN) for sort
- *
- * Here h = Target / Minimum Value in the Candidates Array.
- * </pre>
- *
- * Space Complexity: O(target / min value in candidates) -> Excluding the result
- * space. This is used by recursion stack and temp list.
- *
- * <pre>
- * Another explanation which is incorrect
- * Time Complexity: O(M * N^M)
- * There can be maximum M spaces. Each space can have one of the N values.
- * N = Length of input array. M = target / min value in candidates array.
- * </pre>
+ * Time & Space Complexity explanation is same as above. We will only need to
+ * the time and space required for the sorting.
  */
 class Solution2 {
     public List<List<Integer>> combinationSum(int[] candidates, int target) {
@@ -127,7 +99,7 @@ class Solution2 {
             return result;
         }
         // Only benefit of sorting is that we can break early in the recursion if the
-        // current number is greater than the target.
+        // current number is greater than the remaining target.
         Arrays.sort(candidates);
         combinationSumHelper(candidates, 0, target, new ArrayList<>(), result);
         return result;

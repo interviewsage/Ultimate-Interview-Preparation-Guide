@@ -1,10 +1,10 @@
 // LeetCode Question URL: https://leetcode.com/problems/longest-common-prefix/
-// LeetCode Discuss URL:
+// LeetCode Discuss URL: https://leetcode.com/problems/longest-common-prefix/discuss/1545132/Java-or-TC:-O(N*minLen)-or-SC:-O(1)-or-Constant-Space-Vertical-Scanning-solution
 
 /**
  * Vertical Scanning or Column Scanning. Here character at the same index is
- * compared. If the character at the same index in all input string is same, add
- * it to the prefix. Else, return the found prefix.
+ * compared. If the character at the same index in all input strings is same,
+ * add it to the prefix. Else, return the found prefix.
  *
  * Using substring instead of string builder to save on space.
  *
@@ -32,6 +32,8 @@ class Solution1 {
 
         int prefixLen = 0;
 
+        // No need to find the minLen as this nested loop will exit when we reach the
+        // end of minLen string.
         while (prefixLen < firstStr.length()) {
             char c = firstStr.charAt(prefixLen);
             for (int i = 1; i < numStrs; i++) {
@@ -50,8 +52,8 @@ class Solution1 {
  * Using substring instead of string builder to save on space.
  *
  * Vertical Scanning or Column Scanning. Here character at the same index is
- * compared. If the character at the same index is same its added to the prefix.
- * Else, return the found prefix.
+ * compared. If the character at the same index in all input strings is same,
+ * add it to the prefix. Else, return the found prefix.
  *
  * Time Complexity: O(N * minLen + N)
  *
@@ -88,8 +90,8 @@ class Solution2 {
 
 /**
  * Vertical Scanning or Column Scanning. Here character at the same index is
- * compared. If the character at the same index is same its added to the prefix.
- * Else, return the found prefix.
+ * compared. If the character at the same index in all input strings is same,
+ * add it to the prefix. Else, return the found prefix.
  *
  * Time Complexity: O(N * minLen + N)
  *

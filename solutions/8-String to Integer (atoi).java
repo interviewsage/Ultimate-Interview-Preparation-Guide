@@ -1,5 +1,5 @@
 // LeetCode Question URL: https://leetcode.com/problems/string-to-integer-atoi/
-// LeetCode Discuss URL:
+// LeetCode Discuss URL: https://leetcode.com/problems/string-to-integer-atoi/discuss/1545121/Java-or-TC:-O(N)-or-SC:-O(1)-or-Simple-and-Concise-One-Pass-solution-with-Explanations
 
 /**
  * Ignoring the leading whitespace and then iterate over the remaining to find

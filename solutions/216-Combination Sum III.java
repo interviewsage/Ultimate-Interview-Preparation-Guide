@@ -1,5 +1,5 @@
 // LeetCode Question URL: https://leetcode.com/problems/combination-sum-iii/
-// LeetCode Discuss URL:
+// LeetCode Discuss URL: https://leetcode.com/problems/combination-sum-iii/discuss/1546449/Java-or-Optimized-Backtracking-w-Detailed-Time-Complexity-explanation
 
 import java.util.*;
 

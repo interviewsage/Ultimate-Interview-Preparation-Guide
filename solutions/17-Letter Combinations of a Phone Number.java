@@ -1,5 +1,5 @@
 // LeetCode Question URL: https://leetcode.com/problems/letter-combinations-of-a-phone-number/
-// LeetCode Discuss URL:
+// LeetCode Discuss URL: https://leetcode.com/problems/letter-combinations-of-a-phone-number/discuss/1545143/Java-or-TC:-O(4N)-or-SC:-O(N)-or-Backtracking-and-Iterative-Solutions
 
 import java.util.*;
 

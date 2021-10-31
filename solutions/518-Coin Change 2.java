@@ -1,10 +1,10 @@
 // LeetCode Question URL: https://leetcode.com/problems/coin-change-2/
-// LeetCode Discuss URL:
+// LeetCode Discuss URL: https://leetcode.com/problems/coin-change-2/discuss/1549630/Java-or-TC:-O(C*A)-or-SC:-O(A)-or-DP-(Botton-Up-and-Top-Down-approaches)
 
 import java.util.*;
 
 /**
- * Knapsack problem
+ * Knapsack problem - Bottom up (Iterative Approach)
  *
  * <pre>
  * Refer:
@@ -47,7 +47,7 @@ class Solution1 {
 }
 
 /**
- * Knapsack problem. Recursive Top Down
+ * Knapsack problem - Top Down (Recursive Approach)
  *
  * <pre>
  * Refer:
