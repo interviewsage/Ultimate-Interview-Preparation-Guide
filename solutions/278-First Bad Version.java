@@ -1,0 +1,44 @@
+// LeetCode Question URL: https://leetcode.com/problems/first-bad-version/
+// LeetCode Discuss URL: https://leetcode.com/problems/first-bad-version/discuss/1555825/Java-TC:-O(logN)-or-SC:-O(1)-or-Simple-Binary-Search-w-minimum-API-calls
+
+// The isBadVersion API is defined in the parent class VersionControl.
+// boolean isBadVersion(int version);
+
+/**
+ * Binary Search
+ *
+ * Note on Binary Search:
+ * https://leetcode.com/problems/search-insert-position/discuss/249092/Come-on-forget-the-binary-search-patterntemplate!-Try-understand-it!
+ *
+ * Time Complexity: O(log N)
+ *
+ * Space Complexity: O(1)
+ *
+ * N = Number of versions.
+ */
+public class Solution extends VersionControl {
+    public int firstBadVersion(int n) {
+        // If nth version is not a bad version, then all versions are good.
+        if (n <= 0 || !isBadVersion(n)) {
+            return -1;
+        }
+        // If first version is a bad version, then all versions are bad.
+        if (isBadVersion(1)) {
+            return 1;
+        }
+
+        // Search space is from 1 to n (All possible version numbers)
+        int start = 1;
+        int end = n;
+        while (start < end) {
+            int mid = start + (end - start) / 2;
+            if (isBadVersion(mid)) {
+                end = mid;
+            } else {
+                start = mid + 1;
+            }
+        }
+
+        return start;
+    }
+}

@@ -4,8 +4,8 @@
 /**
  * DFS solution with Backtracking
  *
- * Here we are using grid array to keep track of visited squares and reset them
- * back while backtracking.
+ * Here we are using the input grid array to keep track of visited squares and
+ * reset them back while backtracking.
  *
  * <pre>
  * Time Complexity:
@@ -41,10 +41,13 @@ class Solution {
         int[] end = null;
         int nonObstacleSquares = 0;
 
+        // Finding the coordinates of Start and End cell.
+        // Also, finding the number of Non-Obstacle Squares.
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 switch (grid[i][j]) {
                     case 1:
+                        // If the input grid has two cells marked as start, then return 0
                         if (start != null) {
                             return 0;
                         }
@@ -52,6 +55,7 @@ class Solution {
                         nonObstacleSquares++;
                         break;
                     case 2:
+                        // If the input grid has two cells marked as end, then return 0
                         if (end != null) {
                             return 0;
                         }
@@ -77,6 +81,9 @@ class Solution {
                 || grid[row][col] == 3) {
             return 0;
         }
+
+        // Found the end square. If number of cells to be visited is 1, then count this
+        // path.
         if (grid[row][col] == 2) {
             return nonObstacleSquares == 1 ? 1 : 0;
         }
