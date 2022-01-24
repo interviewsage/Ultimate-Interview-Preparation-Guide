@@ -1,0 +1,128 @@
+// LeetCode Question URL: https://leetcode.com/problems/increasing-order-search-tree/
+// LeetCode Discuss URL:
+
+import java.util.*;
+
+// Definition for a binary tree node.
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+
+    TreeNode() {
+    }
+
+    TreeNode(int x) {
+        val = x;
+    }
+}
+
+/**
+ * Iterative Solution
+ *
+ * Time Complexity: O(N)
+ *
+ * Space Complexity: O(1)
+ *
+ * N = Number of nodes in the tree.
+ */
+class Solution1 {
+    public TreeNode increasingBST(TreeNode root) {
+        if (root == null) {
+            return root;
+        }
+
+        TreeNode dummy = new TreeNode();
+        dummy.right = root;
+        TreeNode pre = dummy;
+        TreeNode cur = root;
+
+        while (cur != null) {
+            if (cur.left != null) {
+                TreeNode temp = cur.left;
+                while (temp.right != null) {
+                    temp = temp.right;
+                }
+                temp.right = cur;
+                pre.right = cur.left;
+                cur.left = null;
+                cur = pre.right;
+            } else {
+                pre = cur;
+                cur = cur.right;
+            }
+        }
+
+        return dummy.right;
+    }
+}
+
+/**
+ * Iterative Solution
+ *
+ * Time Complexity: O(N)
+ *
+ * Space Complexity: O(Height of the tree). In worst case O(N)
+ *
+ * N = Number of nodes in the tree.
+ */
+class Solution2 {
+    public TreeNode increasingBST(TreeNode root) {
+        if (root == null) {
+            return root;
+        }
+
+        TreeNode dummy = new TreeNode();
+        TreeNode cur = dummy;
+        Deque<TreeNode> stack = new ArrayDeque<>();
+
+        while (root != null || !stack.isEmpty()) {
+            while (root != null) {
+                stack.push(root);
+                root = root.left;
+            }
+
+            root = stack.pop();
+
+            cur.right = root;
+            cur = cur.right;
+            root.left = null;
+
+            root = root.right;
+        }
+
+        return dummy.right;
+    }
+}
+
+/**
+ * Recursive Solution
+ *
+ * Time Complexity: O(N)
+ *
+ * Space Complexity: O(Height of the tree). In worst case O(N)
+ *
+ * N = Number of nodes in the tree.
+ */
+class Solution3 {
+    public TreeNode increasingBST(TreeNode root) {
+        if (root == null) {
+            return root;
+        }
+
+        TreeNode dummy = new TreeNode();
+        inorderHelper(root, new TreeNode[] { dummy });
+        return dummy.right;
+    }
+
+    private void inorderHelper(TreeNode node, TreeNode[] curSolved) {
+        if (node == null) {
+            return;
+        }
+        inorderHelper(node.left, curSolved);
+        curSolved[0].right = node;
+        curSolved[0] = curSolved[0].right;
+        node.left = null;
+        inorderHelper(node.right, curSolved);
+    }
+}
