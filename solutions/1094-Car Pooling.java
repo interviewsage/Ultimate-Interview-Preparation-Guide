@@ -6,7 +6,7 @@ import java.util.*;
 /**
  * Using TreeMap
  *
- * Time Complexity: O(2N * log(2N) + 2N)
+ * Time Complexity: O(4N*log(2N) + 2N)
  *
  * Space Complexity: O(4*N) = O(N)
  */
@@ -40,7 +40,7 @@ class Solution1 {
 /**
  * Using HashMap with max and min range
  *
- * Time Complexity: O(2N + range(min, max))
+ * Time Complexity: O(N + range(min, max))
  *
  * Space Complexity: O(4*N) = O(N)
  */
