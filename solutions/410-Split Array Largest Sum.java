@@ -1,6 +1,5 @@
-// LeetCode URL: https://leetcode.com/problems/split-array-largest-sum/
-
-package leetcode;
+// LeetCode Question URL: https://leetcode.com/problems/split-array-largest-sum/
+// LeetCode Discuss URL:
 
 /**
  * Binary Search + Greedy
