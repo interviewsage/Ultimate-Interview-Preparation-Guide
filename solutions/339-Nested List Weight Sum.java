@@ -34,6 +34,44 @@ interface NestedInteger {
 }
 
 /**
+ * Iterative Solution (Level by level)
+ *
+ * Time Complexity: O(N)
+ *
+ * Space Complexity: O(2 * W) = We are maintaining 2 levels.
+ *
+ * N = Number of NestedIntegers encountered.
+ * W = Maximum number of NestedIntegers encountered at a particular depth.
+ */
+class Solution1 {
+    public int depthSum(List<NestedInteger> nestedList) {
+        if (nestedList == null) {
+            throw new IllegalArgumentException("Input list in invalid");
+        }
+
+        List<NestedInteger> curLevel = nestedList;
+        int depth = 0;
+        int result = 0;
+
+        while (!curLevel.isEmpty()) {
+            depth++;
+            List<NestedInteger> nextLevel = new ArrayList<>();
+            for (NestedInteger ni : curLevel) {
+                Integer num = ni.getInteger();
+                if (num != null) {
+                    result += depth * num;
+                } else {
+                    nextLevel.addAll(ni.getList());
+                }
+            }
+            curLevel = nextLevel;
+        }
+
+        return result;
+    }
+}
+
+/**
  * Recursive Solution (DFS)
  *
  * Time Complexity: O(N)
@@ -42,11 +80,12 @@ interface NestedInteger {
  *
  * N = Number of NestedIntegers encountered.
  */
-class Solution1 {
+class Solution2 {
     public int depthSum(List<NestedInteger> nestedList) {
-        if (nestedList == null || nestedList.size() == 0) {
-            return 0;
+        if (nestedList == null) {
+            throw new IllegalArgumentException("Input list in invalid");
         }
+
         return depthSumHelper(nestedList, 1);
     }
 
@@ -55,7 +94,7 @@ class Solution1 {
         for (NestedInteger ni : nestedList) {
             Integer num = ni.getInteger();
             if (num != null) {
-                sum += num * depth;
+                sum += depth * num;
             } else {
                 sum += depthSumHelper(ni.getList(), depth + 1);
             }
@@ -73,7 +112,7 @@ class Solution1 {
  *
  * N = Number of NestedIntegers encountered.
  */
-class Solution2 {
+class Solution3 {
     public int depthSum(List<NestedInteger> nestedList) {
         if (nestedList == null || nestedList.size() == 0) {
             return 0;
@@ -99,42 +138,5 @@ class Solution2 {
         }
 
         return sum;
-    }
-}
-
-/**
- * Iterative Solution (Level by level)
- *
- * Time Complexity: O(N)
- *
- * Space Complexity: O(N)
- *
- * N = Number of NestedIntegers encountered.
- */
-class Solution3 {
-    public int depthSum(List<NestedInteger> nestedList) {
-        if (nestedList == null || nestedList.size() == 0) {
-            return 0;
-        }
-
-        List<NestedInteger> curLevel = nestedList;
-        int depth = 1;
-        int result = 0;
-
-        while (!curLevel.isEmpty()) {
-            List<NestedInteger> nextLevel = new ArrayList<>();
-            for (NestedInteger ni : curLevel) {
-                Integer num = ni.getInteger();
-                if (num != null) {
-                    result += num * depth;
-                } else {
-                    nextLevel.addAll(ni.getList());
-                }
-            }
-            depth++;
-            curLevel = nextLevel;
-        }
-
-        return result;
     }
 }
