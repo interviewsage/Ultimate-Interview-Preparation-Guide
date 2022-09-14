@@ -19,18 +19,24 @@ import java.util.*;
  */
 class Solution {
     public String customSortString(String order, String s) {
-        if (order == null || order.length() <= 1 || s == null || s.length() <= 1) {
+        if (order == null || s == null) {
+            throw new IllegalArgumentException("Input is null");
+        }
+
+        int sLen = s.length();
+        int orderLen = order.length();
+        if (sLen <= 1 || orderLen <= 1) {
             return s;
         }
 
         Map<Character, Integer> countMap = new HashMap<>();
-        for (int i = 0; i < s.length(); i++) {
+        for (int i = 0; i < sLen; i++) {
             char c = s.charAt(i);
             countMap.put(c, countMap.getOrDefault(c, 0) + 1);
         }
 
-        StringBuilder sb = new StringBuilder(s.length());
-        for (int i = 0; i < order.length(); i++) {
+        StringBuilder sb = new StringBuilder(sLen);
+        for (int i = 0; i < orderLen; i++) {
             char c = order.charAt(i);
             Integer count = countMap.remove(c);
             if (count == null) {
@@ -41,9 +47,8 @@ class Solution {
             }
         }
 
-        for (Map.Entry<Character, Integer> entry : countMap.entrySet()) {
-            char c = entry.getKey();
-            int count = entry.getValue();
+        for (Character c : countMap.keySet()) {
+            int count = countMap.get(c);
             while (count-- > 0) {
                 sb.append(c);
             }
