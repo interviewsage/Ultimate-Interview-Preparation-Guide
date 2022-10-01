@@ -11,10 +11,8 @@ import java.util.*;
  * 1. Approach 3: BFS from Houses to Empty Land (Optimized) - https://leetcode.com/problems/shortest-distance-from-all-buildings/solution/
  * 2. https://leetcode.com/problems/shortest-distance-from-all-buildings/discuss/76891/Java-solution-with-explanation-and-time-complexity-analysis
  *
- * Time Complexity:
- * 1. To find all buildings = O(M*N)
- * 2. To populate distance grid = O(Numbers of 1s * Number of 0s). This in worst case can be O(M^2 * N^2)
- * Total time complexity = O(M*N + M^2*N^2) = O(M^2 * N^2)
+ * Time Complexity = O(M*N * M*N) = O(M^2 * N^2)
+ * For each building we visit all cells in worst case
  *
  * Space Complexity:
  * 1. distance grid = O(M*N)
@@ -35,14 +33,13 @@ class Solution {
 
         int rows = grid.length;
         int cols = grid[0].length;
-
         if (rows == 1 && cols == 1) {
             return -1;
         }
 
-        int[][] distance = new int[rows][cols];
+        int[][] distanceGrid = new int[rows][cols];
         int minDistance = Integer.MAX_VALUE;
-        int emptySpaceVal = 0;
+        int buildingId = 0;
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -51,27 +48,30 @@ class Solution {
                 }
 
                 minDistance = Integer.MAX_VALUE;
-                Queue<int[]> queue = new LinkedList<>();
+                Queue<int[]> queue = new ArrayDeque<>();
                 queue.offer(new int[] { i, j });
                 int dist = 0;
+                buildingId--;
 
                 while (!queue.isEmpty()) {
                     dist++;
-                    int levelSize = queue.size();
+                    int curLevel = queue.size();
 
-                    for (int k = 0; k < levelSize; k++) {
+                    while (curLevel-- > 0) {
                         int[] cur = queue.poll();
 
                         for (int[] d : DIRS) {
                             int x = cur[0] + d[0];
                             int y = cur[1] + d[1];
 
-                            if (x >= 0 && y >= 0 && x < rows && y < cols && grid[x][y] == emptySpaceVal) {
-                                grid[x][y]--;
-                                distance[x][y] += dist;
-                                queue.offer(new int[] { x, y });
-                                minDistance = Math.min(minDistance, distance[x][y]);
+                            if (x < 0 || y < 0 || x >= rows || y >= cols || grid[x][y] != buildingId + 1) {
+                                continue;
                             }
+
+                            grid[x][y] = buildingId;
+                            distanceGrid[x][y] += dist;
+                            queue.offer(new int[] { x, y });
+                            minDistance = Math.min(minDistance, distanceGrid[x][y]);
                         }
                     }
                 }
@@ -79,7 +79,6 @@ class Solution {
                 if (minDistance == Integer.MAX_VALUE) {
                     return -1;
                 }
-                emptySpaceVal--;
             }
         }
 

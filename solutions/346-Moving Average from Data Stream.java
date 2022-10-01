@@ -17,14 +17,16 @@ class MovingAverage {
 
     Deque<Integer> queue;
     int capacity;
-    int windowSum;
+    long windowSum;
 
     public MovingAverage(int size) {
-        if (size < 0) {
-            throw new IllegalArgumentException("Negative widow size provided");
+        if (size <= 0) {
+            throw new IllegalArgumentException("Invalid size");
         }
-        queue = new ArrayDeque<>(size + 1);
+
         capacity = size;
+        queue = new ArrayDeque<>(size + 1);
+        windowSum = 0;
     }
 
     public double next(int val) {
@@ -39,12 +41,43 @@ class MovingAverage {
 
 class MovingAverage2 {
 
+    int[] window;
+    long windowSum;
+    int windowCurSize;
+    int insertIdx;
+
+    public MovingAverage2(int size) {
+        if (size <= 0) {
+            throw new IllegalArgumentException("Invalid size");
+        }
+
+        window = new int[size];
+        windowSum = 0;
+        windowCurSize = 0;
+        insertIdx = 0;
+    }
+
+    public double next(int val) {
+        windowSum += val - window[insertIdx];
+        window[insertIdx] = val;
+        insertIdx = (insertIdx + 1) % window.length;
+
+        if (windowCurSize < window.length) {
+            windowCurSize++;
+        }
+
+        return (double) windowSum / windowCurSize;
+    }
+}
+
+class MovingAverage3 {
+
     int[] queue;
     int capacity;
     int sum;
     int count;
 
-    public MovingAverage2(int size) {
+    public MovingAverage3(int size) {
         queue = new int[size];
         sum = 0;
         count = 0;
@@ -56,31 +89,6 @@ class MovingAverage2 {
         queue[count % capacity] = val;
         count++;
         return (double) sum / Math.min(count, capacity);
-    }
-}
-
-public class MovingAverage3 {
-    private int[] window;
-    private int n, insert;
-    private long sum;
-
-    /** Initialize your data structure here. */
-    public MovingAverage3(int size) {
-        window = new int[size];
-        insert = 0;
-        sum = 0;
-    }
-
-    public double next(int val) {
-        sum -= window[insert];
-        sum += val;
-        window[insert] = val;
-        insert = (insert + 1) % window.length;
-
-        if (n < window.length) {
-            n++;
-        }
-        return (double) sum / n;
     }
 }
 
