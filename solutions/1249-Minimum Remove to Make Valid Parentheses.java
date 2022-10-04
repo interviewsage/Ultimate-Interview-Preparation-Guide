@@ -1,4 +1,4 @@
-// LeetCode URL: https://leetcode.com/problems/minimum-remove-to-make-valid-parentheses/
+// LeetCode Question URL: https://leetcode.com/problems/minimum-remove-to-make-valid-parentheses/
 
 import java.util.HashSet;
 

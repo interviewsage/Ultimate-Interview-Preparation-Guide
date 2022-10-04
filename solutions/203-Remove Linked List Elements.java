@@ -1,4 +1,4 @@
-// LeetCode URL: https://leetcode.com/problems/remove-linked-list-elements/
+// LeetCode Question URL: https://leetcode.com/problems/remove-linked-list-elements/
 
 // Definition for singly-linked list.
 class ListNode {

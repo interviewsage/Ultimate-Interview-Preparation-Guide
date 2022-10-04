@@ -1,4 +1,4 @@
-// LeetCode URL: https://leetcode.com/problems/longest-absolute-file-path/
+// LeetCode Question URL: https://leetcode.com/problems/longest-absolute-file-path/
 // LeetCode Discuss URL:
 
 import java.util.*;

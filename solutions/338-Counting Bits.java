@@ -1,4 +1,4 @@
-// LeetCode URL: https://leetcode.com/problems/counting-bits/
+// LeetCode Question URL: https://leetcode.com/problems/counting-bits/
 
 package leetcode;
 

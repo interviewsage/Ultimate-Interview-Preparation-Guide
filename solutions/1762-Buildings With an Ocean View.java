@@ -1,4 +1,4 @@
-// LeetCode URL: https://leetcode.com/problems/buildings-with-an-ocean-view/
+// LeetCode Question URL: https://leetcode.com/problems/buildings-with-an-ocean-view/
 
 import java.util.ArrayDeque;
 import java.util.Deque;

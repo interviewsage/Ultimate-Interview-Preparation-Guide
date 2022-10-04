@@ -13,27 +13,23 @@
 class Solution {
     public void merge(int[] nums1, int m, int[] nums2, int n) {
         if (nums1 == null || nums2 == null || m < 0 || n < 0 || nums1.length < m + n || nums2.length < n) {
-            throw new IllegalArgumentException("Invalid Input");
+            throw new IllegalArgumentException("Input is invalid");
         }
         if (n == 0) {
             return;
         }
 
-        int k = m + n - 1;
         m--;
         n--;
-
         while (m >= 0 && n >= 0) {
             if (nums1[m] >= nums2[n]) {
-                nums1[k--] = nums1[m--];
+                nums1[m + n + 1] = nums1[m--];
             } else {
-                nums1[k--] = nums2[n--];
+                nums1[m + n + 1] = nums2[n--];
             }
         }
-
-        // Adding remaining numbers in nums2.
         while (n >= 0) {
-            nums1[k--] = nums2[n--];
+            nums1[n] = nums2[n--];
         }
     }
 }

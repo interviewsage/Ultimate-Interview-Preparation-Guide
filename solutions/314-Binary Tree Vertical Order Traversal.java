@@ -1,4 +1,4 @@
-// LeetCode URL: https://leetcode.com/problems/binary-tree-vertical-order-traversal/
+// LeetCode Question URL: https://leetcode.com/problems/binary-tree-vertical-order-traversal/
 
 import java.util.ArrayList;
 import java.util.HashMap;

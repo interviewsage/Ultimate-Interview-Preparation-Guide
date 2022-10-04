@@ -25,17 +25,17 @@
  * N = Length of the input array.
  */
 class Solution1 {
-    public int findPeakElement(int[] arr) {
-        if (arr == null || arr.length == 0) {
-            throw new IllegalArgumentException("Input is invalid");
+    public int findPeakElement(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            throw new IllegalArgumentException("Input array is invalid");
         }
 
         int start = 0;
-        int end = arr.length - 1;
+        int end = nums.length - 1;
 
         while (start < end) {
             int mid = start + (end - start) / 2;
-            if (arr[mid] < arr[mid + 1]) {
+            if (nums[mid] < nums[mid + 1]) {
                 start = mid + 1;
             } else {
                 end = mid;
@@ -67,7 +67,7 @@ class Solution1 {
 class Solution2 {
     public int findPeakElement(int[] nums) {
         if (nums == null || nums.length == 0) {
-            throw new IllegalArgumentException("Input is invalid");
+            throw new IllegalArgumentException("Input array is invalid");
         }
 
         return searchHelper(nums, 0, nums.length - 1);
@@ -80,10 +80,10 @@ class Solution2 {
 
         int mid = start + (end - start) / 2;
 
-        if (nums[mid] > nums[mid + 1]) {
-            return searchHelper(nums, start, mid);
-        } else {
+        if (nums[mid] < nums[mid + 1]) {
             return searchHelper(nums, mid + 1, end);
+        } else {
+            return searchHelper(nums, start, mid);
         }
     }
 }

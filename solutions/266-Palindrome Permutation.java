@@ -20,20 +20,23 @@ class Solution {
         if (s == null) {
             return false;
         }
-        if (s.length() <= 1) {
+
+        int len = s.length();
+        if (len <= 1) {
             return true;
         }
 
-        HashSet<Character> set = new HashSet<>();
+        Set<Character> set = new HashSet<>();
 
-        for (int i = 0; i < s.length(); i++) {
+        for (int i = 0; i < len; i++) {
             char c = s.charAt(i);
             if (!set.add(c)) {
                 set.remove(c);
-            }
-            // Below condition is a simplification of (set.size() - (s.length()-1-i)) >= 2
-            if (set.size() > (s.length() - i)) {
-                return false;
+            } else {
+                // Below condition can be simplified to `set.size() > (s.length() - i)`
+                if ((set.size() - (len - i - 1)) > 1) {
+                    return false;
+                }
             }
         }
 

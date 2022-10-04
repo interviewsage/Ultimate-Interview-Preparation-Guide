@@ -1,4 +1,4 @@
-// LeetCode URL: https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/
+// LeetCode Question URL: https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/
 
 /**
  * One Pass.

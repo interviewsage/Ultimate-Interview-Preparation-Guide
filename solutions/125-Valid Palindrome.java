@@ -13,26 +13,28 @@
 class Solution {
     public boolean isPalindrome(String s) {
         if (s == null) {
-            throw new IllegalArgumentException("Input string is null");
+            throw new IllegalArgumentException("Input is null");
         }
 
-        int left = 0;
-        int right = s.length() - 1;
+        int len = s.length();
+        if (len <= 1) {
+            return true;
+        }
 
-        while (left < right) {
-            while (left < right && !Character.isLetterOrDigit(s.charAt(left))) {
-                left++;
+        int start = 0;
+        int end = len - 1;
+
+        while (start < end) {
+            while (start < end && !Character.isLetterOrDigit(s.charAt(start))) {
+                start++;
             }
-            while (left < right && !Character.isLetterOrDigit(s.charAt(right))) {
-                right--;
+            while (start < end && !Character.isLetterOrDigit(s.charAt(end))) {
+                end--;
             }
 
-            if (Character.toLowerCase(s.charAt(left)) != Character.toLowerCase(s.charAt(right))) {
+            if (Character.toLowerCase(s.charAt(start++)) != Character.toLowerCase(s.charAt(end--))) {
                 return false;
             }
-
-            left++;
-            right--;
         }
 
         return true;

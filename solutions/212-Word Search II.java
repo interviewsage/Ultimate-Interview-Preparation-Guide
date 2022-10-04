@@ -1,4 +1,4 @@
-// LeetCode URL: https://leetcode.com/problems/word-search-ii/
+// LeetCode Question URL: https://leetcode.com/problems/word-search-ii/
 // LeetCode Discuss URL: https://leetcode.com/problems/word-search-ii/discuss/1520723/Java-or-TC:-O(RC*(3L))-or-SC:-O(N+L)-or-Optimal-Trie+DFS-solution
 
 import java.util.*;

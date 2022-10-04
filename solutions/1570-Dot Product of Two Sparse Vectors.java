@@ -1,4 +1,4 @@
-// LeetCode URL: https://leetcode.com/problems/dot-product-of-two-sparse-vectors/
+// LeetCode Question URL: https://leetcode.com/problems/dot-product-of-two-sparse-vectors/
 
 import java.util.ArrayList;
 import java.util.HashMap;

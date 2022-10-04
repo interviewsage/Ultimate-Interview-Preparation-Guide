@@ -1,4 +1,4 @@
-// LeetCode URL: https://leetcode.com/problems/multiply-strings/
+// LeetCode Question URL: https://leetcode.com/problems/multiply-strings/
 
 /**
  * Refer:

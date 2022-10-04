@@ -4,51 +4,66 @@
 import java.util.*;
 
 /**
- * Find the frequency of each num in nums array and use Priority Queue to find
- * top k elements.
+ * Using Bucket Sort
  *
- * Time Complexity: O(N + 2*N*logK)
+ * Time Complexity: O(N + UniqueN + RangeCount(bounded by N) + K) = O(N)
  *
- * Space Complexity: O(2*N + K).
+ * Space Complexity: O(2*UniqueN + 2*UniqueN) = O(N)
  *
- * N = Length of input array. K = input top k value.
+ * <pre>
+ * N = Length of input array.
+ * K = input top k value found. K is also bounded by UniqueN.
+ * UniqueN is bounded by N
+ * </pre>
  */
 class Solution1 {
     public int[] topKFrequent(int[] nums, int k) {
-        if (nums == null || nums.length == 0 || k <= 0) {
+        if (nums == null || k < 0) {
+            throw new IllegalArgumentException("Input is invalid");
+        }
+
+        int len = nums.length;
+        if (len == 0 || k == 0) {
             return new int[0];
         }
-        if (nums.length == 1) {
-            return Arrays.copyOf(nums, 1);
+        if (len == 1) {
+            return nums;
         }
 
         Map<Integer, Integer> countMap = new HashMap<>();
-        for (int n : nums) {
-            countMap.put(n, countMap.getOrDefault(n, 0) + 1);
+        for (int num : nums) {
+            countMap.put(num, countMap.getOrDefault(num, 0) + 1);
         }
+
         if (countMap.size() <= k) {
             int[] result = new int[countMap.size()];
             int i = 0;
-            for (int n : countMap.keySet()) {
-                result[i++] = n;
+            for (int num : countMap.keySet()) {
+                result[i++] = num;
             }
             return result;
         }
 
-        PriorityQueue<Map.Entry<Integer, Integer>> queue = new PriorityQueue<>((a, b) -> (a.getValue() - b.getValue()));
+        Map<Integer, List<Integer>> buckets = new HashMap<>();
+        int maxCount = 0;
+        for (int num : countMap.keySet()) {
+            int count = countMap.get(num);
+            buckets.putIfAbsent(count, new ArrayList<>());
+            buckets.get(count).add(num);
+            maxCount = Math.max(maxCount, count);
+        }
 
-        for (Map.Entry<Integer, Integer> entry : countMap.entrySet()) {
-            queue.offer(entry);
-            if (queue.size() > k) {
-                queue.poll();
+        int[] result = new int[k];
+        while (k > 0) {
+            List<Integer> bucket = buckets.get(maxCount--);
+            if (bucket == null) {
+                continue;
+            }
+            for (int i = 0; i < bucket.size() && k > 0; i++) {
+                result[--k] = bucket.get(i);
             }
         }
 
-        int i = 0;
-        int[] result = new int[queue.size()];
-        while (!queue.isEmpty()) {
-            result[i++] = queue.poll().getKey();
-        }
         return result;
     }
 }
@@ -56,10 +71,10 @@ class Solution1 {
 /**
  * Using Quick Select
  *
- * Time Complexity: O(3*N + K) --> In Best/Average Case. In worst case it will
- * be O(2*N + N^2 + K)
+ * Time Complexity: O(N + UniqueN + UniqueN + K) --> In Best/Average Case. In
+ * worst case it will be O(N + UniqueN + (UniqueN)^2 + K)
  *
- * Space Complexity: O(2*N + N) = O(N)
+ * Space Complexity: O(2*UniqueN + UniqueN) = O(N)
  *
  * N = Length of input array. K = input top k value.
  */
@@ -136,21 +151,21 @@ class Solution2 {
 }
 
 /**
- * Using Bucket Sort
+ * Find the frequency of each num in nums array and use Priority Queue to find
+ * top k elements.
  *
- * Time Complexity: O(N + N + N + K) = O(N + K)
+ * Time Complexity: O(N + 2*UniqueN*logK)
  *
- * Space Complexity: O(2N + 2N) = O(N)
+ * Space Complexity: O(2*UniqueN + K).
  *
- * N = Length of input array. K = input top k value. found.
+ * N = Length of input array. K = input top k value.
  */
 class Solution3 {
     public int[] topKFrequent(int[] nums, int k) {
         if (nums == null || nums.length == 0 || k <= 0) {
             return new int[0];
         }
-        int len = nums.length;
-        if (len == 1) {
+        if (nums.length == 1) {
             return Arrays.copyOf(nums, 1);
         }
 
@@ -167,28 +182,20 @@ class Solution3 {
             return result;
         }
 
-        Map<Integer, List<Integer>> buckets = new HashMap<>();
-        int maxCount = 0;
+        PriorityQueue<Map.Entry<Integer, Integer>> queue = new PriorityQueue<>((a, b) -> (a.getValue() - b.getValue()));
+
         for (Map.Entry<Integer, Integer> entry : countMap.entrySet()) {
-            int num = entry.getKey();
-            int count = entry.getValue();
-            buckets.putIfAbsent(count, new ArrayList<>());
-            buckets.get(count).add(num);
-            maxCount = Math.max(maxCount, count);
-        }
-
-        int[] result = new int[k];
-
-        for (int i = maxCount; i >= 0 && k > 0; i--) {
-            List<Integer> bucket = buckets.get(i);
-            if (bucket == null) {
-                continue;
-            }
-            for (int j = 0; j < bucket.size() && k > 0; j++) {
-                result[--k] = bucket.get(j);
+            queue.offer(entry);
+            if (queue.size() > k) {
+                queue.poll();
             }
         }
 
+        int i = 0;
+        int[] result = new int[queue.size()];
+        while (!queue.isEmpty()) {
+            result[i++] = queue.poll().getKey();
+        }
         return result;
     }
 }

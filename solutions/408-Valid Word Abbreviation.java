@@ -1,4 +1,4 @@
-// LeetCode URL: https://leetcode.com/problems/valid-word-abbreviation/
+// LeetCode Question URL: https://leetcode.com/problems/valid-word-abbreviation/
 
 /**
  * <pre>

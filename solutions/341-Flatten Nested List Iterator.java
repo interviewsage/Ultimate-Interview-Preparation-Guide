@@ -1,4 +1,4 @@
-// LeetCode URL: https://leetcode.com/problems/flatten-nested-list-iterator/
+// LeetCode Question URL: https://leetcode.com/problems/flatten-nested-list-iterator/
 
 import java.util.ArrayDeque;
 import java.util.Deque;

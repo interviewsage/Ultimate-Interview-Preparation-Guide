@@ -1,4 +1,4 @@
-// LeetCode URL: https://leetcode.com/problems/valid-palindrome/
+// LeetCode Question URL: https://leetcode.com/problems/valid-palindrome/
 
 /**
  * Find the characters that are not matching and then execute iPalindrome on
