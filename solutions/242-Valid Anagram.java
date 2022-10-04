@@ -4,13 +4,62 @@
 import java.util.*;
 
 /**
- * Time Complexity: O(N)
+ * <pre>
+ * Time Complexity: O(N + Size of CharacterSet) ==> LenS == LenT
+ *                  O(1) ==> LenS != LenT
  *
- * Space Complexity: O(N)
+ * Space Complexity: O(2 * Size of CharacterSet).
  *
  * N = Length of input string S or T.
+ * Size of CharacterSet will be constant. Thus TC will be O(N) & SC will be O(1)
+ * </pre>
  */
 class Solution1 {
+    public boolean isAnagram(String s, String t) {
+        if (s == null || t == null) {
+            throw new IllegalArgumentException("Input is null");
+        }
+
+        int lenS = s.length();
+        if (lenS != t.length()) {
+            return false;
+        }
+        if (lenS == 0) {
+            return true;
+        }
+
+        Map<Character, Integer> countMap = new HashMap<>();
+        for (int i = 0; i < lenS; i++) {
+            char charS = s.charAt(i);
+            char charT = t.charAt(i);
+            countMap.put(charS, countMap.getOrDefault(charS, 0) + 1);
+            countMap.put(charT, countMap.getOrDefault(charT, 0) - 1);
+            if (countMap.size() > lenS) {
+                return false;
+            }
+        }
+
+        for (int count : countMap.values()) {
+            if (count != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+/**
+ * <pre>
+ * Time Complexity: O(N + Size of CharacterSet) ==> LenS == LenT
+ *                  O(1) ==> LenS != LenT
+ *
+ * Space Complexity: O(2 * Size of CharacterSet).
+ *
+ * N = Length of input string S or T.
+ * Size of CharacterSet will be constant. Thus TC will be O(N) & SC will be O(1)
+ * </pre>
+ */
+class Solution2 {
     public boolean isAnagram(String s, String t) {
         if (s == null || t == null || s.length() != t.length()) {
             return false;
@@ -36,46 +85,6 @@ class Solution1 {
                 countMap.remove(c);
             } else {
                 countMap.put(c, count - 1);
-            }
-        }
-
-        return true;
-    }
-}
-
-/**
- * Time Complexity: O(N)
- *
- * Space Complexity: O(2*N) = O(N). In worst case if both strings have all
- * different characters, then map will have 2*N chars.
- *
- * N = Length of input string S or T.
- */
-class Solution2 {
-    public boolean isAnagram(String s, String t) {
-        if (s == null || t == null || s.length() != t.length()) {
-            return false;
-        }
-
-        int len = s.length();
-        // Finding the diff count of all characters in S & T
-        HashMap<Character, Integer> countMap = new HashMap<>();
-        for (int i = 0; i < len; i++) {
-            char charS = s.charAt(i);
-            char charT = t.charAt(i);
-            countMap.put(charS, countMap.getOrDefault(charS, 0) + 1);
-            countMap.put(charT, countMap.getOrDefault(charT, 0) - 1);
-        }
-
-        if (countMap.size() > len) {
-            return false;
-        }
-
-        // All Diff Counts should be zero.
-        // If not, then return false.
-        for (int count : countMap.values()) {
-            if (count != 0) {
-                return false;
             }
         }
 

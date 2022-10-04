@@ -19,12 +19,9 @@ class Solution {
         }
 
         int len = digits.length;
-        if (len == 0) {
-            return new int[] { 1 };
-        }
 
         for (int i = len - 1; i >= 0; i--) {
-            if (digits[i] != 9) {
+            if (digits[i] < 9) {
                 digits[i]++;
                 return digits;
             }

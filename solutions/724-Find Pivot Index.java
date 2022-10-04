@@ -16,23 +16,26 @@
  */
 class Solution {
     public int pivotIndex(int[] nums) {
-        if (nums == null || nums.length == 0) {
-            return -1;
+        if (nums == null) {
+            throw new IllegalArgumentException("Input is null");
         }
 
         int len = nums.length;
+        if (len == 0) {
+            return -1;
+        }
         if (len == 1) {
             return 0;
         }
 
-        int sum = 0;
+        int totalSum = 0;
         for (int n : nums) {
-            sum += n;
+            totalSum += n;
         }
 
         int leftSum = 0;
         for (int i = 0; i < len; i++) {
-            if (leftSum == sum - leftSum - nums[i]) {
+            if (leftSum == totalSum - leftSum - nums[i]) {
                 return i;
             }
             leftSum += nums[i];
