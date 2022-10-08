@@ -10,12 +10,13 @@
  */
 class Solution1 {
     public void reverseString(char[] s) {
-        if (s == null || s.length <= 1) {
-            return;
+        if (s == null) {
+            throw new IllegalArgumentException("Input char array is null");
         }
 
         int left = 0;
         int right = s.length - 1;
+
         while (left < right) {
             s[left] = (char) (s[left] ^ s[right]);
             s[right] = (char) (s[left] ^ s[right]);
@@ -35,16 +36,16 @@ class Solution1 {
  */
 class Solution2 {
     public void reverseString(char[] s) {
-        if (s == null || s.length <= 1) {
-            return;
+        if (s == null) {
+            throw new IllegalArgumentException("Input char array is null");
         }
 
         int left = 0;
         int right = s.length - 1;
         while (left < right) {
-            char c = s[left];
+            char t = s[left];
             s[left] = s[right];
-            s[right] = c;
+            s[right] = t;
             left++;
             right--;
         }
@@ -62,8 +63,8 @@ class Solution2 {
  */
 class Solution3 {
     public void reverseString(char[] s) {
-        if (s == null || s.length <= 1) {
-            return;
+        if (s == null) {
+            throw new IllegalArgumentException("Input char array is null");
         }
 
         reverseStringHelper(s, 0, s.length - 1);
