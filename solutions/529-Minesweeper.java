@@ -19,8 +19,9 @@ class Solution1 {
 
     public char[][] updateBoard(char[][] board, int[] click) {
         if (board == null || click == null) {
-            throw new IllegalArgumentException("Inputs are null");
+            throw new IllegalArgumentException("Input is null");
         }
+
         if (board[click[0]][click[1]] != 'M' && board[click[0]][click[1]] != 'E') {
             return board;
         }
@@ -34,25 +35,28 @@ class Solution1 {
             board[click[0]][click[1]] = (char) (mines + '0');
             return board;
         }
-        board[click[0]][click[1]] = 'B';
 
-        Queue<int[]> queue = new LinkedList<>();
+        board[click[0]][click[1]] = 'B';
+        Queue<int[]> queue = new ArrayDeque<>();
         queue.offer(click);
+
         while (!queue.isEmpty()) {
             int[] cur = queue.poll();
             for (int[] d : DIRS) {
-                int x = cur[0] + d[0];
-                int y = cur[1] + d[1];
-                if (x < 0 || x >= board.length || y < 0 || y >= board[0].length || board[x][y] != 'E') {
+                int r = cur[0] + d[0];
+                int c = cur[1] + d[1];
+                if (r < 0 || r >= board.length || c < 0 || c >= board[0].length || board[r][c] != 'E') {
                     continue;
                 }
-                mines = getMinesCount(board, x, y);
+
+                mines = getMinesCount(board, r, c);
                 if (mines != 0) {
-                    board[x][y] = (char) (mines + '0');
+                    board[r][c] = (char) (mines + '0');
                     continue;
                 }
-                board[x][y] = 'B';
-                queue.offer(new int[] { x, y });
+
+                board[r][c] = 'B';
+                queue.offer(new int[] { r, c });
             }
         }
 
@@ -87,8 +91,9 @@ class Solution2 {
 
     public char[][] updateBoard(char[][] board, int[] click) {
         if (board == null || click == null) {
-            throw new IllegalArgumentException("Inputs are null");
+            throw new IllegalArgumentException("Input is null");
         }
+
         if (board[click[0]][click[1]] != 'M' && board[click[0]][click[1]] != 'E') {
             return board;
         }
@@ -98,22 +103,24 @@ class Solution2 {
         }
 
         revealBoard(board, click[0], click[1]);
-
         return board;
     }
 
     private void revealBoard(char[][] board, int x, int y) {
-        if (x < 0 || x >= board.length || y < 0 || y >= board[0].length || board[x][y] != 'E') {
-            return;
-        }
         int mines = getMinesCount(board, x, y);
         if (mines != 0) {
             board[x][y] = (char) (mines + '0');
             return;
         }
+
         board[x][y] = 'B';
+
         for (int[] d : DIRS) {
-            revealBoard(board, x + d[0], y + d[1]);
+            int r = x + d[0];
+            int c = y + d[1];
+            if (r >= 0 && r < board.length && c >= 0 && c < board[0].length && board[r][c] == 'E') {
+                revealBoard(board, x + d[0], y + d[1]);
+            }
         }
     }
 
