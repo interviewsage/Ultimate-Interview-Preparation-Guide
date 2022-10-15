@@ -28,23 +28,31 @@ class Solution1 {
     Random random;
 
     public Solution1(int[] nums) {
+        if (nums == null) {
+            throw new IllegalArgumentException("nums array is null");
+        }
+
         this.nums = nums;
         this.random = new Random();
     }
 
     public int pick(int target) {
-        int idx = -1;
         int count = 0;
+        int index = -1;
+
         for (int i = 0; i < nums.length; i++) {
             if (nums[i] == target) {
                 count++;
                 if (random.nextInt(count) == 0) {
-                    idx = i;
+                    index = i;
                 }
             }
         }
 
-        return idx;
+        if (index == -1) {
+            throw new NoSuchElementException("Target not found");
+        }
+        return index;
     }
 }
 
@@ -67,22 +75,25 @@ class Solution2 {
     Random random;
 
     public Solution2(int[] nums) {
-        random = new Random();
+        if (nums == null) {
+            throw new IllegalArgumentException("nums array is null");
+        }
+
         map = new HashMap<>();
+        random = new Random();
         for (int i = 0; i < nums.length; i++) {
-            if (!map.containsKey(nums[i])) {
-                map.put(nums[i], new ArrayList<>());
-            }
+            map.putIfAbsent(nums[i], new ArrayList<>());
             map.get(nums[i]).add(i);
         }
     }
 
     public int pick(int target) {
-        if (!map.containsKey(target)) {
-            return -1;
+        List<Integer> indexes = map.get(target);
+        if (indexes == null) {
+            throw new NoSuchElementException("Target not found");
         }
-        List<Integer> curList = map.get(target);
-        return curList.get(random.nextInt(curList.size()));
+
+        return indexes.get(random.nextInt(indexes.size()));
     }
 }
 

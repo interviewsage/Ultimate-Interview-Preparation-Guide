@@ -26,24 +26,26 @@
  */
 class Solution1 {
     public int longestOnes(int[] nums, int k) {
-        if (nums == null) {
-            throw new IllegalArgumentException("Input array is null");
+        if (nums == null || k < 0) {
+            throw new IllegalArgumentException("Input is invalid");
+        }
+
+        int len = nums.length;
+        if (len <= k) {
+            return len;
         }
 
         int start = 0;
         int end = 0;
-        int zeros = 0;
 
-        while (end < nums.length) {
-            if (nums[end] == 0) {
-                zeros++;
+        while (end < len) {
+            if (nums[end++] == 0) {
+                k--;
             }
-            end++;
-            if (zeros > k) {
-                if (nums[start] == 0) {
-                    zeros--;
+            if (k < 0) {
+                if (nums[start++] == 0) {
+                    k++;
                 }
-                start++;
             }
         }
 
@@ -62,29 +64,63 @@ class Solution1 {
  */
 class Solution2 {
     public int longestOnes(int[] nums, int k) {
-        if (nums == null) {
-            throw new IllegalArgumentException("Input array is null");
+        if (nums == null || k < 0) {
+            throw new IllegalArgumentException("Input is invalid");
+        }
+
+        int len = nums.length;
+        if (len <= k) {
+            return len;
         }
 
         int start = 0;
         int end = 0;
-        int zeros = 0;
-        int maxCount = 0;
+        int result = 0;
 
-        while (end < nums.length) {
-            if (nums[end] == 0) {
-                zeros++;
+        while (end < len) {
+            if (nums[end++] == 0) {
+                k--;
             }
-            end++;
-            while (zeros > k) {
-                if (nums[start] == 0) {
-                    zeros--;
+            while (k < 0) {
+                if (nums[start++] == 0) {
+                    k++;
                 }
-                start++;
             }
-            maxCount = Math.max(maxCount, end - start);
+            result = Math.max(result, end - start);
         }
 
-        return maxCount;
+        return result;
+    }
+}
+
+/**
+ * Another way to do the first solution.
+ */
+class Solution3 {
+    public int longestOnes(int[] nums, int k) {
+        if (nums == null || k < 0) {
+            throw new IllegalArgumentException("Input is invalid");
+        }
+
+        int len = nums.length;
+        if (len <= k) {
+            return len;
+        }
+
+        int start = 0;
+        int end = 0;
+
+        for (; end < len; end++) {
+            if (nums[end] == 0) {
+                k--;
+            }
+            if (k < 0) {
+                if (nums[start++] == 0) {
+                    k++;
+                }
+            }
+        }
+
+        return end - start;
     }
 }

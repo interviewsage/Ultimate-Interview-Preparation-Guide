@@ -8,13 +8,121 @@ import java.util.*;
  * [Integer.MIN_VALUE, Integer.MAX_VALUE] range but may be out of [lower, upper]
  * range.
  *
- * Time Complexity: O(N)
+ * Time Complexity: O(logN + N) = O(N)
  *
  * Space Complexity: O(1)
  *
  * N = Length of nums array.
  */
 class Solution1 {
+    public List<String> findMissingRanges(int[] nums, int lower, int upper) {
+        if (nums == null || lower > upper) {
+            throw new IllegalArgumentException("Input is invalid");
+        }
+
+        List<String> result = new ArrayList<>();
+
+        int len = nums.length;
+        if (len == 0 || nums[len - 1] < lower || nums[0] > upper) {
+            result.add(getRangeStr(lower, upper));
+            return result;
+        }
+        if (nums[len - 1] == lower) {
+            if (lower < upper) {
+                result.add(getRangeStr(lower + 1, upper));
+            }
+            return result;
+        }
+        if (nums[0] == upper) {
+            if (lower < upper) {
+                result.add(getRangeStr(lower, upper - 1));
+            }
+            return result;
+        }
+
+        int idx = Arrays.binarySearch(nums, lower);
+        if (lower == upper) {
+            if (idx < 0) {
+                result.add(getRangeStr(lower, upper));
+            }
+            return result;
+        }
+        if (idx < 0) {
+            idx = -idx - 1;
+        }
+
+        while (idx < len) {
+            if (nums[idx] >= upper) {
+                if (nums[idx] == upper) {
+                    upper--;
+                }
+                break;
+            }
+
+            if (nums[idx] > lower) {
+                result.add(getRangeStr(lower, nums[idx] - 1));
+            }
+
+            lower = nums[idx++] + 1;
+        }
+
+        if (lower <= upper) {
+            result.add(getRangeStr(lower, upper));
+        }
+
+        return result;
+    }
+
+    private static String getRangeStr(int a, int b) {
+        return a == b ? String.valueOf(a) : new StringBuilder().append(a).append("->").append(b).toString();
+    }
+}
+
+class Solution2 {
+    public List<String> findMissingRanges(int[] nums, int lower, int upper) {
+        if (nums == null || lower > upper) {
+            throw new IllegalArgumentException("Input is invalid");
+        }
+
+        List<String> result = new ArrayList<>();
+
+        for (int idx = 0; idx < nums.length; idx++) {
+            if (nums[idx] == upper) {
+                upper--;
+                break;
+            }
+
+            if (nums[idx] > lower) {
+                result.add(getRangeStr(lower, nums[idx] - 1));
+            }
+
+            lower = nums[idx] + 1;
+        }
+
+        if (lower <= upper) {
+            result.add(getRangeStr(lower, upper));
+        }
+
+        return result;
+    }
+
+    private static String getRangeStr(int a, int b) {
+        return a == b ? String.valueOf(a) : new StringBuilder().append(a).append("->").append(b).toString();
+    }
+}
+
+/**
+ * This solution will also work if the numbers in nums array are in
+ * [Integer.MIN_VALUE, Integer.MAX_VALUE] range but may be out of [lower, upper]
+ * range.
+ *
+ * Time Complexity: O(N)
+ *
+ * Space Complexity: O(1)
+ *
+ * N = Length of nums array.
+ */
+class Solution3 {
     public List<String> findMissingRanges(int[] nums, int lower, int upper) {
         List<String> result = new ArrayList<>();
         if (lower > upper) {
@@ -69,7 +177,7 @@ class Solution1 {
     }
 }
 
-class Solution2 {
+class Solution4 {
     public List<String> findMissingRanges(int[] nums, int lower, int upper) {
         List<String> result = new ArrayList<>();
         if (nums == null || nums.length == 0) {
