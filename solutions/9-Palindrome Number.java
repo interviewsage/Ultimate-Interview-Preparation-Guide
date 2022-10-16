@@ -7,7 +7,7 @@
  * Refer:
  * https://leetcode.com/articles/palindrome-number/#approach-1-revert-half-of-the-number
  *
- * Time Complexity: O((log10 N) / 2)
+ * Time Complexity: O((log10 N) / 2) ~= O(1) (max six operation for an int)
  *
  * Space Complexity: O(1)
  *

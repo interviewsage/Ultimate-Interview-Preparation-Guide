@@ -11,13 +11,12 @@
  * N = Length of the input array.
  */
 class Solution1 {
-    public boolean isMonotonic(int[] A) {
-        if (A == null) {
-            return false;
+    public boolean isMonotonic(int[] nums) {
+        if (nums == null) {
+            throw new IllegalArgumentException("Input is null");
         }
 
-        int len = A.length;
-
+        int len = nums.length;
         if (len <= 2) {
             return true;
         }
@@ -26,15 +25,14 @@ class Solution1 {
         boolean dec = true;
 
         for (int i = 1; i < len; i++) {
-            inc = inc && (A[i] >= A[i - 1]);
-            dec = dec && (A[i] <= A[i - 1]);
+            inc = inc && nums[i - 1] <= nums[i];
+            dec = dec && nums[i - 1] >= nums[i];
 
             if (!inc && !dec) {
                 return false;
             }
         }
 
-        // return inc || dec;
         return true;
     }
 }

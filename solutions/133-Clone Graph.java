@@ -25,44 +25,6 @@ class Node {
 }
 
 /**
- * BFS - Iterative
- *
- * Time Complexity: O(V + E)
- *
- * Space Complexity: O(V). Both Queue and HashMap will take O(V) space
- *
- * V = Number of nodes. E = Number of edges in the graph.
- */
-class Solution1 {
-    public Node cloneGraph(Node node) {
-        if (node == null) {
-            return null;
-        }
-
-        HashMap<Node, Node> visited = new HashMap<>();
-        Node newNode = new Node(node.val);
-        visited.put(node, newNode);
-        Queue<Node> queue = new LinkedList<>();
-        queue.offer(node);
-
-        while (!queue.isEmpty()) {
-            Node cur = queue.poll();
-
-            List<Node> newNeighbors = visited.get(cur).neighbors;
-            for (Node n : cur.neighbors) {
-                if (!visited.containsKey(n)) {
-                    visited.put(n, new Node(n.val));
-                    queue.offer(n);
-                }
-                newNeighbors.add(visited.get(n));
-            }
-        }
-
-        return newNode;
-    }
-}
-
-/**
  * DFS - Recursive
  *
  * Time Complexity: O(V + E)
@@ -71,24 +33,75 @@ class Solution1 {
  *
  * V = Number of nodes. E = Number of edges in the graph.
  */
-class Solution2 {
+class Solution1 {
     public Node cloneGraph(Node node) {
-        return cloneGraphDFSHelper(node, new HashMap<>());
-    }
-
-    private Node cloneGraphDFSHelper(Node cur, HashMap<Node, Node> visited) {
-        if (cur == null) {
+        if (node == null) {
             return null;
         }
-        if (visited.containsKey(cur)) {
-            return visited.get(cur);
+        if (node.neighbors.size() == 0) {
+            return new Node(node.val);
         }
 
-        Node newNode = new Node(cur.val);
-        visited.put(cur, newNode);
+        return cloneGraphDfsHelper(node, new HashMap<>());
+    }
 
-        for (Node n : cur.neighbors) {
-            newNode.neighbors.add(cloneGraphDFSHelper(n, visited));
+    private Node cloneGraphDfsHelper(Node node, Map<Node, Node> cloneMap) {
+        Node clone = cloneMap.get(node);
+        if (clone != null) {
+            return clone;
+        }
+
+        clone = new Node(node.val);
+        cloneMap.put(node, clone);
+
+        for (Node n : node.neighbors) {
+            clone.neighbors.add(cloneGraphDfsHelper(n, cloneMap));
+        }
+
+        return clone;
+    }
+}
+
+/**
+ * BFS - Iterative
+ *
+ * Time Complexity: O(V + E)
+ *
+ * Space Complexity: O(V). Both Queue and HashMap will take O(V) space
+ *
+ * V = Number of nodes. E = Number of edges in the graph.
+ */
+class Solution2 {
+    public Node cloneGraph(Node node) {
+        if (node == null) {
+            return null;
+        }
+
+        Node newNode = new Node(node.val);
+        if (node.neighbors.size() == 0) {
+            return newNode;
+        }
+
+        Map<Node, Node> cloneMap = new HashMap<>();
+        Queue<Node> queue = new ArrayDeque<>();
+        cloneMap.put(node, newNode);
+        queue.offer(node);
+
+        while (!queue.isEmpty()) {
+            Node cur = queue.poll();
+
+            List<Node> newNeighbors = cloneMap.get(cur).neighbors;
+            for (Node n : cur.neighbors) {
+                Node clone = cloneMap.get(n);
+                if (clone == null) {
+                    clone = new Node(n.val);
+                    cloneMap.put(n, clone);
+                    if (n.neighbors.size() > 0) {
+                        queue.offer(n);
+                    }
+                }
+                newNeighbors.add(clone);
+            }
         }
 
         return newNode;
