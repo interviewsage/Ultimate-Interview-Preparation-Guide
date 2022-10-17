@@ -15,13 +15,14 @@
  */
 class Solution {
     public void setZeroes(int[][] matrix) {
-        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
-            return;
+        if (matrix == null) {
+            throw new IllegalArgumentException("Input matrix is null");
         }
 
         int rows = matrix.length;
         int cols = matrix[0].length;
-        if (rows == 1 && cols == 1) {
+
+        if (rows == 0 || cols == 0 || (rows == 1 && cols == 1)) {
             return;
         }
 
@@ -40,7 +41,7 @@ class Solution {
 
         for (int i = rows - 1; i >= 0; i--) {
             for (int j = cols - 1; j >= 1; j--) {
-                if (matrix[i][0] == 0 | matrix[0][j] == 0) {
+                if (matrix[i][0] == 0 || matrix[0][j] == 0) {
                     matrix[i][j] = 0;
                 }
             }

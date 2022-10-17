@@ -9,6 +9,35 @@ import java.util.*;
  * Space Complexity: O(1)
  */
 class Solution1 {
+    private static final String FIZZ = "Fizz";
+    private static final String BUZZ = "Buzz";
+    private static final String FIZZ_BUZZ = "FizzBuzz";
+
+    public List<String> fizzBuzz(int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException("Input n is invalid");
+        }
+
+        List<String> result = new ArrayList<>(n);
+        for (int i = 1; i <= n; i++) {
+            if (i % 3 == 0) {
+                if (i % 5 == 0) {
+                    result.add(FIZZ_BUZZ);
+                } else {
+                    result.add(FIZZ);
+                }
+            } else if (i % 5 == 0) {
+                result.add(BUZZ);
+            } else {
+                result.add(String.valueOf(i));
+            }
+        }
+
+        return result;
+    }
+}
+
+class Solution2 {
 
     private static final String FIZZ_BUZZ = "FizzBuzz";
     private static final String FIZZ = "Fizz";
@@ -38,7 +67,7 @@ class Solution1 {
     }
 }
 
-class Solution2 {
+class Solution3 {
 
     private static final String FIZZ_BUZZ = "FizzBuzz";
     private static final String FIZZ = "Fizz";
@@ -76,7 +105,7 @@ class Solution2 {
  *
  * Space Complexity: O(1)
  */
-class Solution3 {
+class Solution4 {
     public List<String> fizzBuzz(int n) {
         List<String> result = new ArrayList<>();
         if (n < 1) {

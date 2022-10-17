@@ -19,24 +19,24 @@ class Solution {
         if (x >= -9 && x <= 9) {
             return x;
         }
-        if (x == Integer.MIN_VALUE || x == Integer.MAX_VALUE) {
+        if (x == Integer.MAX_VALUE || x == Integer.MIN_VALUE) {
             return 0;
         }
 
-        int sign = x < 0 ? -1 : 1;
-        // Case of Integer.MIN_VALUE will be handled here as the absolute value of
-        // Integer.MIN_VALUE is Integer.MIN_VALUE. Thus the x will remain less than zero
-        // and it will not enter the while loop.
-        x = Math.abs(x);
-        int result = 0;
+        int sign = 1;
+        if (x < 0) {
+            sign = -1;
+            x = -x;
+        }
 
+        int result = 0;
         while (x > 0) {
-            int digit = x % 10;
+            int d = x % 10;
             if (result > Integer.MAX_VALUE / 10
-                    || (result == Integer.MAX_VALUE / 10 && digit > Integer.MAX_VALUE % 10)) {
+                    || (result == Integer.MAX_VALUE / 10 && d > Integer.MAX_VALUE % 10)) {
                 return 0;
             }
-            result = result * 10 + digit;
+            result = result * 10 + d;
             x /= 10;
         }
 

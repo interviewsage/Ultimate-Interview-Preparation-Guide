@@ -15,35 +15,40 @@
  */
 class Solution1 {
     public void sortColors(int[] nums) {
-        if (nums == null || nums.length <= 1) {
+        if (nums == null) {
+            throw new IllegalArgumentException("Input array is null");
+        }
+
+        int len = nums.length;
+        if (len <= 1) {
             return;
         }
 
-        int zeros = 0;
-        int twos = nums.length - 1;
-        int i = 0;
+        int zeroInsertPos = 0;
+        int twoInsertPos = len - 1;
+        int idx = 0;
 
-        while (i <= twos) {
-            switch (nums[i]) {
-                case 2:
-                    if (i != twos) {
-                        nums[i] = nums[twos];
-                        nums[twos] = 2;
+        while (idx <= twoInsertPos) {
+            switch (nums[idx]) {
+                case 0:
+                    if (idx != zeroInsertPos) {
+                        nums[idx] = 1;
+                        nums[zeroInsertPos] = 0;
                     }
-                    twos--;
-                    // Cannot increment i. The number at i can now be a zero.
+                    zeroInsertPos++;
+                    // Can increment i. As only 0s and 1s are present between zero and i.
+                    idx++;
                     break;
                 case 1:
-                    i++;
+                    idx++;
                     break;
-                case 0:
-                    if (i != zeros) {
-                        nums[i] = 1;
-                        nums[zeros] = 0;
+                case 2:
+                    if (idx != twoInsertPos) {
+                        nums[idx] = nums[twoInsertPos];
+                        nums[twoInsertPos] = 2;
                     }
-                    zeros++;
-                    // Can increment i. As only 0s and 1s are present between zero and i.
-                    i++;
+                    twoInsertPos--;
+                    // Cannot increment i. The number at i can now be a zero.
                     break;
                 default:
                     throw new IllegalArgumentException("Invalid color");
@@ -53,6 +58,8 @@ class Solution1 {
 }
 
 /**
+ * DO NOT USE THIS SOLUTION
+ *
  * One-Pass Constant Space solution (With using a Swap Function)
  *
  * Move all 0s to the left and all 2s to the right, then all 1s are left in the
