@@ -8,6 +8,10 @@
  * length of the array by one. Total number of assignment operations required
  * are less.
  *
+ * In this approach, the number of assignment operations is equal to the number
+ * of elements to remove. So it is more efficient if elements to remove are
+ * rare.
+ *
  * Time Complexity: O(N)
  *
  * Space Complexity: O(1)
@@ -17,55 +21,20 @@
 class Solution1 {
     public int removeElement(int[] nums, int val) {
         if (nums == null) {
-            throw new IllegalArgumentException("Input array is null");
+            throw new IllegalArgumentException("Input is null");
         }
 
         int len = nums.length;
-        if (len == 0) {
-            return 0;
-        }
-
         int i = 0;
         while (i < len) {
             if (nums[i] == val) {
-                nums[i] = nums[len - 1];
-                // Reduce Array length by one
-                len--;
+                nums[i] = nums[--len];
             } else {
                 i++;
             }
         }
+
         return len;
-    }
-}
-
-/**
- * Using 2 pointers. Output array maintains the order of the input array.
- *
- * Time Complexity: O(N)
- *
- * Space Complexity: O(1)
- *
- * N = Length of input array.
- */
-class Solution2 {
-    public int removeElement(int[] nums, int val) {
-        if (nums == null) {
-            throw new IllegalArgumentException("Input array is null");
-        }
-
-        int len = nums.length;
-        if (len == 0) {
-            return 0;
-        }
-
-        int insertPos = -1;
-        for (int n : nums) {
-            if (n != val) {
-                nums[++insertPos] = n;
-            }
-        }
-        return insertPos + 1;
     }
 }
 
@@ -81,30 +50,22 @@ class Solution2 {
  *
  * N = Length of input array.
  */
-class Solution3 {
+class Solution2 {
     public int removeElement(int[] nums, int val) {
         if (nums == null) {
-            throw new IllegalArgumentException("Input array is null");
+            throw new IllegalArgumentException("Input is null");
         }
 
-        int len = nums.length;
-        if (len == 0) {
-            return 0;
-        }
-
-        int insertPos = -1;
-        int i = 0;
-        for (; i < len; i++) {
-            if (nums[i] == val) {
-                break;
-            }
-            insertPos++;
-        }
-        for (; i < len; i++) {
+        int insertPos = 0;
+        for (int i = 0; i < nums.length; i++) {
             if (nums[i] != val) {
-                nums[++insertPos] = nums[i];
+                if (insertPos != i) {
+                    nums[insertPos] = nums[i];
+                }
+                insertPos++;
             }
         }
-        return insertPos + 1;
+
+        return insertPos;
     }
 }
