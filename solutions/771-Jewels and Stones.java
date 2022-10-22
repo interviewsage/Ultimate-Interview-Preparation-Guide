@@ -4,26 +4,38 @@
 import java.util.*;
 
 /**
- * Time Complexity: O(J + S)
- *
- * Space Complexity: O(J)
+ * <pre>
+ * Time & Space Complexity:
+ *      - S == 0 || J == 0 ---> TC: O(1), SC: O(1)
+ *      - S == 1           ---> TC: O(J), SC: O(1)
+ *      - All other cases  ---> TC: O(J + S), SC: O(J)
+ * </pre>
  *
  * J = Number of characters in J. S = Number of characters in S.
  */
 class Solution {
     public int numJewelsInStones(String jewels, String stones) {
-        if (jewels == null || jewels.length() == 0 || stones == null || stones.length() == 0) {
-            return 0;
+        if (jewels == null || stones == null) {
+            throw new IllegalArgumentException("Input strings are null");
         }
 
-        Set<Character> jewelSet = new HashSet<>();
-        for (int i = 0; i < jewels.length(); i++) {
-            jewelSet.add(jewels.charAt(i));
+        int jLen = jewels.length();
+        int sLen = stones.length();
+        if (jLen == 0 || sLen == 0) {
+            return 0;
+        }
+        if (sLen == 1) {
+            return jewels.contains(stones) ? 1 : 0;
+        }
+
+        Set<Character> jewelsSet = new HashSet<>();
+        for (int i = 0; i < jLen; i++) {
+            jewelsSet.add(jewels.charAt(i));
         }
 
         int jewelCount = 0;
-        for (int i = 0; i < stones.length(); i++) {
-            if (jewelSet.contains(stones.charAt(i))) {
+        for (int i = 0; i < sLen; i++) {
+            if (jewelsSet.contains(stones.charAt(i))) {
                 jewelCount++;
             }
         }
