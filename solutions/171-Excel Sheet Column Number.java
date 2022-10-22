@@ -13,14 +13,14 @@
 class Solution {
     public int titleToNumber(String columnTitle) {
         if (columnTitle == null) {
-            throw new IllegalArgumentException("Input is invalid");
+            throw new IllegalArgumentException("Input columnTitle is null");
         }
 
-        int result = 0;
+        int colVal = 0;
         for (int i = 0; i < columnTitle.length(); i++) {
-            result = result * 26 + (columnTitle.charAt(i) - 'A' + 1);
+            colVal = colVal * 26 + (columnTitle.charAt(i) - 'A' + 1);
         }
 
-        return result;
+        return colVal;
     }
 }

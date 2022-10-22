@@ -4,9 +4,10 @@
 /**
  * Keep dividing the number by 26.
  *
- * Make sure to subtract 1 before dividing.
+ * Make sure to subtract 1 before dividing. This is to ensure that we can easily
+ * add to 'A' to get the desired character.
  *
- * Time Complexity: O(log26 N)
+ * Time Complexity: O(3 * log26 N)
  *
  * Space Complexity: O(log26 N)
  *
@@ -14,21 +15,17 @@
  */
 class Solution {
     public String convertToTitle(int columnNumber) {
-        if (columnNumber < 0) {
-            throw new IllegalArgumentException("Input number is invalid");
-        }
-        if (columnNumber == 0) {
-            return "";
+        if (columnNumber <= 0) {
+            throw new IllegalArgumentException("Input columnNumber is invalid");
         }
 
-        StringBuilder sb = new StringBuilder();
-
+        StringBuilder colTitle = new StringBuilder();
         while (columnNumber > 0) {
             columnNumber--;
-            sb.append((char) ('A' + columnNumber % 26));
+            colTitle.append((char) ('A' + columnNumber % 26));
             columnNumber /= 26;
         }
 
-        return sb.reverse().toString();
+        return colTitle.reverse().toString();
     }
 }
