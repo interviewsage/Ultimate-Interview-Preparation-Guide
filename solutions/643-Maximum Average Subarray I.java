@@ -8,11 +8,12 @@
  */
 class Solution1 {
     public double findMaxAverage(int[] nums, int k) {
-        if (nums == null || k < 0 || nums.length < k) {
+        if (nums == null || k <= 0 || k > nums.length) {
             throw new IllegalArgumentException("Input is invalid");
         }
-        if (k == 0) {
-            return 0;
+        int len = nums.length;
+        if (len == 1) {
+            return nums[0];
         }
 
         double sum = 0;
@@ -21,9 +22,8 @@ class Solution1 {
         }
 
         double maxSum = sum;
-        for (int i = k; i < nums.length; i++) {
-            sum -= nums[i - k];
-            sum += nums[i];
+        for (int i = k; i < len; i++) {
+            sum += nums[i] - nums[i - k];
             maxSum = Math.max(maxSum, sum);
         }
 
@@ -33,22 +33,24 @@ class Solution1 {
 
 class Solution2 {
     public double findMaxAverage(int[] nums, int k) {
-        if (nums == null || k < 0 || k > nums.length) {
-            throw new IllegalArgumentException("Invalid Input");
+        if (nums == null || k <= 0 || k > nums.length) {
+            throw new IllegalArgumentException("Input is invalid");
         }
-        if (k == 0) {
-            return 0;
+        int len = nums.length;
+        if (len == 1) {
+            return nums[0];
         }
 
-        int sum = 0;
-        for (int i = 0; i < k; i++) {
+        long sum = 0;
+        long maxSum = Long.MIN_VALUE;
+        for (int i = 0; i < len; i++) {
             sum += nums[i];
-        }
-
-        int maxSum = sum;
-        for (int i = k; i < nums.length; i++) {
-            sum += nums[i] - nums[i - k];
-            maxSum = Math.max(maxSum, sum);
+            if (i >= k) {
+                sum -= nums[i - k];
+            }
+            if (i >= k - 1) {
+                maxSum = Math.max(maxSum, sum);
+            }
         }
 
         return (double) maxSum / k;
@@ -57,11 +59,12 @@ class Solution2 {
 
 class Solution3 {
     public double findMaxAverage(int[] nums, int k) {
-        if (nums == null || k < 0 || nums.length < k) {
+        if (nums == null || k <= 0 || k > nums.length) {
             throw new IllegalArgumentException("Input is invalid");
         }
-        if (k == 0) {
-            return 0;
+        int len = nums.length;
+        if (len == 1) {
+            return nums[0];
         }
 
         double avg = 0;

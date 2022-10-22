@@ -7,69 +7,67 @@ import java.util.*;
  * Using Priority Queue
  *
  * Time Complexity: KthLargest() -> O(N log K). Every operation of add() ->
- * O(log K)
+ * O(2*log K)
  *
  * Space Complexity: O(K)
  *
  * N = Length of initial array passed to the constructor. K = input k.
  */
-
 class KthLargest {
 
-    PriorityQueue<Integer> pq;
+    PriorityQueue<Integer> minHeap;
     int k;
 
     public KthLargest(int k, int[] nums) {
-        this.pq = new PriorityQueue<>();
+        if (k <= 0) {
+            throw new IllegalArgumentException("Input k is invalid");
+        }
+
         this.k = k;
-        if (nums != null) {
-            for (int n : nums) {
-                add(n);
-            }
+        this.minHeap = new PriorityQueue<>();
+        for (int n : nums) {
+            add(n);
         }
     }
 
     public int add(int val) {
-        pq.offer(val);
-        if (pq.size() > k) {
-            pq.poll();
+        if (minHeap.size() == k) {
+            if (minHeap.peek() >= val) {
+                return minHeap.peek();
+            }
+            minHeap.poll();
         }
-        return pq.peek();
+        minHeap.offer(val);
+
+        return minHeap.peek();
     }
 }
 
 class KthLargest1 {
 
-    PriorityQueue<Integer> queue;
-    int K;
+    PriorityQueue<Integer> minHeap;
+    int k;
 
-    public KthLargest1(int k, int[] nums) throws IllegalArgumentException {
+    public KthLargest1(int k, int[] nums) {
         if (k <= 0) {
-            throw new IllegalArgumentException("Invalid value of k.");
+            throw new IllegalArgumentException("Input k is invalid");
         }
 
-        queue = new PriorityQueue<>();
-        K = k;
-
-        if (nums == null) {
-            return;
-        }
-
+        this.k = k;
+        this.minHeap = new PriorityQueue<>();
         for (int n : nums) {
-            queue.offer(n);
-            if (queue.size() > K) {
-                queue.poll();
-            }
+            add(n);
         }
     }
 
     public int add(int val) {
-        queue.offer(val);
-        if (queue.size() > K) {
-            queue.poll();
+        if (minHeap.size() < k) {
+            minHeap.offer(val);
+        } else if (val > minHeap.peek()) {
+            minHeap.poll();
+            minHeap.offer(val);
         }
-
-        return queue.peek();
+        return minHeap.peek();
     }
 }
 
