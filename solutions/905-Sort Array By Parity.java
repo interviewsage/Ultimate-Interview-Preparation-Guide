@@ -18,8 +18,8 @@
  */
 class Solution1 {
     public int[] sortArrayByParity(int[] nums) {
-        if (nums == null || nums.length <= 1) {
-            return nums;
+        if (nums == null) {
+            throw new IllegalArgumentException("Input array is null");
         }
 
         int even = 0;
@@ -34,10 +34,8 @@ class Solution1 {
             }
             if (even < odd) {
                 int t = nums[even];
-                nums[even] = nums[odd];
-                nums[odd] = t;
-                even++;
-                odd--;
+                nums[even++] = nums[odd];
+                nums[odd--] = t;
             }
         }
 

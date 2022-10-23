@@ -24,11 +24,12 @@ import java.util.*;
 class Solution1 {
     public int missingNumber(int[] nums) {
         if (nums == null) {
-            throw new IllegalArgumentException("Input array is null");
+            throw new IllegalArgumentException("Input is null");
         }
 
-        int result = nums.length;
-        for (int i = 0; i < nums.length; i++) {
+        int len = nums.length;
+        int result = len;
+        for (int i = 0; i < len; i++) {
             result ^= i ^ nums[i];
         }
 
@@ -48,20 +49,16 @@ class Solution1 {
 class Solution2 {
     public int missingNumber(int[] nums) {
         if (nums == null) {
-            throw new IllegalArgumentException("Input array is null");
+            throw new IllegalArgumentException("Input is null");
         }
 
         int len = nums.length;
-        if (len == 0) {
-            return 0;
-        }
-
-        int sum = len * (len + 1) / 2;
+        int result = len * (len + 1) / 2;
         for (int n : nums) {
-            sum -= n;
+            result -= n;
         }
 
-        return sum;
+        return result;
     }
 }
 
@@ -86,26 +83,21 @@ class Solution2 {
 class Solution3 {
     public int missingNumber(int[] nums) {
         if (nums == null) {
-            throw new IllegalArgumentException("Input array is null");
-        }
-
-        int len = nums.length;
-        if (len == 0) {
-            return 0;
+            throw new IllegalArgumentException("Input is null");
         }
 
         Arrays.sort(nums);
+
         // Here search space is from 0 to len, as the missing number is in range 0 to
         // len.
         int start = 0;
-        int end = len;
-
+        int end = nums.length;
         while (start < end) {
             int mid = start + (end - start) / 2;
-            if (nums[mid] > mid) {
-                end = mid;
-            } else {
+            if (nums[mid] == mid) {
                 start = mid + 1;
+            } else {
+                end = mid;
             }
         }
 

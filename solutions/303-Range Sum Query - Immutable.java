@@ -21,21 +21,20 @@ class NumArray {
 
     public NumArray(int[] nums) {
         if (nums == null) {
-            throw new IllegalArgumentException("Input is null");
+            throw new IllegalArgumentException("Input array is null");
         }
 
-        prefixSum = new int[nums.length + 1];
-
-        for (int i = 1; i <= nums.length; i++) {
-            prefixSum[i] = prefixSum[i - 1] + nums[i - 1];
+        int len = nums.length;
+        prefixSum = new int[len + 1];
+        for (int i = 0; i < len; i++) {
+            prefixSum[i + 1] = prefixSum[i] + nums[i];
         }
     }
 
     public int sumRange(int left, int right) {
-        if (left < 0 || right >= prefixSum.length - 1) {
-            throw new IndexOutOfBoundsException("Input indices are out of bounds");
+        if (left < 0 || right >= prefixSum.length - 1 || left > right) {
+            throw new IllegalArgumentException("Invalid input");
         }
-
         // Here both left and right are inclusive.
         // right maps to right+1 in prefixSum. left maps to left+1 in prefixSum.
         // To get the result subtract the prefixSum before left index from prefixSum at

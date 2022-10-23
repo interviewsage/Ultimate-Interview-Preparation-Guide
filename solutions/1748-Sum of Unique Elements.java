@@ -9,27 +9,30 @@ import java.util.*;
  *
  * Time Complexity: O(N)
  *
- * Space Complexity: O(N)
+ * Space Complexity: O(U)
  *
- * N = Length of input array.
+ * N = Length of input array. U = Unique numbers in the array.
  */
 class Solution {
     public int sumOfUnique(int[] nums) {
-        if (nums == null || nums.length == 0) {
-            return 0;
+        if (nums == null) {
+            throw new IllegalArgumentException("Input is null");
         }
 
         int len = nums.length;
+        if (len == 0) {
+            return 0;
+        }
         if (len == 1) {
             return nums[0];
         }
 
-        Set<Integer> nonUniqueNums = new HashSet<>();
         Set<Integer> uniqueNums = new HashSet<>();
+        Set<Integer> duplicateNums = new HashSet<>();
         int sum = 0;
 
         for (int n : nums) {
-            if (nonUniqueNums.contains(n)) {
+            if (duplicateNums.contains(n)) {
                 continue;
             }
 
@@ -38,7 +41,7 @@ class Solution {
             } else {
                 uniqueNums.remove(n);
                 sum -= n;
-                nonUniqueNums.add(n);
+                duplicateNums.add(n);
             }
         }
 
