@@ -17,55 +17,51 @@ import java.util.*;
 class Solution1 {
     public class CharIterator implements Iterator<Character> {
         String[] words;
-        int wordIdx;
-        int charIdx;
+        int wIdx;
+        int cIdx;
 
         public CharIterator(String[] words) {
             if (words == null) {
-                throw new IllegalArgumentException("Input is array is null");
+                throw new IllegalArgumentException("Input words array is null");
             }
             this.words = words;
+            this.wIdx = 0;
+            this.cIdx = 0;
+        }
+
+        @Override
+        public Character next() throws NoSuchElementException {
+            if (!hasNext()) {
+                throw new NoSuchElementException("No next character found");
+            }
+            return words[wIdx].charAt(cIdx++);
         }
 
         @Override
         public boolean hasNext() {
-            if (charIdx == words[wordIdx].length()) {
-                if (wordIdx == words.length - 1) {
-                    return false;
+            while (wIdx < words.length) {
+                if (cIdx < words[wIdx].length()) {
+                    return true;
                 }
-                wordIdx++;
-                charIdx = 0;
+                cIdx = 0;
+                wIdx++;
             }
-            return true;
-        }
-
-        @Override
-        public Character next() {
-            if (!hasNext()) {
-                throw new NoSuchElementException();
-            }
-            return words[wordIdx].charAt(charIdx++);
+            return false;
         }
     }
 
     public boolean arrayStringsAreEqual(String[] word1, String[] word2) {
-        if (word1 == null || word2 == null || ((word1.length == 0) ^ (word2.length == 0))) {
-            return false;
-        }
-
-        if (word1.length == 0 && word2.length == 0) {
-            return true;
+        if (word1 == null || word2 == null) {
+            throw new IllegalArgumentException("Input is null");
         }
 
         CharIterator itr1 = new CharIterator(word1);
         CharIterator itr2 = new CharIterator(word2);
-
         while (itr1.hasNext() && itr2.hasNext()) {
             if (!itr1.next().equals(itr2.next())) {
                 return false;
             }
         }
-
         return !itr1.hasNext() && !itr2.hasNext();
     }
 }
@@ -80,49 +76,42 @@ class Solution1 {
  * Time Complexity: O(min(N1, N2))
  *
  * Space Complexity: O(1)
+ *
+ * N1 = Number of chars in word1 array. N2 = Number of chars in word2 array.
  */
 class Solution2 {
     public boolean arrayStringsAreEqual(String[] word1, String[] word2) {
-        if (word1 == null || word2 == null || ((word1.length == 0) ^ (word2.length == 0))) {
-            return false;
+        if (word1 == null || word2 == null) {
+            throw new IllegalArgumentException("Input is null");
         }
 
-        int len1 = word1.length;
-        int len2 = word2.length;
+        int numWords1 = word1.length;
+        int numWords2 = word2.length;
+        int w1 = 0;
+        int w2 = 0;
+        int c1 = 0;
+        int c2 = 0;
 
-        if (len1 == 0 && len2 == 0) {
-            return true;
-        }
+        while (w1 < numWords1 && w2 < numWords2) {
+            int l1 = word1[w1].length();
+            int l2 = word2[w2].length();
 
-        int w1Idx = 0;
-        int w1CIdx = 0;
-        int w2Idx = 0;
-        int w2CIdx = 0;
-
-        while (w1Idx < len1 && w2Idx < len2) {
-            String w1 = word1[w1Idx];
-            int l1 = w1.length();
-            String w2 = word2[w2Idx];
-            int l2 = w2.length();
-
-            while (w1CIdx < l1 && w2CIdx < l2) {
-                if (w1.charAt(w1CIdx) != w2.charAt(w2CIdx)) {
+            while (c1 < l1 && c2 < l2) {
+                if (word1[w1].charAt(c1++) != word2[w2].charAt(c2++)) {
                     return false;
                 }
-                w1CIdx++;
-                w2CIdx++;
             }
 
-            if (w1CIdx == l1) {
-                w1Idx++;
-                w1CIdx = 0;
+            if (c1 == l1) {
+                w1++;
+                c1 = 0;
             }
-            if (w2CIdx == l2) {
-                w2Idx++;
-                w2CIdx = 0;
+            if (c2 == l2) {
+                w2++;
+                c2 = 0;
             }
         }
 
-        return w1Idx == len1 && w2Idx == len2;
+        return w1 == numWords1 && w2 == numWords2;
     }
 }

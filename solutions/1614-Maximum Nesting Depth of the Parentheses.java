@@ -8,22 +8,28 @@
  */
 class Solution {
     public int maxDepth(String s) {
-        if (s == null || s.length() <= 1) {
-            return 0;
+        if (s == null) {
+            throw new IllegalArgumentException("Input string is null");
         }
 
-        int depth = 0;
+        int len = s.length();
+        int open = 0;
         int maxDepth = 0;
 
-        for (int i = 0; i < s.length(); i++) {
+        for (int i = 0; i < len; i++) {
             char c = s.charAt(i);
             if (c == '(') {
-                maxDepth = Math.max(maxDepth, ++depth);
+                maxDepth = Math.max(maxDepth, ++open);
             } else if (c == ')') {
-                depth--;
+                if (open-- == 0) {
+                    throw new IllegalArgumentException("Input string is not a valid parentheses string");
+                }
             }
         }
 
+        if (open > 0) {
+            throw new IllegalArgumentException("Input string is not a valid parentheses string");
+        }
         return maxDepth;
     }
 }

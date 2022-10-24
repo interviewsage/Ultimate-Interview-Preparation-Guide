@@ -19,29 +19,29 @@ class Solution {
             throw new IllegalArgumentException("Input is invalid");
         }
 
-        int len = s.length();
+        char[] charArr = s.toCharArray();
+        int len = charArr.length;
         if (len <= 1) {
-            return s;
+            return new String(charArr);
         }
 
-        char[] arr = s.toCharArray();
         for (int i = 0; i < len; i++) {
-            while (indices[i] != i) {
-                swap(arr, i, indices[i]);
+            while (i != indices[i]) {
+                swap(charArr, i, indices[i]);
                 swap(indices, i, indices[i]);
             }
         }
 
-        return new String(arr);
+        return new String(charArr);
     }
 
-    private void swap(char[] arr, int x, int y) {
+    private static void swap(char[] arr, int x, int y) {
         char t = arr[x];
         arr[x] = arr[y];
         arr[y] = t;
     }
 
-    private void swap(int[] arr, int x, int y) {
+    private static void swap(int[] arr, int x, int y) {
         int t = arr[x];
         arr[x] = arr[y];
         arr[y] = t;
