@@ -12,13 +12,18 @@
  */
 class Solution {
     public int countNegatives(int[][] grid) {
-        if (grid == null || grid.length == 0 || grid[0].length == 0) {
-            return 0;
+        if (grid == null) {
+            throw new IllegalArgumentException("Input grid is null");
         }
 
         int rows = grid.length;
+        if (rows == 0) {
+            return 0;
+        }
         int cols = grid[0].length;
-
+        if (cols == 0) {
+            return 0;
+        }
         if (grid[0][0] < 0) {
             return rows * cols;
         }
@@ -26,19 +31,18 @@ class Solution {
             return 0;
         }
 
-        int i = 0;
-        int j = cols - 1;
-        int count = 0;
-
-        while (i < rows && j >= 0) {
-            if (grid[i][j] < 0) {
-                count += rows - i;
-                j--;
+        int negativeCount = 0;
+        int r = 0;
+        int c = cols - 1;
+        while (r < rows && c >= 0) {
+            if (grid[r][c] < 0) {
+                negativeCount += rows - r;
+                c--;
             } else {
-                i++;
+                r++;
             }
         }
 
-        return count;
+        return negativeCount;
     }
 }

@@ -11,33 +11,29 @@ import java.util.*;
  *
  * Space Complexity: O(1)
  *
- * N = Length of nums. T = Number of occurences of target.
+ * N = Length of nums. T = Number of occurrences of target.
  */
 class Solution {
     public List<Integer> targetIndices(int[] nums, int target) {
-        List<Integer> result = new ArrayList<>();
-        if (nums == null || nums.length == 0) {
-            return result;
+        if (nums == null) {
+            throw new IllegalArgumentException("Input array is null");
         }
 
-        int countLessThanTarget = 0;
-        int countEqualToTarget = 0;
+        int equalToTarget = 0;
+        int lessThanTarget = 0;
+
         for (int n : nums) {
             if (n < target) {
-                countLessThanTarget++;
+                lessThanTarget++;
             } else if (n == target) {
-                countEqualToTarget++;
+                equalToTarget++;
             }
         }
 
-        // for (int i = 0; i < countEqualToTarget; i++) {
-        // result.add(countLessThanTarget + i);
-        // }
-
-        while (countEqualToTarget-- > 0) {
-            result.add(countLessThanTarget++);
+        List<Integer> result = new ArrayList<>();
+        while (equalToTarget-- > 0) {
+            result.add(lessThanTarget++);
         }
-
         return result;
     }
 }

@@ -15,12 +15,24 @@ class TreeNode {
     TreeNode(int x) {
         val = x;
     }
+
+    TreeNode(int val, TreeNode left, TreeNode right) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
 }
 
 /**
  * Iterative Solution
  *
- * Time Complexity: O(N)
+ * Time Complexity: O(2 * N). Once to find the right most element in the sub
+ * tree, and once to check if any left subtree has to be solved.
+ *
+ * OR
+ *
+ * Once to place in the correct position and then second to pass through to go
+ * to other nodes.
  *
  * Space Complexity: O(1)
  *
@@ -29,7 +41,7 @@ class TreeNode {
 class Solution1 {
     public TreeNode increasingBST(TreeNode root) {
         if (root == null) {
-            return root;
+            return null;
         }
 
         TreeNode dummy = new TreeNode();
@@ -58,7 +70,7 @@ class Solution1 {
 }
 
 /**
- * Iterative Solution
+ * Recursive Solution (inorder)
  *
  * Time Complexity: O(N)
  *
@@ -67,6 +79,39 @@ class Solution1 {
  * N = Number of nodes in the tree.
  */
 class Solution2 {
+    public TreeNode increasingBST(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+
+        TreeNode dummy = new TreeNode();
+        increasingBSTInorderHelper(root, new TreeNode[] { dummy });
+        return dummy.right;
+    }
+
+    private void increasingBSTInorderHelper(TreeNode node, TreeNode[] curSolved) {
+        if (node == null) {
+            return;
+        }
+
+        increasingBSTInorderHelper(node.left, curSolved);
+        curSolved[0].right = node;
+        curSolved[0] = curSolved[0].right;
+        node.left = null;
+        increasingBSTInorderHelper(node.right, curSolved);
+    }
+}
+
+/**
+ * Iterative Solution (inorder)
+ *
+ * Time Complexity: O(N)
+ *
+ * Space Complexity: O(Height of the tree). In worst case O(N)
+ *
+ * N = Number of nodes in the tree.
+ */
+class Solution3 {
     public TreeNode increasingBST(TreeNode root) {
         if (root == null) {
             return root;
@@ -92,37 +137,5 @@ class Solution2 {
         }
 
         return dummy.right;
-    }
-}
-
-/**
- * Recursive Solution
- *
- * Time Complexity: O(N)
- *
- * Space Complexity: O(Height of the tree). In worst case O(N)
- *
- * N = Number of nodes in the tree.
- */
-class Solution3 {
-    public TreeNode increasingBST(TreeNode root) {
-        if (root == null) {
-            return root;
-        }
-
-        TreeNode dummy = new TreeNode();
-        inorderHelper(root, new TreeNode[] { dummy });
-        return dummy.right;
-    }
-
-    private void inorderHelper(TreeNode node, TreeNode[] curSolved) {
-        if (node == null) {
-            return;
-        }
-        inorderHelper(node.left, curSolved);
-        curSolved[0].right = node;
-        curSolved[0] = curSolved[0].right;
-        node.left = null;
-        inorderHelper(node.right, curSolved);
     }
 }
