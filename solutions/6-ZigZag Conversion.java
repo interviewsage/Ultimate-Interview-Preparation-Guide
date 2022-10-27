@@ -12,8 +12,98 @@
  * Space Complexity: O(N)
  *
  * R = Number of rows. N = Length of input string
+ *
+ * <pre>
+ * Explanation:
+ * For numRows = 4
+ * 0     6       12
+ * 1   5 7    11 13
+ * 2 4   8 10    14
+ * 3     9       15
+ *
+ * For numRows = 5
+ * 0       8           16
+ * 1     7 9        15 17
+ * 2   6   10    14    18
+ * 3 5     11 13       19
+ * 4       12          20
+ *
+ * Gap in first and last row = 2 * (numRows-1)
+ * Thus we can write this as:
+ * LeftGap  |  RightGap
+ *    8     |    0
+ *    6     |    2
+ *    4     |    4
+ *    2     |    6
+ *    0     |    8
+ * </pre>
  */
 class Solution1 {
+    public String convert(String s, int numRows) {
+        if (s == null || numRows <= 0) {
+            throw new IllegalArgumentException("Input string is null");
+        }
+        int len = s.length();
+        if (numRows == 1 || len <= numRows) {
+            return s;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        int leftGap = 2 * (numRows - 1);
+        int rightGap = 0;
+
+        for (int i = 0; i < numRows; i++) {
+            int idx = i;
+            while (idx < len) {
+                sb.append(s.charAt(idx));
+                idx += leftGap;
+                if (leftGap != 0 && rightGap != 0 && idx < len) {
+                    sb.append(s.charAt(idx));
+                }
+                idx += rightGap;
+            }
+            leftGap -= 2;
+            rightGap += 2;
+        }
+
+        return sb.toString();
+    }
+}
+
+/**
+ * Same as above
+ */
+class Solution2 {
+    public String convert(String s, int numRows) {
+        if (s == null || numRows <= 0) {
+            throw new IllegalArgumentException("Input string is null");
+        }
+        int len = s.length();
+        if (numRows == 1 || len <= numRows) {
+            return s;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        int maxGap = 2 * (numRows - 1);
+        int leftGap = maxGap;
+
+        for (int i = 0; i < numRows; i++) {
+            int idx = i;
+            while (idx < len) {
+                sb.append(s.charAt(idx));
+                if (leftGap != 0 && leftGap != maxGap && idx + leftGap < len) {
+                    sb.append(s.charAt(idx + leftGap));
+                }
+                idx += maxGap;
+            }
+            leftGap -= 2;
+        }
+
+        return sb.toString();
+    }
+}
+
+class Solution3 {
     public String convert(String s, int numRows) {
         if (s == null || numRows <= 0) {
             throw new IllegalArgumentException("Input is invalid");
@@ -60,7 +150,7 @@ class Solution1 {
  *
  * R = Number of rows. N = Length of input string
  */
-class Solution2 {
+class Solution4 {
     public String convert(String s, int numRows) {
         if (s == null || numRows <= 0) {
             throw new IllegalArgumentException("Input is invalid");
@@ -106,7 +196,7 @@ class Solution2 {
  *
  * R = Number of rows. N = Length of input string
  */
-class Solution3 {
+class Solution5 {
     public String convert(String s, int numRows) {
         if (s == null || numRows <= 0) {
             throw new IllegalArgumentException("Input is invalid");

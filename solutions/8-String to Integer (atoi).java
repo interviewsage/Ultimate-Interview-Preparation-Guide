@@ -12,19 +12,17 @@
  * N = Length of the input string.
  */
 class Solution {
+
+    private static final int INT_MAX_DIV_10 = Integer.MAX_VALUE / 10;
+    private static final int INT_MAX_MOD_10 = Integer.MAX_VALUE % 10;
+
     public int myAtoi(String s) {
         if (s == null) {
             throw new IllegalArgumentException("Input string is null");
         }
 
         int len = s.length();
-        if (len == 0) {
-            return 0;
-        }
-
         int idx = 0;
-
-        // Ignoring the leading whitespace
         while (idx < len && s.charAt(idx) == ' ') {
             idx++;
         }
@@ -32,30 +30,22 @@ class Solution {
             return 0;
         }
 
-        // Checking for sign
         int sign = 1;
-        char c = s.charAt(idx);
-        if (c == '-' || c == '+') {
-            if (c == '-') {
+        if (s.charAt(idx) == '-' || s.charAt(idx) == '+') {
+            if (s.charAt(idx++) == '-') {
                 sign = -1;
             }
-            idx++;
         }
 
-        int result = 0;
-
+        int num = 0;
         while (idx < len && Character.isDigit(s.charAt(idx))) {
-            int digit = s.charAt(idx) - '0';
-            if (result > Integer.MAX_VALUE / 10 || (result == Integer.MAX_VALUE / 10
-                    // Here Checking for sign is not required as for Int.MIN last digit is 8 which
-                    // is greater than 7.
-                    && digit > Integer.MAX_VALUE % 10)) {
-                return sign == -1 ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+            int digit = s.charAt(idx++) - '0';
+            if (num > INT_MAX_DIV_10 || (num == INT_MAX_DIV_10 && digit > INT_MAX_MOD_10)) {
+                return sign == 1 ? Integer.MAX_VALUE : Integer.MIN_VALUE;
             }
-            result = result * 10 + digit;
-            idx++;
+            num = num * 10 + digit;
         }
 
-        return sign * result;
+        return sign * num;
     }
 }

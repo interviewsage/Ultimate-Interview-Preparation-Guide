@@ -8,7 +8,7 @@
  * Refer:
  * https://leetcode.com/problems/palindromic-substrings/discuss/105689/Java-solution-8-lines-extendPalindrome/223769
  *
- * Time Complexity: O(N^2)
+ * Time Complexity: O(N * N/2) = O(N^2)
  *
  * Space Complexity: O(1)
  *
@@ -17,9 +17,8 @@
 class Solution1 {
     public int countSubstrings(String s) {
         if (s == null) {
-            return 0;
+            throw new IllegalArgumentException("Input string is null");
         }
-
         int len = s.length();
         if (len <= 1) {
             return 1;
@@ -38,16 +37,14 @@ class Solution1 {
 
             // Adding number of possible substrings of the center string
             // https://www.geeksforgeeks.org/number-substrings-string/
-            int centerLen = i - start;
-            result += centerLen * (centerLen + 1) / 2;
-
-            result += expandPalindrome(s, start - 1, i);
+            result += (i - start) * (i - start + 1) / 2;
+            result += extendPalindrome(s, start - 1, i);
         }
 
         return result;
     }
 
-    private int expandPalindrome(String s, int left, int right) {
+    private int extendPalindrome(String s, int left, int right) {
         int count = 0;
         while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
             left--;
@@ -62,7 +59,7 @@ class Solution1 {
  * Find the center and expand palindrome around the center. No Optimizations in
  * this solution.
  *
- * Time Complexity: O(N^2)
+ * Time Complexity: O(N * N/2 * 2) = O(N^2)
  *
  * Space Complexity: O(1)
  *

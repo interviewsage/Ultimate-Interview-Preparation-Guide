@@ -4,25 +4,28 @@
 /**
  * Optimized Solution for continuous repeating characters. Expand around center.
  *
- * Time Complexity: O(N^2)
+ * Time Complexity:
+ * - In worst case we will try to use each char as center.
+ * - extendPalindrome can take max N/2 time.
+ * - Substring take N time to create the result string.
+ *
+ * Total Time Complexity: O(N * N / 2 + N) = O(N^2)
  *
  * Space Complexity: O(1)
  *
  * N = Length of the input string s.
  */
-class Solution1 {
+class Solution {
     public String longestPalindrome(String s) {
         if (s == null) {
-            throw new IllegalArgumentException("Input is null");
+            throw new IllegalArgumentException("Input string is null");
         }
-
         int len = s.length();
         if (len <= 1) {
             return s;
         }
 
         int[] maxStartOffset = new int[] { 0, 1 };
-
         int i = 0;
         while (i < len) {
             int start = i++;
@@ -31,13 +34,14 @@ class Solution1 {
             }
 
             // Expanding palindrome around the center defined by [start, i-1]
-            expandPalindrome(s, start - 1, i, maxStartOffset);
+            extendPalindrome(s, start - 1, i, maxStartOffset);
 
             // Early Exit Condition
             // Remaining Characters = len - i - 1
-            // Longest palindrome possible using remaining chars = (len - i - 1) * 2
-            // We can safely exit if current maxStartOffset[1] >= (len - i - 1) * 2
-            if (maxStartOffset[1] >= (len - i - 1) * 2) {
+            // Longest palindrome possible using remaining char = 1 + (len - i - 1) * 2
+            // Centered at i ^^^
+            // We can safely exit if current maxStartOffset[1] >= 1 + (len - i - 1) * 2
+            if (maxStartOffset[1] >= 1 + (len - i - 1) * 2) {
                 break;
             }
         }
@@ -45,18 +49,24 @@ class Solution1 {
         return s.substring(maxStartOffset[0], maxStartOffset[0] + maxStartOffset[1]);
     }
 
-    private void expandPalindrome(String s, int left, int right, int[] maxStartOffset) {
+    private void extendPalindrome(String s, int left, int right, int[] maxStartOffset) {
         while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
             left--;
             right++;
         }
-
-        if (right - left - 1 > maxStartOffset[1]) {
+        int newLength = right - left - 1;
+        if (maxStartOffset[1] < newLength) {
             maxStartOffset[0] = left + 1;
-            maxStartOffset[1] = right - left - 1;
+            maxStartOffset[1] = newLength;
         }
     }
 }
+
+/**
+ * DO NOT REFER TO SOLUTIONS MENTIONED BELOW
+ *
+ * DO NOT REFER TO SOLUTIONS MENTIONED BELOW
+ */
 
 /**
  * Expand around center. Passing an int array of size two to keep track of max
