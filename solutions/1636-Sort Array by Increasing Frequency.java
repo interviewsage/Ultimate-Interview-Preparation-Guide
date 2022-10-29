@@ -8,59 +8,116 @@ import java.util.*;
  *
  * <pre>
  * Time Complexity:
- * 1. O(N) --> To create countMap
- * 2. O(M + M*logM) --> To create buckets map
- * 3. O(N+N) --> To populate the result array.
- * 4. Total Time Complexity: O(3*N + M + M*logM) = O(N + M + M*logM)
+ * 1. O(N + 2*M*logk) --> To create countMap & buckets
+ * 2. O(N+N) --> To populate the result array.
+ * Total Time Complexity: O(3*N + 2*M*logk) = O(N + M*logk)
  *
  * Space Complexity:
  * 1. O(2*M) --> Count Map
- * 2. O(2*M) --> Buckets Map
- * 3. Total Space Complexity: O(4*M) = O(M)
+ * 2. O(N+M) --> Buckets Map
+ * 3. Total Space Complexity: O(N + 3*M) = O(N+M)
  * </pre>
  *
  * N = Length of input array. M = Unique numbers.
+ * k = Max No. of numbers having same count. (1 <= k <= M)
  */
 class Solution1 {
     public int[] frequencySort(int[] nums) {
         if (nums == null) {
-            throw new IllegalArgumentException("Input is null");
+            throw new IllegalArgumentException("input array is null");
         }
-
         int len = nums.length;
         if (len <= 1) {
-            return Arrays.copyOf(nums, len);
+            return nums;
         }
 
         Map<Integer, Integer> countMap = new HashMap<>();
-        for (int n : nums) {
-            countMap.put(n, countMap.getOrDefault(n, 0) + 1);
-        }
-
         Map<Integer, Set<Integer>> buckets = new HashMap<>();
         int minCount = len;
-        for (int num : countMap.keySet()) {
-            int count = countMap.get(num);
-            minCount = Math.min(minCount, count);
-            buckets.putIfAbsent(count, new TreeSet<>(Collections.reverseOrder()));
-            buckets.get(count).add(num);
+        int maxCount = 1;
+        for (int n : nums) {
+            int preCount = countMap.getOrDefault(n, 0);
+            countMap.put(n, preCount + 1);
+            if (preCount > 0) {
+                Set<Integer> preBucket = buckets.get(preCount);
+                // if (preBucket.size() == 1) {
+                // buckets.remove(preCount);
+                // if (minCount == preCount) {
+                // minCount = preCount+1;
+                // }
+                // } else {
+                // preBucket.remove(n);
+                // }
+                if (preBucket.size() == 1 && minCount == preCount) {
+                    minCount = preCount + 1;
+                }
+                preBucket.remove(n);
+            }
+            buckets.putIfAbsent(preCount + 1, new TreeSet<>(Collections.reverseOrder()));
+            buckets.get(preCount + 1).add(n);
+            minCount = Math.min(minCount, preCount + 1);
+            maxCount = Math.max(maxCount, preCount + 1);
         }
 
         int[] result = new int[len];
-        int resIdx = 0;
-        for (int i = minCount; resIdx < len; i++) {
+        int idx = 0;
+        for (int i = minCount; i <= maxCount; i++) {
             Set<Integer> bucket = buckets.get(i);
             if (bucket == null) {
                 continue;
             }
-            for (int num : bucket) {
-                for (int j = 0; j < i; j++) {
-                    result[resIdx++] = num;
+            for (int n : bucket) {
+                for (int k = 0; k < i; k++) {
+                    result[idx++] = n;
                 }
             }
         }
 
         return result;
+    }
+}
+
+/**
+ * Using Map + List + Sorting
+ *
+ * <pre>
+ * Time Complexity:
+ * 1. O(N) --> To create countMap + List
+ * 2. O(N*logN) --> To sort
+ * 3. O(N) --> To populate the result array.
+ * 4. Total Time Complexity: O(2*N + N*logN) = O(N + N*logN)
+ *
+ * Space Complexity:
+ * 1. O(2*M) --> Count Map
+ * 2. O(N) --> List
+ * 3. O(N) --> Sort
+ * 3. Total Space Complexity: O(2*M + 2*N) = O(M + N)
+ * </pre>
+ *
+ * N = Length of input array. M = Unique numbers.
+ */
+class Solution2 {
+    public int[] frequencySort(int[] nums) {
+        if (nums == null) {
+            throw new IllegalArgumentException("input array is null");
+        }
+        int len = nums.length;
+        if (len <= 1) {
+            return nums;
+        }
+
+        Map<Integer, Integer> countMap = new HashMap<>();
+        List<Integer> result = new ArrayList<>();
+        for (int n : nums) {
+            result.add(n);
+            countMap.put(n, countMap.getOrDefault(n, 0) + 1);
+        }
+
+        Collections.sort(result,
+                (a, b) -> (countMap.get(a) != countMap.get(b) ? countMap.get(a).intValue() - countMap.get(b).intValue()
+                        : b - a));
+
+        return result.stream().mapToInt(n -> n).toArray();
     }
 }
 
@@ -82,7 +139,7 @@ class Solution1 {
  *
  * N = Length of input array. M = Unique numbers.
  */
-class Solution2 {
+class Solution3 {
     public int[] frequencySort(int[] nums) {
         if (nums == null) {
             throw new IllegalArgumentException("Input is null");
@@ -113,56 +170,6 @@ class Solution2 {
             for (int j = 0; j < count; j++) {
                 result[i++] = num;
             }
-        }
-
-        return result;
-    }
-}
-
-/**
- * Using Map + List + Sorting
- *
- * <pre>
- * Time Complexity:
- * 1. O(N) --> To create countMap + List
- * 2. O(N*logN) --> To sort
- * 3. O(N) --> To populate the result array.
- * 4. Total Time Complexity: O(2*N + N*logN) = O(N + N*logN)
- *
- * Space Complexity:
- * 1. O(2*M) --> Count Map
- * 2. O(N) --> List
- * 3. O(N) --> Sort
- * 3. Total Space Complexity: O(2*M + 2*N) = O(M + N)
- * </pre>
- *
- * N = Length of input array. M = Unique numbers.
- */
-class Solution3 {
-    public int[] frequencySort(int[] nums) {
-        if (nums == null) {
-            throw new IllegalArgumentException("Input is null");
-        }
-
-        int len = nums.length;
-        if (len <= 1) {
-            return Arrays.copyOf(nums, len);
-        }
-
-        Map<Integer, Integer> countMap = new HashMap<>();
-        List<Integer> list = new ArrayList<>();
-        for (int n : nums) {
-            list.add(n);
-            countMap.put(n, countMap.getOrDefault(n, 0) + 1);
-        }
-
-        Collections.sort(list,
-                (a, b) -> (countMap.get(a) != countMap.get(b) ? countMap.get(a) - countMap.get(b) : b - a));
-
-        int[] result = new int[len];
-        int i = 0;
-        for (int n : list) {
-            result[i++] = n;
         }
 
         return result;

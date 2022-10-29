@@ -19,17 +19,16 @@
 class Solution {
     public int searchInsert(int[] nums, int target) {
         if (nums == null) {
-            throw new IllegalArgumentException("Input array is null");
+            throw new IllegalArgumentException("Input nums arrays is null");
         }
-
         int len = nums.length;
-        if (len == 0 || target <= nums[0]) {
+        if (len == 0 || nums[0] >= target) {
             return 0;
         }
-        if (target == nums[len - 1]) {
+        if (nums[len - 1] == target) {
             return len - 1;
         }
-        if (target > nums[len - 1]) {
+        if (nums[len - 1] < target) {
             return len;
         }
 
@@ -38,17 +37,16 @@ class Solution {
          * len in above base conditions, we can reduce the search space to 1 -> len-1.
          */
         int start = 1;
-        int end = len - 1;
-
+        int end = nums.length - 1;
         while (start < end) {
             int mid = start + (end - start) / 2;
-            if (target == nums[mid]) {
+            if (nums[mid] == target) {
                 return mid;
             }
-            if (target < nums[mid]) {
-                end = mid;
-            } else {
+            if (nums[mid] < target) {
                 start = mid + 1;
+            } else {
+                end = mid;
             }
         }
 

@@ -11,7 +11,7 @@ import java.util.*;
  *
  * DP[i][j] = DP[i-1][j-1] + DP[i-1][j]
  *
- * Time Complexity: O(N * (N-1) / 2) = O(N^2)
+ * Time Complexity: O(N * (N+1) / 2) = O(N^2)
  *
  * Space Complexity: O(1) -> Excluding the result space.
  *
@@ -20,31 +20,29 @@ import java.util.*;
 class Solution1 {
     public List<List<Integer>> generate(int numRows) {
         if (numRows < 0) {
-            throw new IllegalArgumentException("Input numRows is invalid");
+            throw new IllegalArgumentException("numRows is invalid");
         }
 
         List<List<Integer>> result = new ArrayList<>();
-
         if (numRows == 0) {
             return result;
         }
-
-        result.add(List.of(1));
+        result.add(Arrays.asList(1));
 
         for (int i = 1; i < numRows; i++) {
-            List<Integer> list = new ArrayList<>();
-            list.add(1);
-
-            List<Integer> prevRow = result.get(i - 1);
-            for (int j = 1; j < prevRow.size(); j++) {
-                list.add(prevRow.get(j - 1) + prevRow.get(j));
-            }
-
-            list.add(1);
-            result.add(list);
+            result.add(getNextRow(result.get(i - 1)));
         }
-
         return result;
+    }
+
+    private List<Integer> getNextRow(List<Integer> row) {
+        List<Integer> nextRow = new ArrayList<>();
+        nextRow.add(1);
+        for (int i = 1; i < row.size(); i++) {
+            nextRow.add(row.get(i - 1) + row.get(i));
+        }
+        nextRow.add(1);
+        return nextRow;
     }
 }
 

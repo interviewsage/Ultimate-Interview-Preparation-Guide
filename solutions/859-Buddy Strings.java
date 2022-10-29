@@ -14,12 +14,46 @@ import java.util.*;
  *
  * Time Complexity: O(N)
  *
- * Space Complexity: O(min(N, Size of Character Set)). If Character Set = 26..
- * then it will be O(min(N, 26))
+ * Space Complexity: O(min(U, Size of Character Set)). If Character Set = 26..
+ * then it will be O(1)
  *
- * N = Length of input string.
+ * N = Length of input string. U = Unique chars in S.
  */
 class Solution {
+    public boolean buddyStrings(String s, String goal) {
+        if (s == null || goal == null) {
+            throw new IllegalArgumentException("Input strings are slower");
+        }
+        int sLen = s.length();
+        if (sLen <= 1 || sLen != goal.length()) {
+            return false;
+        }
+
+        Set<Character> foundChars = new HashSet<>();
+        Integer swapIdx = null;
+        boolean swapComplete = false;
+
+        for (int i = 0; i < sLen; i++) {
+            char sChar = s.charAt(i);
+            char goalChar = goal.charAt(i);
+            if (sChar != goalChar) {
+                if (swapIdx == null) {
+                    swapIdx = i;
+                } else if (!swapComplete && s.charAt(swapIdx) == goalChar && goal.charAt(swapIdx) == sChar) {
+                    swapComplete = true;
+                } else {
+                    return false;
+                }
+            } else if (swapIdx == null && foundChars.size() == i) {
+                foundChars.add(sChar);
+            }
+        }
+
+        return swapIdx != null ? swapComplete : foundChars.size() < sLen;
+    }
+}
+
+class Solution2 {
     public boolean buddyStrings(String s, String goal) {
         if (s == null || goal == null || s.length() != goal.length() || s.length() <= 1) {
             return false;

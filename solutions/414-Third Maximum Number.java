@@ -11,9 +11,8 @@ import java.util.*;
 class Solution1 {
     public int thirdMax(int[] nums) {
         if (nums == null || nums.length == 0) {
-            throw new IllegalArgumentException("Input is invalid");
+            throw new IllegalArgumentException("Input array is invalid");
         }
-
         int len = nums.length;
         if (len == 1) {
             return nums[0];
@@ -22,32 +21,76 @@ class Solution1 {
             return Math.max(nums[0], nums[1]);
         }
 
-        Integer firstMax = null;
+        Integer firstMax = nums[0];
         Integer secondMax = null;
         Integer thirdMax = null;
 
-        for (int n : nums) {
-            if (firstMax == null || n >= firstMax) {
-                if (firstMax != null && firstMax == n) {
+        for (int i = 1; i < len; i++) {
+            if (nums[i] >= firstMax) {
+                if (nums[i] == firstMax) {
                     continue;
                 }
                 thirdMax = secondMax;
                 secondMax = firstMax;
-                firstMax = n;
-            } else if (secondMax == null || n >= secondMax) {
-                if (secondMax != null && secondMax == n) {
+                firstMax = nums[i];
+            } else if (secondMax == null || nums[i] >= secondMax) {
+                if (secondMax != null && nums[i] == secondMax) {
                     continue;
                 }
                 thirdMax = secondMax;
-                secondMax = n;
-            } else if (thirdMax == null || n > thirdMax) {
-                thirdMax = n;
+                secondMax = nums[i];
+            } else if (thirdMax == null || nums[i] > thirdMax) {
+                thirdMax = nums[i];
             }
         }
 
         return thirdMax != null ? thirdMax : firstMax;
     }
 }
+
+class Solution {
+    public int thirdMax(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            throw new IllegalArgumentException("Input array is invalid");
+        }
+        int len = nums.length;
+        if (len == 1) {
+            return nums[0];
+        }
+        if (len == 2) {
+            return Math.max(nums[0], nums[1]);
+        }
+
+        Integer firstMax = nums[0];
+        Integer secondMax = null;
+        Integer thirdMax = null;
+
+        for (int i = 1; i < len; i++) {
+            if (nums[i] >= firstMax) {
+                if (firstMax.equals(nums[i])) {
+                    continue;
+                }
+                thirdMax = secondMax;
+                secondMax = firstMax;
+                firstMax = nums[i];
+            } else if (secondMax == null || nums[i] >= secondMax) {
+                if (secondMax != null && secondMax.equals(nums[i])) {
+                    continue;
+                }
+                thirdMax = secondMax;
+                secondMax = nums[i];
+            } else if (thirdMax == null || nums[i] > thirdMax) {
+                thirdMax = nums[i];
+            }
+        }
+
+        return thirdMax != null ? thirdMax : firstMax;
+    }
+}
+
+/**
+ * DO NOT SOLVE BELOW ANSWERS IN INTERVIEW.
+ */
 
 /**
  * Time Complexity: O(N). Where N is the number of elements.

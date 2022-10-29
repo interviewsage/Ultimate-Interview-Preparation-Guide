@@ -1,4 +1,5 @@
 // LeetCode Question URL: https://leetcode.com/problems/remove-linked-list-elements/
+// LeetCode Discuss URL:
 
 // Definition for singly-linked list.
 class ListNode {
@@ -62,8 +63,8 @@ class Solution2 {
 
         ListNode dummy = new ListNode();
         dummy.next = head;
-        ListNode cur = head;
         ListNode pre = dummy;
+        ListNode cur = head;
 
         while (cur != null) {
             if (cur.val == val) {
@@ -100,5 +101,25 @@ class Solution3 {
         }
         head.next = rightSideHead;
         return head;
+    }
+}
+
+/**
+ * Recursive Solution
+ *
+ * Time Complexity: O(N)
+ *
+ * Space Complexity: O(N)
+ *
+ * N = Length of input linked list.
+ */
+class Solution4 {
+    public ListNode removeElements(ListNode head, int val) {
+        if (head == null) {
+            return null;
+        }
+
+        head.next = removeElements(head.next, val);
+        return head.val == val ? head.next : head;
     }
 }

@@ -4,33 +4,28 @@
 /**
  * Iterate in reverse order till you find a word.
  *
- * Time Complexity: O(N) --> In worst case whole array has to be searched.
+ * Time Complexity: O(N) --> In worst case whole string has to be searched.
  *
  * Space Complexity: O(1).
  *
- * N = Length of input array.
+ * N = Length of input string.
  */
 class Solution {
     public int lengthOfLastWord(String s) {
-        if (s == null || s.length() == 0) {
-            return 0;
+        if (s == null) {
+            throw new IllegalArgumentException("Input is null");
         }
 
-        int i = s.length() - 1;
+        int idx = s.length() - 1;
         int result = 0;
 
-        while (i >= 0) {
-            if (s.charAt(i) == ' ') {
-                i--;
-                continue;
-            }
-            while (i >= 0 && s.charAt(i) != ' ') {
-                result++;
-                i--;
-            }
-            return result;
+        while (idx >= 0 && s.charAt(idx) == ' ') {
+            idx--;
         }
-
-        return 0;
+        while (idx >= 0 && s.charAt(idx) != ' ') {
+            result++;
+            idx--;
+        }
+        return result;
     }
 }

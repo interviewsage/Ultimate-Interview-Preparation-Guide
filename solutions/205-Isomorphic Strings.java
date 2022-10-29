@@ -13,31 +13,40 @@ import java.util.*;
  *
  * Space Complexity:
  * - O(1) --> This will be in case S & T are of different lengths
- * - O(3*N) = O(N) --> If S & T are of same length, say N, the code will require 3 * N space for HashMap and HashSet.
+ * - O(3*U) = O(U) --> If S & T are of same length, say N, the code will require 3 * U space for HashMap and HashSet.
+ * U = Unique chars
  * </pre>
  */
 class Solution {
     public boolean isIsomorphic(String s, String t) {
-        if (s == null || t == null || s.length() != t.length()) {
+        if (s == null || t == null) {
+            throw new IllegalArgumentException("Input strings are null");
+        }
+        int len = s.length();
+        if (len != t.length()) {
             return false;
         }
+        if (len == 0) {
+            return true;
+        }
 
-        HashMap<Character, Character> map = new HashMap<>();
-        HashSet<Character> visitedT = new HashSet<>();
-        for (int i = 0; i < s.length(); i++) {
-            char curS = s.charAt(i);
-            char curT = t.charAt(i);
+        Map<Character, Character> map = new HashMap<>();
+        Set<Character> visitedT = new HashSet<>();
 
+        for (int i = 0; i < len; i++) {
+            char sChar = s.charAt(i);
+            char tChar = t.charAt(i);
             // Finding the old character of T that maps to current character of S.
-            Character oldT = map.put(curS, curT);
+            Character matchingChar = map.get(sChar);
 
-            if (oldT == null) {
+            if (matchingChar == null) {
                 // Since the current char of S does not map to any older char of T, try adding
-                // curT to the visitedT set to verify if curT is already seen before or not.
-                if (!visitedT.add(curT)) {
+                // tChar to the visitedT set to verify if tChar is already seen before or not.
+                if (!visitedT.add(tChar)) {
                     return false;
                 }
-            } else if (!oldT.equals(curT)) {
+                map.put(sChar, tChar);
+            } else if (matchingChar != tChar) {
                 return false;
             }
         }
