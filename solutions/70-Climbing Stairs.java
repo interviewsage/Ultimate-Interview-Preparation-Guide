@@ -16,20 +16,21 @@
  */
 class Solution1 {
     public int climbStairs(int n) {
-        if (n < 0) {
-            throw new IllegalArgumentException("n in invalid");
+        if (n <= 0) {
+            throw new IllegalArgumentException("Input n is invalid");
         }
-        if (n <= 1) {
+        if (n <= 2) {
             return n;
         }
 
         int pre = 1; // n == 1
         int cur = 2; // n == 2
         for (int i = 3; i <= n; i++) {
-            int sum = cur + pre;1
+            int temp = pre + cur;
             pre = cur;
-            cur = sum;
+            cur = temp;
         }
+
         return cur;
     }
 }
