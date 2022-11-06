@@ -23,13 +23,13 @@ import java.util.*;
  */
 class Solution1 {
     public int majorityElement(int[] nums) {
-        if (nums == null || nums.length == 0) {
-            throw new IllegalArgumentException("Input array is invalid");
+        if (nums == null) {
+            throw new IllegalArgumentException("Input is array is null");
         }
 
         int len = nums.length;
-        if (len == 1) {
-            return nums[0];
+        if (len == 0) {
+            throw new NoSuchElementException("No Majority element found");
         }
 
         int candidate = nums[0];
@@ -39,7 +39,7 @@ class Solution1 {
             if (count == 0) {
                 candidate = nums[i];
                 count = 1;
-            } else if (nums[i] == candidate) {
+            } else if (candidate == nums[i]) {
                 count++;
             } else {
                 count--;
@@ -48,15 +48,14 @@ class Solution1 {
 
         count = 0;
         for (int n : nums) {
-            if (candidate == n) {
-                count++;
-                if (count > len / 2) {
+            if (n == candidate) {
+                if (++count > len / 2) {
                     return candidate;
                 }
             }
         }
 
-        throw new NoSuchElementException("Majority Element not found");
+        throw new NoSuchElementException("No Majority element found");
     }
 }
 

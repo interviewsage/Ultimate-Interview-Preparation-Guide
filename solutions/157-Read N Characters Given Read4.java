@@ -24,26 +24,23 @@ class Solution extends Reader4 {
      * @return The number of actual characters read
      */
     public int read(char[] buf, int n) {
-        if (buf == null) {
-            throw new IllegalArgumentException("Input buffer is null");
-        }
-        if (n == 0) {
-            return 0;
+        if (buf == null || n < 0 || buf.length < n) {
+            throw new IllegalArgumentException("Input is invalid");
         }
 
-        int totalRead = 0;
-        char[] buf4 = new char[4];
+        int finalCharCount = 0;
+        char[] tempBuf = new char[4];
 
-        while (totalRead < n) {
-            int read = read4(buf4);
-            for (int i = 0; i < read && totalRead < n; i++, totalRead++) {
-                buf[totalRead] = buf4[i];
+        while (finalCharCount < n) {
+            int read4CharCount = read4(tempBuf);
+            for (int i = 0; i < read4CharCount && finalCharCount < n; i++) {
+                buf[finalCharCount++] = tempBuf[i];
             }
-            if (read < 4) {
+            if (read4CharCount < 4) {
                 break;
             }
         }
 
-        return totalRead;
+        return finalCharCount;
     }
 }

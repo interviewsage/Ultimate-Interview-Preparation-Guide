@@ -8,6 +8,11 @@
  */
 
 /**
+ * Google Follow-Up:
+ * https://leetcode.com/problems/read-n-characters-given-read4-ii-call-multiple-times/discuss/188293/Google-follow-up-question.-Speed-up-the-copy.
+ */
+
+/**
  * Refer:
  * https://leetcode.com/problems/read-n-characters-given-read4-ii-call-multiple-times/discuss/49598/A-simple-Java-code
  *
@@ -17,16 +22,16 @@
  *
  * N = input n.
  */
-public class Solution extends Reader4 {
+class Solution extends Reader4 {
 
-    char[] buf4;
-    int bufferSize;
-    int bufferPointer;
+    int read4BufPointer;
+    int read4BuffSize;
+    char[] read4Buf;
 
     public Solution() {
-        buf4 = new char[4];
-        bufferSize = 0;
-        bufferPointer = 0;
+        read4BufPointer = 0;
+        read4BuffSize = 0;
+        read4Buf = new char[4];
     }
 
     /**
@@ -35,26 +40,20 @@ public class Solution extends Reader4 {
      * @return The number of actual characters read
      */
     public int read(char[] buf, int n) {
-        if (buf == null) {
-            throw new IllegalArgumentException("Input buff is null");
-        }
-        if (n == 0) {
-            return 0;
+        if (buf == null || n < 0 || buf.length < n) {
+            throw new IllegalArgumentException("Input is invalid");
         }
 
         int totalRead = 0;
-
         while (totalRead < n) {
-            if (bufferPointer == bufferSize) {
-                bufferSize = read4(buf4);
-                bufferPointer = 0;
+            if (read4BufPointer == read4BuffSize) {
+                read4BuffSize = read4(read4Buf);
+                read4BufPointer = 0;
             }
-
-            while (bufferPointer < bufferSize && totalRead < n) {
-                buf[totalRead++] = buf4[bufferPointer++];
+            while (read4BufPointer < read4BuffSize && totalRead < n) {
+                buf[totalRead++] = read4Buf[read4BufPointer++];
             }
-
-            if (bufferSize < 4) {
+            if (read4BuffSize < 4) {
                 break;
             }
         }
