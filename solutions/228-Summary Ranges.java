@@ -1,4 +1,5 @@
 // LeetCode Question URL: https://leetcode.com/problems/summary-ranges/
+// LeetCode Discuss URL:
 
 import java.util.*;
 
@@ -12,34 +13,33 @@ import java.util.*;
  */
 class Solution1 {
     public List<String> summaryRanges(int[] nums) {
+        if (nums == null) {
+            throw new IllegalArgumentException("Input array is null");
+        }
+
         List<String> result = new ArrayList<>();
-        if (nums == null || nums.length == 0) {
-            return result;
-        }
-
         int len = nums.length;
-        if (len == 1) {
-            result.add(String.valueOf(nums[0]));
-            return result;
-        }
-
         int i = 0;
+
         while (i < len) {
             int start = nums[i++];
-            while (i < len && nums[i] == nums[i - 1] + 1) {
+            // Commented condition will not work as it causes overflow
+            // while (i < len && (nums[i] - nums[i-1] <= 1)) {
+            while (i < len && (nums[i - 1] == nums[i] || nums[i - 1] + 1 == nums[i])) {
                 i++;
             }
-            int end = nums[i - 1];
-            if (start == end) {
-                result.add(String.valueOf(start));
-            } else {
-                StringBuilder sb = new StringBuilder();
-                sb.append(start).append("->").append(end);
-                result.add(sb.toString());
-            }
+
+            result.add(getRangeStr(nums, start, nums[i - 1]));
         }
 
         return result;
+    }
+
+    private String getRangeStr(int[] nums, int x, int y) {
+        if (x == y) {
+            return String.valueOf(x);
+        }
+        return new StringBuilder().append(x).append("->").append(y).toString();
     }
 }
 
@@ -61,36 +61,25 @@ class Solution1 {
  */
 class Solution2 {
     public List<String> summaryRanges(int[] nums) {
+        if (nums == null) {
+            throw new IllegalArgumentException("Input array is null");
+        }
+
         List<String> result = new ArrayList<>();
-        if (nums == null || nums.length == 0) {
-            return result;
-        }
-
         int len = nums.length;
-        if (len == 1) {
-            result.add(String.valueOf(nums[0]));
-            return result;
-        }
-
         int i = 0;
+
         while (i < len) {
-            int end = binarySearchHelper(nums, i, len - 1);
-
-            if (i == end) {
-                result.add(String.valueOf(nums[i]));
-            } else {
-                StringBuilder sb = new StringBuilder();
-                sb.append(nums[i]).append("->").append(nums[end]);
-                result.add(sb.toString());
-            }
-
+            int end = binarySearchHelper(nums, i);
+            result.add(getRangeStr(nums, nums[i], nums[end]));
             i = end + 1;
         }
 
         return result;
     }
 
-    private int binarySearchHelper(int[] nums, int start, int end) {
+    private int binarySearchHelper(int[] nums, int start) {
+        int end = nums.length - 1;
         while (start < end) {
             int mid = start + (end - start + 1) / 2;
             if (nums[mid] - nums[start] == mid - start) {
@@ -99,8 +88,14 @@ class Solution2 {
                 end = mid - 1;
             }
         }
-
         return start;
+    }
+
+    private String getRangeStr(int[] nums, int x, int y) {
+        if (x == y) {
+            return String.valueOf(x);
+        }
+        return new StringBuilder().append(x).append("->").append(y).toString();
     }
 }
 

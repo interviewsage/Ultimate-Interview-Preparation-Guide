@@ -1,7 +1,7 @@
 // LeetCode Question URL: https://leetcode.com/problems/ransom-note/
 // LeetCode Discuss URL:
 
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * Time Complexity: O(R + M)
@@ -12,36 +12,41 @@ import java.util.HashMap;
  */
 class Solution {
     public boolean canConstruct(String ransomNote, String magazine) {
-        if (ransomNote == null || magazine == null || ransomNote.length() > magazine.length()) {
-            return false;
+        if (ransomNote == null || magazine == null) {
+            throw new IllegalArgumentException("Input string is null");
         }
 
-        int ransomNoteLen = ransomNote.length();
-        if (ransomNoteLen == 0) {
+        int rLen = ransomNote.length();
+        int mLen = magazine.length();
+        if (mLen < rLen) {
+            return false;
+        }
+        if (rLen == 0) {
             return true;
         }
 
-        HashMap<Character, Integer> charCountMap = new HashMap<>();
-        for (int i = 0; i < magazine.length(); i++) {
-            char c = magazine.charAt(i);
-            charCountMap.put(c, charCountMap.getOrDefault(c, 0) + 1);
-        }
-
-        for (int i = 0; i < ransomNoteLen; i++) {
+        Map<Character, Integer> countMap = new HashMap<>();
+        for (int i = 0; i < rLen; i++) {
             char c = ransomNote.charAt(i);
+            countMap.put(c, countMap.getOrDefault(c, 0) + 1);
+        }
 
-            if (!charCountMap.containsKey(c)) {
-                return false;
+        for (int i = 0; i < mLen; i++) {
+            char c = magazine.charAt(i);
+            Integer count = countMap.get(c);
+            if (count == null) {
+                continue;
             }
-
-            int curCount = charCountMap.get(c);
-            if (curCount == 1) {
-                charCountMap.remove(c);
+            if (count == 1) {
+                if (countMap.size() == 1) {
+                    return true;
+                }
+                countMap.remove(c);
             } else {
-                charCountMap.put(c, curCount - 1);
+                countMap.put(c, count - 1);
             }
         }
 
-        return true;
+        return false;
     }
 }
