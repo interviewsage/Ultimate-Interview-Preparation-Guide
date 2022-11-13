@@ -19,37 +19,37 @@ import java.util.*;
  */
 class MyQueue {
 
-    Deque<Integer> stack1;
-    Deque<Integer> stack2;
+    Deque<Integer> inputStack;
+    Deque<Integer> outputStack;
 
     public MyQueue() {
-        stack1 = new ArrayDeque<>();
-        stack2 = new ArrayDeque<>();
+        inputStack = new ArrayDeque<>();
+        outputStack = new ArrayDeque<>();
     }
 
     public void push(int x) {
-        stack1.push(x);
+        inputStack.push(x);
     }
 
-    public int pop() {
+    public int pop() throws NoSuchElementException {
         peek();
-        return stack2.pop();
+        return outputStack.pop();
     }
 
-    public int peek() {
+    public int peek() throws NoSuchElementException {
         if (empty()) {
-            throw new NoSuchElementException("Queue is empty");
+            throw new NoSuchElementException("Queue is Empty");
         }
-        if (stack2.isEmpty()) {
-            while (!stack1.isEmpty()) {
-                stack2.push(stack1.pop());
+        if (outputStack.isEmpty()) {
+            while (!inputStack.isEmpty()) {
+                outputStack.push(inputStack.pop());
             }
         }
-        return stack2.peek();
+        return outputStack.peek();
     }
 
     public boolean empty() {
-        return stack1.isEmpty() && stack2.isEmpty();
+        return inputStack.isEmpty() && outputStack.isEmpty();
     }
 }
 
