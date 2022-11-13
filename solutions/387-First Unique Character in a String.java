@@ -17,28 +17,27 @@ import java.util.*;
  */
 class Solution1 {
     public int firstUniqChar(String s) {
-        if (s == null || s.length() == 0) {
-            return -1;
+        if (s == null) {
+            throw new IllegalArgumentException("Input string is null");
         }
 
         int len = s.length();
+        if (len == 0) {
+            return -1;
+        }
         if (len == 1) {
             return 0;
         }
 
+        Set<Character> charsSeenSoFar = new HashSet<>();
         Map<Character, Integer> nonRepeatingChars = new LinkedHashMap<>();
-        Set<Character> repeatingChars = new HashSet<>();
 
         for (int i = 0; i < len; i++) {
             char c = s.charAt(i);
-            if (repeatingChars.contains(c)) {
-                continue;
-            }
-            if (nonRepeatingChars.containsKey(c)) {
-                nonRepeatingChars.remove(c);
-                repeatingChars.add(c);
-            } else {
+            if (charsSeenSoFar.add(c)) {
                 nonRepeatingChars.put(c, i);
+            } else {
+                nonRepeatingChars.remove(c);
             }
         }
 
@@ -52,30 +51,38 @@ class Solution1 {
  * Save the count of each character and then find the first char that occurs
  * only once.
  *
- * Time Complexity: O(N)
+ * Time Complexity: O(N + U) = O(N)
  *
  * Space Complexity: O(N)
  *
- * N = Length of the input string.
+ * N = Length of the input string. U = Unique chars in the string.
  */
 class Solution2 {
     public int firstUniqChar(String s) {
-        if (s == null || s.length() == 0) {
+        if (s == null) {
+            throw new IllegalArgumentException("Input string is null");
+        }
+
+        int len = s.length();
+        if (len == 0) {
             return -1;
         }
-        if (s.length() == 1) {
+        if (len == 1) {
             return 0;
         }
 
-        HashMap<Character, Integer> map = new HashMap<>();
-
-        for (char c : s.toCharArray()) {
-            map.put(c, map.getOrDefault(c, 0) + 1);
+        Map<Character, Integer> idxMap = new LinkedHashMap<>();
+        for (int i = 0; i < len; i++) {
+            char c = s.charAt(i);
+            Integer idx = idxMap.putIfAbsent(c, i);
+            if (idx != null && idx != -1) {
+                idxMap.put(c, -1);
+            }
         }
 
-        for (int i = 0; i < s.length(); i++) {
-            if (map.get(s.charAt(i)) == 1) {
-                return i;
+        for (int idx : idxMap.values()) {
+            if (idx != -1) {
+                return idx;
             }
         }
 

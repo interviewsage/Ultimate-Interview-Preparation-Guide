@@ -9,8 +9,17 @@ class TreeNode {
     TreeNode left;
     TreeNode right;
 
+    TreeNode() {
+    }
+
     TreeNode(int x) {
         val = x;
+    }
+
+    TreeNode(int val, TreeNode left, TreeNode right) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
     }
 }
 
@@ -29,13 +38,54 @@ class Solution1 {
             return 0;
         }
 
-        // Checking if left Node is a leaf node
-        if (root.left != null && root.left.left == null && root.left.right == null) {
-            return root.left.val + sumOfLeftLeaves(root.right);
+        int leftSum = 0;
+        if (root.left != null) {
+            // Checking if left Node is a leaf node
+            if (root.left.left == null && root.left.right == null) {
+                leftSum = root.left.val;
+            } else {
+                leftSum = sumOfLeftLeaves(root.left);
+            }
         }
 
-        // Exploring the tree further.
-        return sumOfLeftLeaves(root.left) + sumOfLeftLeaves(root.right);
+        return leftSum + sumOfLeftLeaves(root.right);
+    }
+}
+
+/**
+ * DFS Iterative
+ *
+ * Time Complexity: O(N). All nodes will be visited.
+ *
+ * Space Complexity: O(H) = O(N) in worst case.
+ *
+ * N = Number of nodes. W = Width of the tree.
+ */
+class Solution2 {
+    public int sumOfLeftLeaves(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        stack.push(root);
+        int result = 0;
+
+        while (!stack.isEmpty()) {
+            TreeNode cur = stack.pop();
+            if (cur.left != null) {
+                if (cur.left.left == null && cur.left.right == null) {
+                    result += cur.left.val;
+                } else {
+                    stack.push(cur.left);
+                }
+            }
+            if (cur.right != null) {
+                stack.push(cur.right);
+            }
+        }
+
+        return result;
     }
 }
 
@@ -48,24 +98,20 @@ class Solution1 {
  *
  * N = Number of nodes. H = Height of the tree.
  */
-class Solution2 {
+class Solution3 {
     public int sumOfLeftLeaves(TreeNode root) {
-        if (root == null) {
-            return 0;
-        }
-
-        return dfsHelper(root, false);
+        return sumOfLeftLeavesHelper(root, false);
     }
 
-    private int dfsHelper(TreeNode node, boolean isLeftNode) {
+    private int sumOfLeftLeavesHelper(TreeNode node, boolean isLeftSideOfParent) {
         if (node == null) {
             return 0;
         }
         if (node.left == null && node.right == null) {
-            return isLeftNode ? node.val : 0;
+            return isLeftSideOfParent ? node.val : 0;
         }
 
-        return dfsHelper(node.left, true) + dfsHelper(node.right, false);
+        return sumOfLeftLeavesHelper(node.left, true) + sumOfLeftLeavesHelper(node.right, false);
     }
 }
 
@@ -74,11 +120,11 @@ class Solution2 {
  *
  * Time Complexity: O(N). All nodes will be visited.
  *
- * Space Complexity: O(W) = O(N) in worst case.
+ * Space Complexity: O(H) = O(N) in worst case.
  *
  * N = Number of nodes. W = Width of the tree.
  */
-class Solution3 {
+class Solution4 {
     public int sumOfLeftLeaves(TreeNode root) {
         if (root == null) {
             return 0;
@@ -104,51 +150,6 @@ class Solution3 {
             }
             if (node.left != null) {
                 stack.push(new Pair<>(node.left, true));
-            }
-        }
-
-        return result;
-    }
-}
-
-/**
- * BFS Iterative
- *
- * Time Complexity: O(N). All nodes will be visited.
- *
- * <pre>
- * Space Complexity: O(Width of the tree)
- * In case of a complete tree the width can be N/2. Thus worst case complexity = O(N)
- * </pre>
- *
- * N = Number of nodes.
- */
-class Solution4 {
-    public int sumOfLeftLeaves(TreeNode root) {
-        if (root == null) {
-            return 0;
-        }
-
-        Queue<Pair<TreeNode, Boolean>> queue = new LinkedList<>();
-        queue.offer(new Pair<>(root, false));
-
-        int result = 0;
-
-        while (!queue.isEmpty()) {
-            Pair<TreeNode, Boolean> cur = queue.poll();
-            TreeNode node = cur.getKey();
-            boolean isLeft = cur.getValue();
-
-            if (isLeft && node.left == null && node.right == null) {
-                result += node.val;
-                continue;
-            }
-
-            if (node.left != null) {
-                queue.offer(new Pair<>(node.left, true));
-            }
-            if (node.right != null) {
-                queue.offer(new Pair<>(node.right, false));
             }
         }
 
