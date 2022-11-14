@@ -20,23 +20,28 @@
 class Solution {
     public boolean searchMatrix(int[][] matrix, int target) {
         if (matrix == null) {
-            throw new IllegalArgumentException("Input is null");
+            throw new IllegalArgumentException("Input matrix is null");
         }
-        if (matrix.length == 0 || matrix[0].length == 0) {
+
+        int m = matrix.length;
+        if (m == 0) {
+            return false;
+        }
+        int n = matrix[0].length;
+        if (n == 0) {
             return false;
         }
 
-        int row = 0;
-        int col = matrix[0].length - 1;
-
-        while (row < matrix.length && col >= 0) {
-            if (matrix[row][col] == target) {
+        int i = 0;
+        int j = n - 1;
+        while (i < m && j >= 0) {
+            if (matrix[i][j] == target) {
                 return true;
             }
-            if (target < matrix[row][col]) {
-                col--;
+            if (target < matrix[i][j]) {
+                j--;
             } else {
-                row++;
+                i++;
             }
         }
 

@@ -21,11 +21,14 @@ class Solution {
         if (nums == null) {
             throw new IllegalArgumentException("Input array is null");
         }
+        int len = nums.length;
+        if (len == 0) {
+            return 0;
+        }
 
-        int maxEndingHere = nums[0];
+        int maxHere = nums[0];
         int maxSoFar = nums[0];
-
-        for (int i = 1; i < nums.length; i++) {
+        for (int i = 1; i < len; i++) {
             /**
              * <pre>
              * maxEndingHere + nums[i] --> Adding the current number to previous SubArray
@@ -34,8 +37,8 @@ class Solution {
              * maxSubArray(A, i) = maxSubArray(A, i - 1) > 0 ? maxSubArray(A, i - 1) : 0 + A[i];
              * </pre>
              */
-            maxEndingHere = Math.max(maxEndingHere + nums[i], nums[i]);
-            maxSoFar = Math.max(maxSoFar, maxEndingHere);
+            maxHere = Math.max(nums[i], maxHere + nums[i]);
+            maxSoFar = Math.max(maxSoFar, maxHere);
         }
 
         return maxSoFar;

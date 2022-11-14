@@ -13,27 +13,33 @@
 class Solution {
     public boolean searchMatrix(int[][] matrix, int target) {
         if (matrix == null) {
-            throw new IllegalArgumentException("Input is null");
+            throw new IllegalArgumentException("Input matrix is null");
         }
-        if (matrix.length == 0 || matrix[0].length == 0) {
+
+        int m = matrix.length;
+        if (m == 0) {
             return false;
         }
+        int n = matrix[0].length;
+        if (n == 0 || target < matrix[0][0] || target > matrix[m - 1][n - 1]) {
+            return false;
+        }
+        if (m == 1 && n == 1) {
+            return true;
+        }
 
-        int cols = matrix[0].length;
         int start = 0;
-        int end = matrix.length * cols - 1;
-
+        int end = m * n - 1;
         while (start <= end) {
             int mid = start + (end - start) / 2;
-            int r = mid / cols;
-            int c = mid % cols;
-            if (target == matrix[r][c]) {
+            int val = matrix[mid / n][mid % n];
+            if (val == target) {
                 return true;
             }
-            if (target < matrix[r][c]) {
-                end = mid - 1;
-            } else {
+            if (val < target) {
                 start = mid + 1;
+            } else {
+                end = mid - 1;
             }
         }
 
