@@ -2,16 +2,16 @@
 // LeetCode Discuss URL: https://leetcode.com/problems/one-edit-distance/discuss/1519249/Java-or-TC:-O(min(ST))-or-SC:-O(min(ST))-or-Optimal-One-Pass-solution
 
 /**
- * Time Complexity: O(min(S, T))
+ * Time & Space Complexity:
+ * If diff in len of S & T > 1 .. then both Time & Space complexity is O(1)
+ * If diff in len of S & T <= 1 .. then both Time & Space complexity is O(N)
  *
- * Space Complexity: O(min(S, T))
- *
- * S = Length of string s. T = Length of string t;
+ * N = Length of input string S. String T can have length from N-1 to N+1.
  */
 class Solution {
     public boolean isOneEditDistance(String s, String t) {
         if (s == null || t == null) {
-            return false;
+            throw new IllegalArgumentException("Input string is null");
         }
 
         int sLen = s.length();
@@ -36,6 +36,6 @@ class Solution {
             }
         }
 
-        return Math.abs(sLen - tLen) == 1;
+        return sLen != tLen;
     }
 }

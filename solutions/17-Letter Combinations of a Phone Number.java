@@ -9,42 +9,52 @@ import java.util.*;
  * Refer:
  * https://leetcode.com/problems/letter-combinations-of-a-phone-number/solution/
  *
- * Time Complexity: O(4^N)
+ * Time Complexity: O(4^N * N)
  *
  * T(n) = 4*T(n-1) + O(4)
  *
- * Space Complexity: O(N) -> Recursion stack space. O(4^N) for storing the
- * result.
+ * Space Complexity: O(N) -> Recursion stack space + StringBuilder. O(4^N) for
+ * storing the result.
  *
  * N = Length of input digits string.
  */
 class Solution1 {
-    private static final Map<Character, List<Character>> digitMap = Map.of('0', List.of(), '1', List.of(), '2',
-            List.of('a', 'b', 'c'), '3', List.of('d', 'e', 'f'), '4', List.of('g', 'h', 'i'), '5',
-            List.of('j', 'k', 'l'), '6', List.of('m', 'n', 'o'), '7', List.of('p', 'q', 'r', 's'), '8',
-            List.of('t', 'u', 'v'), '9', List.of('w', 'x', 'y', 'z'));
+    private static final Map<Character, List<Character>> DIGIT_MAP = Map.of(
+            '1', List.of(),
+            '2', List.of('a', 'b', 'c'),
+            '3', List.of('d', 'e', 'f'),
+            '4', List.of('g', 'h', 'i'),
+            '5', List.of('j', 'k', 'l'),
+            '6', List.of('m', 'n', 'o'),
+            '7', List.of('p', 'q', 'r', 's'),
+            '8', List.of('t', 'u', 'v'),
+            '9', List.of('w', 'x', 'y', 'z'),
+            '0', List.of());
 
     public List<String> letterCombinations(String digits) {
+        if (digits == null) {
+            throw new IllegalArgumentException("Input is null");
+        }
+
         List<String> result = new ArrayList<>();
-        if (digits == null || digits.length() == 0) {
+        if (digits.length() == 0) {
             return result;
         }
 
-        letterCombinationsHelper(digits, result, new StringBuilder());
+        dfsHelper(result, digits, 0, new StringBuilder());
         return result;
     }
 
-    private void letterCombinationsHelper(String digits, List<String> result, StringBuilder sb) {
-        int len = sb.length();
-        if (len == digits.length()) {
+    private void dfsHelper(List<String> result, String digits, int idx, StringBuilder sb) {
+        if (idx == digits.length()) {
             result.add(sb.toString());
             return;
         }
 
-        for (char c : digitMap.get(digits.charAt(len))) {
-            sb.append(c);
-            letterCombinationsHelper(digits, result, sb);
-            sb.setLength(len);
+        for (char letter : DIGIT_MAP.get(digits.charAt(idx))) {
+            sb.append(letter);
+            dfsHelper(result, digits, idx + 1, sb);
+            sb.setLength(sb.length() - 1);
         }
     }
 }
@@ -67,22 +77,34 @@ class Solution1 {
  * N = Length of input digits string.
  */
 class Solution2 {
-    private static final Map<Character, List<Character>> digitMap = Map.of('0', List.of(), '1', List.of(), '2',
-            List.of('a', 'b', 'c'), '3', List.of('d', 'e', 'f'), '4', List.of('g', 'h', 'i'), '5',
-            List.of('j', 'k', 'l'), '6', List.of('m', 'n', 'o'), '7', List.of('p', 'q', 'r', 's'), '8',
-            List.of('t', 'u', 'v'), '9', List.of('w', 'x', 'y', 'z'));
+    private static final Map<Character, List<Character>> DIGIT_MAP = Map.of(
+            '1', List.of(),
+            '2', List.of('a', 'b', 'c'),
+            '3', List.of('d', 'e', 'f'),
+            '4', List.of('g', 'h', 'i'),
+            '5', List.of('j', 'k', 'l'),
+            '6', List.of('m', 'n', 'o'),
+            '7', List.of('p', 'q', 'r', 's'),
+            '8', List.of('t', 'u', 'v'),
+            '9', List.of('w', 'x', 'y', 'z'),
+            '0', List.of());
 
     public List<String> letterCombinations(String digits) {
+        if (digits == null) {
+            throw new IllegalArgumentException("Input is null");
+        }
+
         LinkedList<String> result = new LinkedList<>();
-        if (digits == null || digits.length() == 0) {
+        int len = digits.length();
+        if (len == 0) {
             return result;
         }
 
         result.add("");
 
-        while (result.peek().length() < digits.length()) {
-            String cur = result.poll();
-            for (char c : digitMap.get(digits.charAt(cur.length()))) {
+        while (result.getFirst().length() < len) {
+            String cur = result.removeFirst();
+            for (char c : DIGIT_MAP.get(digits.charAt(cur.length()))) {
                 result.add(cur + c);
             }
         }
