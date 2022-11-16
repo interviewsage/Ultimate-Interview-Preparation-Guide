@@ -8,7 +8,7 @@
  * <pre>
  * Time Complexity:
  * Worst Case: O(N/2). If all nums are same and target is not equal to mid.
- * This will reduce to log(N) in there are no duplicates
+ * This will reduce to log(N) if there are no duplicates
  * </pre>
  *
  * Space Complexity: O(1)
@@ -17,8 +17,8 @@
  */
 class Solution1 {
     public boolean search(int[] nums, int target) {
-        if (nums == null || nums.length == 0) {
-            return false;
+        if (nums == null) {
+            throw new IllegalArgumentException("Input array is null");
         }
 
         int start = 0;
@@ -30,21 +30,23 @@ class Solution1 {
                 return true;
             }
 
-            while (start < mid && nums[start] == nums[mid] && nums[end] == nums[mid]) {
-                start++;
-                end--;
+            if (nums[start] == nums[mid] && nums[mid] == nums[end]) {
+                while (start < end && nums[start] == nums[end]) {
+                    start++;
+                    end--;
+                }
             }
 
             if (nums[start] <= nums[mid]) {
                 // Left side is sorted. Right side is unsorted.
-                if (target >= nums[start] && target < nums[mid]) {
+                if (nums[start] <= target && target < nums[mid]) {
                     end = mid - 1;
                 } else {
                     start = mid + 1;
                 }
             } else {
                 // Left side is unsorted. Right side is sorted.
-                if (target > nums[mid] && target <= nums[end]) {
+                if (nums[mid] < target && target <= nums[end]) {
                     start = mid + 1;
                 } else {
                     end = mid - 1;
@@ -62,7 +64,7 @@ class Solution1 {
  *
  * <pre>
  * Time Complexity:
- * Worst Case: O(N). If all nums are same and target is not equal to mid.
+ * Worst Case: O(N/2). If all nums are same and target is not equal to mid.
  * This will reduce to log(N) in there are no duplicates
  * </pre>
  *
@@ -72,8 +74,8 @@ class Solution1 {
  */
 class Solution2 {
     public boolean search(int[] nums, int target) {
-        if (nums == null || nums.length == 0) {
-            return false;
+        if (nums == null) {
+            throw new IllegalArgumentException("Input array is null");
         }
 
         int start = 0;

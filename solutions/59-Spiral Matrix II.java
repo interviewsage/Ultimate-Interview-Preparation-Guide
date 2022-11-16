@@ -2,13 +2,67 @@
 // LeetCode Discuss URL: https://leetcode.com/problems/spiral-matrix-ii/discuss/1511479/Java-or-TC:-O(N2)-or-SC:-O(1)-or-Multiple-optimized-ways-to-solve-this-question
 
 /**
- * Using Switch-Case: Traverse Right -> Down -> Left -> Up
+ * Traverse Right -> Down -> Left -> Up
  *
  * Time Complexity: O(N^2)
  *
  * Space Complexity: O(1) excluding the result space.
  */
 class Solution1 {
+    public int[][] generateMatrix(int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException("Input is invalid");
+        }
+
+        int[][] result = new int[n][n];
+        if (n == 0) {
+            return result;
+        }
+
+        int rowTop = 0;
+        int rowBottom = n - 1;
+        int colLeft = 0;
+        int colRight = n - 1;
+        int num = 1;
+
+        while (rowTop <= rowBottom && colLeft <= colRight) {
+            for (int i = colLeft; i <= colRight; i++) {
+                result[rowTop][i] = num++;
+            }
+            rowTop++;
+
+            for (int i = rowTop; i <= rowBottom; i++) {
+                result[i][colRight] = num++;
+            }
+            colRight--;
+
+            if (rowTop <= rowBottom) {
+                for (int i = colRight; i >= colLeft; i--) {
+                    result[rowBottom][i] = num++;
+                }
+                rowBottom--;
+            }
+
+            if (colLeft <= colRight) {
+                for (int i = rowBottom; i >= rowTop; i--) {
+                    result[i][colLeft] = num++;
+                }
+                colLeft++;
+            }
+        }
+
+        return result;
+    }
+}
+
+/**
+ * Using Switch-Case: Traverse Right -> Down -> Left -> Up
+ *
+ * Time Complexity: O(N^2)
+ *
+ * Space Complexity: O(1) excluding the result space.
+ */
+class Solution2 {
     public int[][] generateMatrix(int n) {
         if (n < 0) {
             throw new IllegalArgumentException("Invalid input");
@@ -53,61 +107,6 @@ class Solution1 {
                     left++;
             }
             dir = (dir + 1) % 4;
-        }
-
-        return result;
-    }
-}
-
-/**
- * Traverse Right -> Down -> Left -> Up
- *
- * Time Complexity: O(N^2)
- *
- * Space Complexity: O(1) excluding the result space.
- */
-class Solution2 {
-    public int[][] generateMatrix(int n) {
-        if (n < 0) {
-            throw new IllegalArgumentException("Invalid input");
-        }
-
-        int[][] result = new int[n][n];
-        if (n == 0) {
-            return result;
-        }
-
-        int rowBegin = 0;
-        int rowEnd = n - 1;
-        int colBegin = 0;
-        int colEnd = n - 1;
-        int num = 1;
-
-        while (rowBegin <= rowEnd && colBegin <= colEnd) {
-            // Traverse Right
-            for (int i = colBegin; i <= colEnd; i++) {
-                result[rowBegin][i] = num++;
-            }
-            rowBegin++;
-            // Traverse Down
-            for (int i = rowBegin; i <= rowEnd; i++) {
-                result[i][colEnd] = num++;
-            }
-            colEnd--;
-            // Traverse Left
-            if (rowBegin <= rowEnd) {
-                for (int i = colEnd; i >= colBegin; i--) {
-                    result[rowEnd][i] = num++;
-                }
-                rowEnd--;
-            }
-            // Traverse Up
-            if (colBegin <= colEnd) {
-                for (int i = rowEnd; i >= rowBegin; i--) {
-                    result[i][colBegin] = num++;
-                }
-                colBegin++;
-            }
         }
 
         return result;

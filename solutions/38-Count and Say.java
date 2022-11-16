@@ -28,32 +28,28 @@
 class Solution1 {
     public String countAndSay(int n) {
         if (n <= 0) {
-            throw new IllegalArgumentException("Invalid input");
+            throw new IllegalArgumentException("Input is invalid");
         }
 
         StringBuilder sb = new StringBuilder("1");
-        for (int i = 2; i <= n; i++) {
-            sb = getNextState(sb);
-        }
-        return sb.toString();
-    }
 
-    private StringBuilder getNextState(StringBuilder curSb) {
-        StringBuilder nextSb = new StringBuilder();
-        int len = curSb.length();
-        int i = 0;
-
-        while (i < len) {
-            char c = curSb.charAt(i++);
-            int count = 1;
-            while (i < len && c == curSb.charAt(i)) {
-                count++;
-                i++;
+        while (--n > 0) {
+            StringBuilder next = new StringBuilder();
+            int sbLen = sb.length();
+            int idx = 0;
+            while (idx < sbLen) {
+                char d = sb.charAt(idx++);
+                int count = 1;
+                while (idx < sbLen && d == sb.charAt(idx)) {
+                    count++;
+                    idx++;
+                }
+                next.append(count).append(d);
             }
-            nextSb.append(count).append(c);
+            sb = next;
         }
 
-        return nextSb;
+        return sb.toString();
     }
 }
 

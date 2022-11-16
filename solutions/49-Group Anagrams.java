@@ -23,35 +23,43 @@ import java.util.*;
  */
 class Solution1 {
     public List<List<String>> groupAnagrams(String[] strs) {
+        if (strs == null) {
+            throw new IllegalArgumentException("Input array is null");
+        }
+
         List<List<String>> result = new ArrayList<>();
-        if (strs == null || strs.length == 0) {
+        int len = strs.length;
+        if (len == 0) {
             return result;
         }
-        if (strs.length == 1) {
-            result.add(Arrays.asList(strs));
+        if (len == 1) {
+            result.add(Arrays.asList(strs[0]));
             return result;
         }
 
-        HashMap<String, List<String>> groups = new HashMap<>();
+        Map<String, List<String>> groups = new HashMap<>();
         for (String s : strs) {
             String signature = getSignature(s);
             groups.putIfAbsent(signature, new ArrayList<>());
             groups.get(signature).add(s);
         }
 
-        return new ArrayList<>(groups.values());
+        result.addAll(groups.values());
+        return result;
     }
 
     private String getSignature(String s) {
-        int[] count = new int[26];
+        int[] charCount = new int[26];
         for (int i = 0; i < s.length(); i++) {
-            count[s.charAt(i) - 'a']++;
+            charCount[s.charAt(i) - 'a']++;
         }
 
+        // Use a HashMap and then put the keySet in a TreeSet if characters-set is
+        // big or un-defined.
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 26; i++) {
-            if (count[i] != 0) {
-                sb.append((char) ('a' + i)).append(count[i]);
+            if (charCount[i] != 0) {
+                sb.append((char) ('a' + i)).append(charCount[i]);
             }
         }
         return sb.toString();
