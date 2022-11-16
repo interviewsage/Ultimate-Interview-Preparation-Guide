@@ -111,3 +111,59 @@ class Solution2 {
         return false;
     }
 }
+
+/**
+ * Follow-Up: Find the target value at the correct leftmost rotated index
+ *
+ * Refer:
+ * https://leetcode.com/problems/find-minimum-in-rotated-sorted-array-ii/discuss/48808/My-pretty-simple-code-to-solve-it/48840
+ *
+ * Time Complexity: O(N)
+ *
+ * Space Complexity: O(1)
+ *
+ * N = Length of the input array.
+ */
+class Solution3 {
+    public boolean search(int[] nums, int target) {
+        if (nums == null) {
+            throw new IllegalArgumentException("Input array is null");
+        }
+
+        int start = 0;
+        int end = nums.length - 1;
+
+        while (start < end) {
+            int mid = start + (end - start) / 2;
+
+            if (nums[start] < nums[mid]) {
+                // Left side is sorted. Right side is unsorted.
+                if (nums[start] <= target && target <= nums[mid]) {
+                    end = mid;
+                } else {
+                    start = mid + 1;
+                }
+            } else if (nums[mid] < nums[end]) {
+                // Left side is unsorted. Right side is sorted.
+                if (nums[mid] < target && target <= nums[end]) {
+                    start = mid + 1;
+                } else {
+                    end = mid;
+                }
+            } else {
+                // nums[start] >= nums[mid] && nums[mid] >= nums[end]
+                // 5 ... 4 ... 4
+                // 5 ... 5 ... 5
+                // 5 ... 5 ... 4
+                if (nums[end] == target && nums[end - 1] > nums[end]) {
+                    System.out.println(end);
+                    return true;
+                }
+                end--;
+            }
+        }
+
+        System.out.println(start);
+        return nums[start] == target;
+    }
+}

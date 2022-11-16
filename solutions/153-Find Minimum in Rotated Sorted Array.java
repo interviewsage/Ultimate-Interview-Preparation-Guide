@@ -24,6 +24,29 @@
  */
 class Solution {
     public int findMin(int[] nums) {
+        if (nums == null) {
+            throw new IllegalArgumentException("Input array is null");
+        }
+
+        int start = 0;
+        int end = nums.length - 1;
+
+        while (start < end && nums[start] > nums[end]) {
+            int mid = start + (end - start) / 2;
+            if (nums[start] <= nums[mid]) {
+                start = mid + 1;
+            } else {
+                end = mid;
+                start++;
+            }
+        }
+
+        return nums[start];
+    }
+}
+
+class Solution2 {
+    public int findMin(int[] nums) {
         if (nums == null || nums.length == 0) {
             throw new IllegalArgumentException("Input is invalid");
         }
@@ -47,6 +70,7 @@ class Solution {
             int mid = start + (end - start) / 2;
 
             // This is better check
+            // DON'T KNOW WHY. ALSO, IS IT BETTER?
             if (nums[mid] <= nums[end]) {
                 end = mid;
             } else {
