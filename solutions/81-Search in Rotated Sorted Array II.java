@@ -156,14 +156,12 @@ class Solution3 {
                 // 5 ... 5 ... 5
                 // 5 ... 5 ... 4
                 if (nums[end] == target && nums[end - 1] > nums[end]) {
-                    System.out.println(end);
                     return true;
                 }
                 end--;
             }
         }
 
-        System.out.println(start);
         return nums[start] == target;
     }
 }

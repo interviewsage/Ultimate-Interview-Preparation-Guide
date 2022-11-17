@@ -23,12 +23,11 @@ import java.util.*;
 class Solution1 {
     public boolean isValidSudoku(char[][] board) {
         if (board == null || board.length != 9 || board[0].length != 9) {
-            throw new IllegalArgumentException("Input is invalid");
+            throw new IllegalArgumentException("Input board is invalid");
         }
 
-        int rowColBox = 0;
-
         for (int i = 0; i < 9; i++) { // Index of row, column and box
+            int rowColBox = 0;
             for (int j = 0; j < 9; j++) {
                 // Check ith row
                 rowColBox = validateAndAddCell(board[i][j], 0, rowColBox);
@@ -44,27 +43,26 @@ class Solution1 {
 
                 // Check ith box
                 int boxRow = 3 * (i / 3) + (j / 3);
-                int colRow = 3 * (i % 3) + (j % 3);
-                rowColBox = validateAndAddCell(board[boxRow][colRow], 2, rowColBox);
+                int boxCol = 3 * (i % 3) + (j % 3);
+                rowColBox = validateAndAddCell(board[boxRow][boxCol], 2, rowColBox);
                 if (rowColBox == -1) {
                     return false;
                 }
             }
-            rowColBox = 0;
         }
 
         return true;
     }
 
-    private int validateAndAddCell(char c, int type, int rowColBox) {
-        if (c == '.') {
+    private int validateAndAddCell(char cell, int type, int rowColBox) {
+        if (cell == '.') {
             return rowColBox;
         }
-        if (c < '1' || c > '9') {
+        if (cell < '1' || cell > '9') {
             return -1;
         }
 
-        int bitIdx = type * 9 + (c - '1');
+        int bitIdx = 9 * type + (cell - '1');
         if (((rowColBox >> bitIdx) & 1) == 1) {
             return -1;
         }

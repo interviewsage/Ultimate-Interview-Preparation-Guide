@@ -17,7 +17,7 @@ import java.util.*;
 class Solution1 {
     public void solveSudoku(char[][] board) {
         if (board == null || board.length != 9 || board[0].length != 9) {
-            throw new IllegalArgumentException("Input is invalid");
+            throw new IllegalArgumentException("Input board is invalid");
         }
 
         int[] rows = new int[9];
@@ -25,37 +25,36 @@ class Solution1 {
         int[] boxes = new int[9];
         List<int[]> blanks = new ArrayList<>();
 
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                char c = board[i][j];
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
+                char cell = board[r][c];
                 // To Blanks List
-                if (c == '.') {
-                    blanks.add(new int[] { i, j });
+                if (cell == '.') {
+                    blanks.add(new int[] { r, c });
                     continue;
                 }
-
                 // Check for Invalid Chars
-                if (c < '1' || c > '9') {
-                    throw new IllegalArgumentException("Invalid sudoku board");
+                if (cell < '1' || cell > '9') {
+                    throw new IllegalArgumentException("Input board is invalid");
                 }
 
-                int b = 3 * (i / 3) + (j / 3);
-                int mask = 1 << (c - '1');
+                int b = 3 * (r / 3) + (c / 3);
+                int mask = 1 << (cell - '1');
 
                 // Check for unsolvable board
-                if (((rows[i] & mask) != 0) || ((cols[j] & mask) != 0) || ((boxes[b] & mask) != 0)) {
-                    throw new IllegalArgumentException("Invalid sudoku board");
+                if ((rows[r] & mask) != 0 || (cols[c] & mask) != 0 || (boxes[b] & mask) != 0) {
+                    throw new IllegalArgumentException("Input board is invalid");
                 }
 
                 // Add the cell to rows, cols and boxes.
-                rows[i] |= mask;
-                cols[j] |= mask;
+                rows[r] |= mask;
+                cols[c] |= mask;
                 boxes[b] |= mask;
             }
         }
 
         if (!solveSudokuHelper(board, rows, cols, boxes, blanks, 0)) {
-            throw new RuntimeException("Input sudoku does not have a valid solution");
+            throw new IllegalArgumentException("Input board does not have a valid solution");
         }
     }
 
@@ -66,33 +65,33 @@ class Solution1 {
         }
 
         int[] cell = blanks.get(idx);
-        int i = cell[0];
-        int j = cell[1];
-        int b = 3 * (i / 3) + (j / 3);
+        int r = cell[0];
+        int c = cell[1];
+        int b = 3 * (r / 3) + (c / 3);
 
-        for (char c = '1'; c <= '9'; c++) {
-            int mask = 1 << (c - '1');
-
+        for (char d = '1'; d <= '9'; d++) {
+            int mask = 1 << (d - '1');
             // Check if the number already used in row, column and sub-box.
-            if (((rows[i] & mask) != 0) || ((cols[j] & mask) != 0) || ((boxes[b] & mask) != 0)) {
+            if ((rows[r] & mask) != 0 || (cols[c] & mask) != 0 || (boxes[b] & mask) != 0) {
                 continue;
             }
 
             // Add the cell to rows, cols and boxes.
-            rows[i] |= mask;
-            cols[j] |= mask;
+            rows[r] |= mask;
+            cols[c] |= mask;
             boxes[b] |= mask;
-            board[i][j] = c;
+            board[r][c] = d;
 
             if (solveSudokuHelper(board, rows, cols, boxes, blanks, idx + 1)) {
                 return true;
             }
 
             // Backtrack
-            // Remove the cell to rows, cols and boxes.
-            rows[i] &= ~mask;
-            cols[j] &= ~mask;
+            // Remove the cell from rows, cols and boxes.
+            rows[r] &= ~mask;
+            cols[c] &= ~mask;
             boxes[b] &= ~mask;
+            board[r][c] = '.';
         }
 
         return false;
