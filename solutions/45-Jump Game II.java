@@ -22,36 +22,37 @@
 class Solution {
     public int jump(int[] nums) {
         if (nums == null || nums.length == 0) {
-            return -1;
+            throw new IllegalArgumentException("Input invalid");
         }
 
         int len = nums.length;
         if (len == 1) {
             return 0;
         }
-        if (nums[0] >= len - 1) {
+        // `reach` tells the maximum index we can reach so far.
+        int reach = nums[0];
+        if (reach >= len - 1) {
             return 1;
         }
-        if (len > 1 && nums[0] == 0) {
+        if (len > 1 && reach == 0) {
             // Since first element is zero, we cannot reach the end.
             return -1;
         }
 
-        int i = 1;
-        int range = nums[0];
         int jumps = 1;
+        int i = 1;
 
-        while (i <= range) {
+        while (i <= reach) {
             jumps++; // Now we are going to take this jump in the below while loop
-            int newRange = range;
-            while (i <= range) {
-                newRange = Math.max(newRange, i + nums[i]);
-                if (newRange >= len - 1) {
+            int newReach = reach;
+            while (i <= reach) {
+                newReach = Math.max(newReach, i + nums[i]);
+                if (newReach >= len - 1) {
                     return jumps;
                 }
                 i++;
             }
-            range = newRange;
+            reach = newReach;
         }
 
         return -1;

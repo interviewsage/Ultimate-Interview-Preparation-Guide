@@ -15,58 +15,53 @@
  */
 class Solution {
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
-        if (nums1 == null || nums2 == null) {
-            throw new IllegalArgumentException("Input arrays are null");
+        if (nums1 == null || nums2 == null || (nums1.length == 0 && nums2.length == 0)) {
+            throw new IllegalArgumentException("Input arrays are null or empty");
         }
 
-        int len1 = nums1.length;
-        int len2 = nums2.length;
-
-        if (len1 == 0 && len2 == 0) {
-            throw new IllegalArgumentException("Both Input arrays are empty");
-        }
-        // Below 2 if conditions are not required as the binary search it self will find
-        // the result in O(1) if either length is zero.
-        // if (len1 == 0) {
-        // return findMedian(nums2);
-        // }
-        // if (len2 == 0) {
-        // return findMedian(nums1);
-        // }
-
-        if (len1 > len2) {
+        int l1 = nums1.length;
+        int l2 = nums2.length;
+        if (l1 > l2) {
             return findMedianSortedArrays(nums2, nums1);
         }
+        // Below if conditions is not required as the binary search it self will find
+        // the result in O(1) if either length is zero.
+        // if (l1 == 0) {
+        // return findMedian(nums2);
+        // }
 
         int start = 0;
-        int end = len1;
+        int end = l1;
+
         while (start <= end) {
             int i = start + (end - start) / 2;
-            int j = (len1 + len2 + 1) / 2 - i;
+            int j = (l1 + l2 + 1) / 2 - i;
 
-            if (i > 0 && j < len2 && nums1[i - 1] > nums2[j]) {
+            if (i > 0 && j < l2 && nums1[i - 1] > nums2[j]) {
                 end = i - 1;
-            } else if (i < len1 && j > 0 && nums2[j - 1] > nums1[i]) {
+            } else if (i < l1 && j > 0 && nums2[j - 1] > nums1[i]) {
                 start = i + 1;
             } else {
-                int maxLeft = Integer.MIN_VALUE;
-                if (i > 0) {
-                    maxLeft = Math.max(maxLeft, nums1[i - 1]);
-                }
-                if (j > 0) {
-                    maxLeft = Math.max(maxLeft, nums2[j - 1]);
+                int maxLeft;
+                if (i == 0) {
+                    maxLeft = nums2[j - 1];
+                } else if (j == 0) {
+                    maxLeft = nums1[i - 1];
+                } else {
+                    maxLeft = Math.max(nums1[i - 1], nums2[j - 1]);
                 }
 
-                if ((len1 + len2) % 2 == 1) {
+                if ((l1 + l2) % 2 != 0) {
                     return maxLeft;
                 }
 
-                int minRight = Integer.MAX_VALUE;
-                if (i < len1) {
-                    minRight = Math.min(minRight, nums1[i]);
-                }
-                if (j < len2) {
-                    minRight = Math.min(minRight, nums2[j]);
+                int minRight;
+                if (i == l1) {
+                    minRight = nums2[j];
+                } else if (j == l2) {
+                    minRight = nums1[i];
+                } else {
+                    minRight = Math.min(nums1[i], nums2[j]);
                 }
 
                 return (maxLeft + minRight) / 2.0;

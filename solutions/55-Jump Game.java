@@ -15,6 +15,33 @@
 class Solution {
     public boolean canJump(int[] nums) {
         if (nums == null || nums.length == 0) {
+            throw new IllegalArgumentException("Input is invalid");
+        }
+
+        int len = nums.length;
+        // `reach` tells the maximum index we can reach so far.
+        int reach = nums[0];
+        if (reach >= len - 1) {
+            return true;
+        }
+        if (len > 1 && reach == 0) {
+            // Since first element is zero, we cannot reach the end.
+            return false;
+        }
+
+        int i = 1;
+        while (i <= reach && reach < len - 1) {
+            reach = Math.max(reach, i + nums[i]);
+            i++;
+        }
+
+        return reach >= len - 1;
+    }
+}
+
+class Solution2 {
+    public boolean canJump(int[] nums) {
+        if (nums == null || nums.length == 0) {
             return false;
         }
 

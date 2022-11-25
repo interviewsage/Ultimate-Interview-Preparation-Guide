@@ -14,33 +14,42 @@
  */
 class Solution {
     public int minCostII(int[][] costs) {
-        if (costs == null || costs.length == 0 || costs[0].length == 0) {
+        if (costs == null) {
+            throw new IllegalArgumentException("Input array is null");
+        }
+
+        int len = costs.length;
+        if (len == 0) {
             return 0;
+        }
+        int k = costs[0].length;
+        if (k <= 1) {
+            throw new IllegalArgumentException("Invalid Input");
         }
 
         int minCost = 0;
         int minCostColor = -1;
         int secondMinCost = 0;
 
-        for (int i = 0; i < costs.length; i++) {
-            int newMinCost = Integer.MAX_VALUE;
-            int newMinCostColor = -1;
-            int newSecondMinCost = Integer.MAX_VALUE;
+        for (int[] cost : costs) {
+            Integer curMinCost = null;
+            int curMinCostColor = -1;
+            Integer curSecondMinCost = null;
 
-            for (int j = 0; j < costs[i].length; j++) {
-                int curCost = costs[i][j] + (minCostColor == j ? secondMinCost : minCost);
-                if (curCost < newMinCost) {
-                    newSecondMinCost = newMinCost;
-                    newMinCost = curCost;
-                    newMinCostColor = j;
-                } else if (curCost < newSecondMinCost) {
-                    newSecondMinCost = curCost;
+            for (int i = 0; i < k; i++) {
+                int c = cost[i] + (i != minCostColor ? minCost : secondMinCost);
+                if (curMinCost == null || c < curMinCost) {
+                    curSecondMinCost = curMinCost;
+                    curMinCostColor = i;
+                    curMinCost = c;
+                } else if (curSecondMinCost == null || c < curSecondMinCost) {
+                    curSecondMinCost = c;
                 }
             }
 
-            minCost = newMinCost;
-            minCostColor = newMinCostColor;
-            secondMinCost = newSecondMinCost;
+            minCost = curMinCost;
+            minCostColor = curMinCostColor;
+            secondMinCost = curSecondMinCost;
         }
 
         return minCost;

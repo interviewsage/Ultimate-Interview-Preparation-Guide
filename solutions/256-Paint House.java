@@ -10,6 +10,34 @@
  */
 class Solution {
     public int minCost(int[][] costs) {
+        if (costs == null) {
+            throw new IllegalArgumentException("Input array is null");
+        }
+
+        int len = costs.length;
+        if (len == 0) {
+            return 0;
+        }
+
+        int minCostRed = costs[0][0];
+        int minCostBlue = costs[0][1];
+        int minCostGreen = costs[0][2];
+
+        for (int i = 1; i < len; i++) {
+            int curCostRed = costs[i][0] + Math.min(minCostBlue, minCostGreen);
+            int curCostBlue = costs[i][1] + Math.min(minCostRed, minCostGreen);
+            int curCostGreen = costs[i][2] + Math.min(minCostRed, minCostBlue);
+            minCostRed = curCostRed;
+            minCostBlue = curCostBlue;
+            minCostGreen = curCostGreen;
+        }
+
+        return Math.min(minCostRed, Math.min(minCostBlue, minCostGreen));
+    }
+}
+
+class Solution2 {
+    public int minCost(int[][] costs) {
         if (costs == null || costs.length == 0) {
             return 0;
         }
@@ -28,7 +56,7 @@ class Solution {
     }
 }
 
-class Solution2 {
+class Solution3 {
     public int minCost(int[][] costs) {
         if (costs == null || costs.length == 0) {
             return 0;

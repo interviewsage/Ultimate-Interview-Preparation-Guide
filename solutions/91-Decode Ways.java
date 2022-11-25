@@ -20,6 +20,39 @@ class Solution {
         if (s == null) {
             throw new IllegalArgumentException("Input string is null");
         }
+
+        int len = s.length();
+        if (len == 0 || s.charAt(0) == '0') {
+            return 0;
+        }
+
+        int pre = 1; // dp[i-2]
+        int cur = 1; // dp[i-1]
+        char preChar = s.charAt(0);
+        for (int i = 1; i < len; i++) {
+            int ways = 0; // dp[i]
+            char curChar = s.charAt(i);
+            if (curChar != '0') {
+                ways = cur;
+            }
+            if (preChar == '1' || (preChar == '2' && curChar <= '6')) {
+                ways += pre;
+            }
+
+            pre = cur;
+            cur = ways;
+            preChar = curChar;
+        }
+
+        return cur;
+    }
+}
+
+class Solution2 {
+    public int numDecodings(String s) {
+        if (s == null) {
+            throw new IllegalArgumentException("Input string is null");
+        }
         if (s.length() == 0 || s.charAt(0) == '0') {
             return 0;
         }
