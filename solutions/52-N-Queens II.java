@@ -14,24 +14,64 @@ import java.util.*;
  * T(N-3) = (N-3) * T(N-4) + O(N)
  * ...
  * T(2) = 2 * T(1) + O(N)
- * T(1) = O(1)
+ * T(1) = O(N)
  * Thus total number of permutations
- *      = N * (P(N,0) + P(N,1) + ... + P(N, N-2)) + P(N,N-1)
- *      = N * (e * N! - P(N,N-1) - P(N,N)) + N!
- *      = ((e-2)*N + 1) * N! = (0.718 * N + 1) * N!
+ *      = N * (P(N,0) + P(N,1) + ... + P(N, N-2) + P(N,N-1))
+ *      = N * (e * N! - P(N,N))
+ *      = (e-1) * N * N! = 1.718 * N * N!
  *
  * Total Time Complexity = O(N * N!)
  *
  * Space Complexity:
  * -> O(N) for recursion depth
- * -> O(1) for occupied BitSet
+ * -> O(5*N-2) bits for boolean arrays
  *
  * Total Space Complexity = O(N)
  * </pre>
  *
  * N = Input board size.
  */
-class Solution {
+class Solution1 {
+    public int totalNQueens(int n) {
+        if (n <= 0) {
+            throw new IllegalArgumentException("Input board size is invalid");
+        }
+
+        return solveNQueensHelper(new int[n], new boolean[n], new boolean[2 * n - 1], new boolean[2 * n - 1], 0);
+    }
+
+    private int solveNQueensHelper(int[] queensPos, boolean[] cols, boolean[] diag45, boolean[] diag135, int row) {
+        int n = queensPos.length;
+        if (row == n) {
+            return 1;
+        }
+
+        int solutionCount = 0;
+
+        for (int col = 0; col < n; col++) {
+            int d45 = row + col;
+            int d135 = n - 1 + row - col;
+            if (cols[col] || diag45[d45] || diag135[d135]) {
+                continue;
+            }
+
+            cols[col] = true;
+            diag45[d45] = true;
+            diag135[d135] = true;
+            queensPos[row] = col;
+
+            solutionCount += solveNQueensHelper(queensPos, cols, diag45, diag135, row + 1);
+
+            cols[col] = false;
+            diag45[d45] = false;
+            diag135[d135] = false;
+        }
+
+        return solutionCount;
+    }
+}
+
+class Solution2 {
     public int totalNQueens(int n) {
         if (n <= 0) {
             return 0;
@@ -74,7 +114,7 @@ class Solution {
     }
 }
 
-class Solution1 {
+class Solution3 {
     public int totalNQueens(int n) {
         if (n < 2) {
             return n;
