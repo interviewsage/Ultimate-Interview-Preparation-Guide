@@ -21,37 +21,50 @@ class Solution {
     private static final int[][] DIRS = { { 0, 1 }, { 1, 0 }, { -1, 0 }, { 0, -1 } };
 
     public void wallsAndGates(int[][] rooms) {
-        if (rooms == null || rooms.length == 0 || rooms[0].length == 0) {
-            return;
+        if (rooms == null) {
+            throw new IllegalArgumentException("Input rooms grid is null");
         }
 
         int rows = rooms.length;
+        if (rows == 0) {
+            return;
+        }
         int cols = rooms[0].length;
-        int emptyRoomCount = 0;
-        Queue<int[]> queue = new LinkedList<>();
+        if (cols == 0) {
+            return;
+        }
 
+        Deque<int[]> queue = new ArrayDeque<>();
+        int emptyRooms = 0;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 if (rooms[i][j] == 0) {
                     queue.offer(new int[] { i, j });
                 } else if (rooms[i][j] == Integer.MAX_VALUE) {
-                    emptyRoomCount++;
+                    emptyRooms++;
                 }
             }
         }
-        if (emptyRoomCount == 0) {
+
+        if (emptyRooms == 0) {
             return;
         }
+
+        int dist = 0;
         while (!queue.isEmpty()) {
-            int[] cur = queue.poll();
-            for (int[] d : DIRS) {
-                int x = cur[0] + d[0];
-                int y = cur[1] + d[1];
-                if (x < 0 || x >= rows || y < 0 || y >= cols || rooms[x][y] != Integer.MAX_VALUE) {
-                    continue;
+            int levelSize = queue.size();
+            dist++;
+            for (int i = 0; i < levelSize; i++) {
+                int[] cur = queue.poll();
+                for (int[] d : DIRS) {
+                    int x = cur[0] + d[0];
+                    int y = cur[1] + d[1];
+
+                    if (x >= 0 && x < rows && y >= 0 && y < cols && rooms[x][y] == Integer.MAX_VALUE) {
+                        rooms[x][y] = dist;
+                        queue.offer(new int[] { x, y });
+                    }
                 }
-                rooms[x][y] = rooms[cur[0]][cur[1]] + 1;
-                queue.offer(new int[] { x, y });
             }
         }
     }
@@ -62,7 +75,7 @@ class Solution {
  *
  * DFS
  *
- * Time Complexity: ???? Is it O(R * C)??
+ * Time Complexity: ???? Is it O(Number of Gates * R * C)??
  *
  * Space Complexity: O(R * C) --> Recursion stack size.
  *
