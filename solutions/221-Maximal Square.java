@@ -28,11 +28,109 @@
  *
  * Time Complexity: O(R * C)
  *
+ * Space Complexity: O(C)
+ *
+ * R = Number of rows. C = Number of columns.
+ */
+class Solution1 {
+    public int maximalSquare(char[][] matrix) {
+        if (matrix == null) {
+            throw new IllegalArgumentException("Input matrix is null");
+        }
+
+        int rows = matrix.length;
+        if (rows == 0) {
+            return 0;
+        }
+        int cols = matrix[0].length;
+        if (cols == 0) {
+            return 0;
+        }
+
+        int[] dp = new int[cols + 1];
+        int maxSquareSide = 0;
+
+        for (int i = 1; i <= rows; i++) {
+            int pre = 0;
+            for (int j = 1; j <= cols; j++) {
+                int cur = dp[j];
+                if (matrix[i - 1][j - 1] == '0') {
+                    dp[j] = 0;
+                } else {
+                    dp[j] = Math.min(pre, Math.min(cur, dp[j - 1])) + 1;
+                    maxSquareSide = Math.max(maxSquareSide, dp[j]);
+                }
+                pre = cur;
+            }
+        }
+
+        return maxSquareSide * maxSquareSide;
+    }
+}
+
+/**
+ * Dynamic Programming
+ *
+ * Refer: 1)
+ * https://leetcode.com/problems/maximal-square/discuss/61803/C++-space-optimized-DP
+ * 2)
+ * https://leetcode.com/problems/maximal-square/discuss/61803/C++-space-optimized-DP/63371
+ *
+ * DP[i][j] = Maximal size (square = size*size) of the square that can be formed
+ * ending at point (i,j).
+ *
+ * Time Complexity: O(R * C)
+ *
  * Space Complexity: O(min(R, C))
  *
  * R = Number of rows. C = Number of columns.
  */
-class Solution {
+class Solution2 {
+    public int maximalSquare(char[][] matrix) {
+        if (matrix == null) {
+            throw new IllegalArgumentException("Input matrix is null");
+        }
+
+        int rows = matrix.length;
+        if (rows == 0) {
+            return 0;
+        }
+        int cols = matrix[0].length;
+        if (cols == 0) {
+            return 0;
+        }
+
+        if (rows < cols) {
+            return maximalSquareHelperWithReverse(matrix, cols, rows, false);
+        } else {
+            return maximalSquareHelperWithReverse(matrix, rows, cols, true);
+        }
+    }
+
+    private int maximalSquareHelperWithReverse(char[][] matrix, int bigSide, int smallSide, boolean isColsSmall) {
+        int[] dp = new int[smallSide + 1];
+        int maxSquareSide = 0;
+
+        for (int i = 1; i <= bigSide; i++) {
+            int pre = 0;
+            for (int j = 1; j <= smallSide; j++) {
+                int cur = dp[j];
+                char cellVal = isColsSmall ? matrix[i - 1][j - 1] : matrix[j - 1][i - 1];
+                if (cellVal == '0') {
+                    dp[j] = 0;
+                } else {
+                    dp[j] = Math.min(pre, Math.min(cur, dp[j - 1])) + 1;
+                    maxSquareSide = Math.max(maxSquareSide, dp[j]);
+                }
+                pre = cur;
+            }
+        }
+
+        return maxSquareSide * maxSquareSide;
+    }
+}
+
+class SolutionIgnore {
     public int maximalSquare(char[][] matrix) {
         if (matrix == null) {
             throw new IllegalArgumentException("Input is null");
