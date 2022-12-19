@@ -1,4 +1,5 @@
-// LeetCode URL: https://leetcode.com/problems/delete-operation-for-two-strings/
+// LeetCode Question URL: https://leetcode.com/problems/delete-operation-for-two-strings/
+// LeetCode Discuss URL:
 
 /**
  * Similar Questions:
