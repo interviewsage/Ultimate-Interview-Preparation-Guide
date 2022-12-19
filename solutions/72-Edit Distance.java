@@ -33,60 +33,123 @@
  * M = Length string word1. N = Length of string word2.
  */
 class Solution1 {
+    private static final int INSERT_COST = 1;
+    private static final int DELETE_COST = 1;
+    private static final int REPLACE_COST = 1;
+
     public int minDistance(String word1, String word2) {
         if (word1 == null || word2 == null) {
-            throw new IllegalArgumentException("Input strings are null");
+            throw new IllegalArgumentException("Input string is invalid");
         }
 
-        int insertCost = 1;
-        int deleteCost = 1;
-        int replaceCost = 1;
-        int l1 = word1.length();
-        int l2 = word2.length();
-
-        if (l1 == 0) {
-            return l2 * insertCost;
+        // Below condition can be used only if Insert & Delete costs are same.
+        if (word1.length() < word2.length()) {
+            return minDistanceSolverWithCostReversed(word2, word1, DELETE_COST, INSERT_COST);
+        } else {
+            return minDistanceSolverWithCostReversed(word1, word2, INSERT_COST, DELETE_COST);
         }
+    }
+
+    private int minDistanceSolverWithCostReversed(String bigWord, String smallWord, int insertCost, int deleteCost) {
+        int l1 = bigWord.length();
+        int l2 = smallWord.length();
+
         if (l2 == 0) {
             return l1 * deleteCost;
         }
-        // Bellow condition can be used only if all three costs are same.
-        if (l1 > l2) {
-            return minDistance(word2, word1);
-        }
 
-        int[] dp = new int[l1 + 1];
-        // Setting DP array for 0th column of 2D DP array. Here l2 is blank, thus we
-        // have to delete everything in l1.
-        for (int i = 1; i <= l1; i++) {
-            dp[i] = dp[i - 1] + deleteCost;
-        }
+        int[] dp = new int[l2 + 1];
 
+        // Setting DP array for when bigWord is empty. We have to insert all chars of
+        // smallWord
         for (int j = 1; j <= l2; j++) {
-            int prev = dp[0];
-            dp[0] += insertCost; // l1 is blank, Inserting l2 chars in l1.
-            char c2 = word2.charAt(j - 1);
-            for (int i = 1; i <= l1; i++) {
-                char c1 = word1.charAt(i - 1);
-                int temp = dp[i];
-                // Both chars are same, so the distance will also remain same as dp[i-1][j-1]
-                if (c1 == c2) {
-                    dp[i] = prev;
+            dp[j] = dp[j - 1] + insertCost;
+        }
+
+        for (int i = 1; i <= l1; i++) {
+            int pre = dp[0];
+            dp[0] += deleteCost; // smallWord is blank, thus deleting this bigWord char.
+            char bChar = bigWord.charAt(i - 1);
+
+            for (int j = 1; j <= l2; j++) {
+                int cur = dp[j];
+                char sChar = smallWord.charAt(j - 1);
+
+                if (bChar == sChar) {
+                    // Both chars are same, so the distance will also remain same as dp[i-1][j-1]
+                    dp[j] = pre;
                 } else {
                     // Replace l1[i - 1] by l2[j - 1] ==> dp[i][j] = dp[i - 1][j - 1] + 1
                     // Delete l1[i-1] from l1[0..i-1] ==> dp[i-1][j] + 1
                     // Insert l2[j-1] into l1[0..i-1] ==> dp[i][j-1] + 1
-                    dp[i] = Math.min(prev + replaceCost, Math.min(dp[i - 1] + deleteCost, dp[i] + insertCost));
+                    dp[j] = Math.min(dp[j - 1] + insertCost, Math.min(pre + REPLACE_COST, cur + deleteCost));
                 }
-                prev = temp;
+
+                pre = cur;
             }
         }
 
-        return dp[l1];
+        return dp[l2];
     }
 }
 
 class Solution2 {
+    private static final int INSERT_COST = 1;
+    private static final int DELETE_COST = 1;
+    private static final int REPLACE_COST = 1;
+
+    public int minDistance(String word1, String word2) {
+        if (word1 == null || word2 == null) {
+            throw new IllegalArgumentException("Input string is invalid");
+        }
+
+        int l1 = word1.length();
+        int l2 = word2.length();
+
+        // Below condition can be used only if Insert & Delete costs are same.
+        if (l1 < l2) {
+            return minDistance(word2, word1);
+        }
+        if (l2 == 0) {
+            return l1 * DELETE_COST;
+        }
+
+        int[] dp = new int[l2 + 1];
+
+        // Setting DP array for when word1 is empty. We have to insert all chars of
+        // word2
+        for (int j = 1; j <= l2; j++) {
+            dp[j] = dp[j - 1] + INSERT_COST;
+        }
+
+        for (int i = 1; i <= l1; i++) {
+            int pre = dp[0];
+            dp[0] += DELETE_COST; // word2 is blank, thus deleting this word1 char.
+            char w1Char = word1.charAt(i - 1);
+
+            for (int j = 1; j <= l2; j++) {
+                int cur = dp[j];
+                char w2Char = word2.charAt(j - 1);
+
+                if (w1Char == w2Char) {
+                    // Both chars are same, so the distance will also remain same as dp[i-1][j-1]
+                    dp[j] = pre;
+                } else {
+                    // Replace l1[i - 1] by l2[j - 1] ==> dp[i][j] = dp[i - 1][j - 1] + 1
+                    // Delete l1[i-1] from l1[0..i-1] ==> dp[i-1][j] + 1
+                    // Insert l2[j-1] into l1[0..i-1] ==> dp[i][j-1] + 1
+                    dp[j] = Math.min(dp[j - 1] + INSERT_COST, Math.min(pre + REPLACE_COST, cur + DELETE_COST));
+                }
+
+                pre = cur;
+            }
+        }
+
+        return dp[l2];
+    }
+}
+
+class SolutionIgnore {
     public int minDistance(String word1, String word2) {
         if (word1 == null || word2 == null) {
             throw new IllegalArgumentException("Input strings are null");

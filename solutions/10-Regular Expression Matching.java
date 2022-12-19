@@ -16,17 +16,24 @@
 class Solution1 {
     public boolean isMatch(String s, String p) {
         if (s == null || p == null) {
-            return false;
+            throw new IllegalArgumentException("Input string is null");
         }
 
         int sLen = s.length();
         int pLen = p.length();
-
         if (pLen == 0) {
             return sLen == 0;
         }
-        if (sLen == 0 && (pLen <= 1 || p.charAt(1) != '*')) {
-            return false;
+        if (sLen == 0) {
+            if (pLen % 2 != 0) {
+                return false;
+            }
+            for (int i = 1; i < pLen; i += 2) {
+                if (p.charAt(i) != '*') {
+                    return false;
+                }
+            }
+            return true;
         }
 
         boolean[] dp = new boolean[pLen + 1];
@@ -35,36 +42,35 @@ class Solution1 {
         dp[0] = true;
         for (int j = 2; j <= pLen; j++) {
             if (p.charAt(j - 1) == '*') {
-                dp[j] = dp[j - 2];
-                if (!dp[j]) {
+                if (!dp[j - 2]) {
                     break;
                 }
+                dp[j] = true;
             }
         }
 
         for (int i = 1; i <= sLen; i++) {
-            boolean prev = dp[0];
+            boolean pre = dp[0];
             dp[0] = false; // Empty pattern does not match a non empty string.
             char sChar = s.charAt(i - 1);
 
             for (int j = 1; j <= pLen; j++) {
-                boolean prevTemp = dp[j];
                 char pChar = p.charAt(j - 1);
+                boolean cur = dp[j];
 
-                if (pChar == '.' || sChar == pChar) {
-                    dp[j] = prev;
+                if (pChar == '.' || pChar == sChar) {
+                    dp[j] = pre;
                 } else if (pChar == '*') {
-                    char pCharPrev = p.charAt(j - 2);
-                    if (pCharPrev == '.' || pCharPrev == sChar) {
-                        dp[j] |= dp[j - 2]; // pCharPrev & '*' might be included. So use both dp[i-1][j] & dp[i][j-2]
-                    } else {
-                        dp[j] = dp[j - 2]; // Excluding pCharPrev & '*' in pattern
+                    char prevPChar = p.charAt(j - 2);
+                    dp[j] = dp[j - 2]; // Excluding prevPChar & '*' in pattern
+                    if (prevPChar == '.' || prevPChar == sChar) {
+                        dp[j] |= cur; // prevPChar & '*' might be included. So use both dp[i-1][j] & dp[i][j-2]
                     }
                 } else {
                     dp[j] = false;
                 }
 
-                prev = prevTemp;
+                pre = cur;
             }
         }
 

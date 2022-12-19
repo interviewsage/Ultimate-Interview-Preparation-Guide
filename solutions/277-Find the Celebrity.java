@@ -8,10 +8,12 @@
  */
 
 /**
- * 2 Pass Solution
+ * 2 Pass Solution. Saving one duplicate call by saving previous candidate.
  *
  * Refer:
  * https://leetcode.com/problems/find-the-celebrity/discuss/71227/Java-Solution.-Two-Pass/73409
+ *
+ * Refer: https://leetcode.com/problems/find-the-celebrity/solution/535824
  *
  * The first pass is to pick out the candidate. If candidate knows i, then
  * switch candidate. The second pass is to check whether the candidate is real.
@@ -27,17 +29,14 @@
  *
  * Space Complexity: O(1)
  */
-public class Solution extends Relation {
+class Solution extends Relation {
     public int findCelebrity(int n) {
-        if (n < 0) {
-            throw new IllegalArgumentException("Input is invalid");
-        }
-        if (n <= 1) {
-            return n == 0 ? -1 : 0;
+        if (n <= 0) {
+            throw new IllegalArgumentException("Input number of people is invalid");
         }
 
         int candidate = 0;
-
+        int prevCandidate = -1;
         /**
          * This helps to find a candidate. If Kth person was candidate, then candidate
          * does not know anyone from (K+1, N-1), but may or may not know anyone from (0,
@@ -45,23 +44,16 @@ public class Solution extends Relation {
          */
         for (int i = 1; i < n; i++) {
             if (knows(candidate, i)) {
+                prevCandidate = candidate;
                 candidate = i;
             }
         }
 
-        /**
-         * Following if can be split in 2 sections.
-         *
-         * For i < candidate we can verify both the conditions.
-         *
-         * For i > candidates we can only verify knows(i, candidate). This is because we
-         * have already verified the other condition in previous pass.
-         */
         for (int i = 0; i < n; i++) {
-            if (i < candidate && (knows(candidate, i) || !knows(i, candidate))) {
+            if (i != candidate && i != prevCandidate && !knows(i, candidate)) {
                 return -1;
             }
-            if (i > candidate && !knows(i, candidate)) {
+            if (i < candidate && knows(candidate, i)) {
                 return -1;
             }
         }
@@ -70,22 +62,14 @@ public class Solution extends Relation {
     }
 }
 
-/**
- * Refer: https://leetcode.com/problems/find-the-celebrity/solution/535824
- *
- * Saving one duplicate call by saving previous candidate.
- */
-public class Solution2 extends Relation {
+class Solution2 extends Relation {
     public int findCelebrity(int n) {
-        if (n < 0) {
-            throw new IllegalArgumentException("Input is invalid");
-        }
-        if (n <= 1) {
-            return n == 0 ? -1 : 0;
+        if (n <= 0) {
+            throw new IllegalArgumentException("Input number of people is invalid");
         }
 
         int candidate = 0;
-        int prev = -1;
+        int prevCandidate = -1;
         /**
          * This helps to find a candidate. If Kth person was candidate, then candidate
          * does not know anyone from (K+1, N-1), but may or may not know anyone from (0,
@@ -93,24 +77,16 @@ public class Solution2 extends Relation {
          */
         for (int i = 1; i < n; i++) {
             if (knows(candidate, i)) {
-                prev = candidate;
+                prevCandidate = candidate;
                 candidate = i;
             }
         }
 
-        /**
-         * Following if can be split in 2 sections.
-         *
-         * For i < candidate we can verify both the conditions.
-         *
-         * For i > candidates we can only verify knows(i, candidate). This is because we
-         * have already verified the other condition in previous pass.
-         */
         for (int i = 0; i < n; i++) {
-            if (i < candidate && (knows(candidate, i) || (i != prev && !knows(i, candidate)))) {
+            if (i != candidate && i != prevCandidate && !knows(i, candidate)) {
                 return -1;
             }
-            if (i > candidate && !knows(i, candidate)) {
+            if (i < candidate && knows(candidate, i)) {
                 return -1;
             }
         }
