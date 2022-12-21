@@ -21,8 +21,7 @@ class Solution {
 
         for (int n : nums) {
             if (n == 1) {
-                curCount++;
-                maxCount = Math.max(maxCount, curCount);
+                maxCount = Math.max(maxCount, ++curCount);
             } else {
                 curCount = 0;
             }
