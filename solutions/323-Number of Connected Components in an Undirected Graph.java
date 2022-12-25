@@ -13,61 +13,130 @@ import java.util.*;
  * V = Number of vertices in the graph. E = Number of edges in the graph.
  */
 class Solution1 {
-    class UnionFind {
-        int[] parents;
-        int[] ranks;
-        int count;
+
+    public class UnionFind {
+        int[] parent;
+        int[] rank;
+        int groups;
 
         public UnionFind(int n) {
-            this.parents = new int[n + 1];
-            this.ranks = new int[n + 1];
-            this.count = n;
+            parent = new int[n + 1];
+            rank = new int[n + 1];
+            groups = n;
         }
 
-        public int findParent(int a) {
-            if (parents[a] == 0) {
-                parents[a] = a;
-            } else if (parents[a] != a) {
-                parents[a] = findParent(parents[a]);
+        public int findParent(int x) {
+            if (parent[x] == 0) {
+                parent[x] = x;
+            } else if (parent[x] != x) {
+                parent[x] = findParent(parent[x]);
             }
-            return parents[a];
+            return parent[x];
         }
 
         public void union(int x, int y) {
-            int parentX = findParent(x);
-            int parentY = findParent(y);
+            int pX = findParent(x);
+            int pY = findParent(y);
 
-            if (parentX == parentY) {
+            if (pX == pY) {
                 return;
             }
 
-            if (ranks[parentX] >= ranks[parentY]) {
-                parents[parentY] = parentX;
-                if (ranks[parentX] == ranks[parentY]) {
-                    ranks[parentX]++;
+            if (rank[pX] >= rank[pY]) {
+                parent[pY] = pX;
+                if (rank[pX] == rank[pY]) {
+                    rank[pX]++;
                 }
             } else {
-                parents[parentX] = parentY;
+                parent[pX] = pY;
             }
-            count--;
+            groups--;
+        }
+
+        public int groupCount() {
+            return groups;
         }
     }
 
     public int countComponents(int n, int[][] edges) {
-        if (n <= 0) {
-            return 0;
+        if (n < 0) {
+            throw new IllegalArgumentException("Input number of nodes is invalid");
         }
-        if (n == 1 || edges == null || edges.length == 0) {
+        if (n <= 1 || edges == null || edges.length == 0) {
             return n;
         }
 
         UnionFind uf = new UnionFind(n);
-
-        for (int[] e : edges) {
-            uf.union(e[0] + 1, e[1] + 1);
+        for (int[] edge : edges) {
+            uf.union(edge[0] + 1, edge[1] + 1);
         }
 
-        return uf.count;
+        return uf.groupCount();
+    }
+}
+
+class Solution2 {
+
+    public class UnionFind {
+        int[] parent;
+        int[] rank;
+        int groups;
+
+        public UnionFind(int n) {
+            parent = new int[n];
+            rank = new int[n];
+            groups = n;
+
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+            }
+        }
+
+        public int findParent(int x) {
+            if (parent[x] != x) {
+                parent[x] = findParent(parent[x]);
+            }
+            return parent[x];
+        }
+
+        public void union(int x, int y) {
+            int pX = findParent(x);
+            int pY = findParent(y);
+
+            if (pX == pY) {
+                return;
+            }
+
+            if (rank[pX] >= rank[pY]) {
+                parent[pY] = pX;
+                if (rank[pX] == rank[pY]) {
+                    rank[pX]++;
+                }
+            } else {
+                parent[pX] = pY;
+            }
+            groups--;
+        }
+
+        public int groupCount() {
+            return groups;
+        }
+    }
+
+    public int countComponents(int n, int[][] edges) {
+        if (n < 0) {
+            throw new IllegalArgumentException("Input number of nodes is invalid");
+        }
+        if (n <= 1 || edges == null || edges.length == 0) {
+            return n;
+        }
+
+        UnionFind uf = new UnionFind(n);
+        for (int[] edge : edges) {
+            uf.union(edge[0], edge[1]);
+        }
+
+        return uf.groupCount();
     }
 }
 
@@ -80,12 +149,12 @@ class Solution1 {
  *
  * V = Number of vertices in the graph. E = Number of edges in the graph.
  */
-class Solution2 {
+class Solution3 {
     public int countComponents(int n, int[][] edges) {
-        if (n <= 0) {
-            return 0;
+        if (n < 0) {
+            throw new IllegalArgumentException("Input number of nodes is invalid");
         }
-        if (n == 1 || edges == null || edges.length == 0) {
+        if (n <= 1 || edges == null || edges.length == 0) {
             return n;
         }
 

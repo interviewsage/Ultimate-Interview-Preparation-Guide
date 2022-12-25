@@ -14,44 +14,49 @@ import java.util.*;
  * V = Number of nodes. E = Number of edges. Here E is V-1.
  */
 class Solution1 {
-    class UnionFind {
-        int[] parents;
-        int[] ranks;
-        int count;
+
+    public class UnionFind {
+        int[] parent;
+        int[] rank;
+        int groups;
 
         public UnionFind(int n) {
-            this.parents = new int[n + 1];
-            this.ranks = new int[n + 1];
-            this.count = n;
+            parent = new int[n + 1];
+            rank = new int[n + 1];
+            groups = n;
         }
 
-        public int findParent(int a) {
-            if (parents[a] == 0) {
-                parents[a] = a;
-            } else if (parents[a] != a) {
-                parents[a] = findParent(parents[a]);
+        public int findParent(int x) {
+            if (parent[x] == 0) {
+                parent[x] = x;
+            } else if (parent[x] != x) {
+                parent[x] = findParent(parent[x]);
             }
-            return parents[a];
+            return parent[x];
         }
 
         public boolean union(int x, int y) {
-            int parentX = findParent(x);
-            int parentY = findParent(y);
+            int pX = findParent(x);
+            int pY = findParent(y);
 
-            if (parentX == parentY) {
+            if (pX == pY) {
                 return false;
             }
 
-            if (ranks[parentX] >= ranks[parentY]) {
-                parents[parentY] = parentX;
-                if (ranks[parentX] == ranks[parentY]) {
-                    ranks[parentX]++;
+            if (rank[pX] >= rank[pY]) {
+                parent[pY] = pX;
+                if (rank[pX] == rank[pY]) {
+                    rank[pX]++;
                 }
             } else {
-                parents[parentX] = parentY;
+                parent[pX] = pY;
             }
-            count--;
+            groups--;
             return true;
+        }
+
+        public int numConnectedGroups() {
+            return groups;
         }
     }
 
@@ -59,21 +64,24 @@ class Solution1 {
         if (n < 0) {
             return false;
         }
-        if (n <= 1) {
-            return true;
+        if (edges == null || edges.length == 0) {
+            return n <= 1;
         }
-        if (edges == null || edges.length != n - 1) {
+        if (edges.length != n - 1) {
+            // Proof:
+            // https://math.stackexchange.com/questions/1198263/proof-verification-prove-that-a-tree-with-n-vertices-has-n-1-edges#comment8913833_3075437
             return false;
         }
 
         UnionFind uf = new UnionFind(n);
+
         for (int[] e : edges) {
             if (!uf.union(e[0] + 1, e[1] + 1)) {
                 return false;
             }
         }
 
-        return uf.count == 1;
+        return uf.numConnectedGroups() == 1;
     }
 }
 
@@ -91,29 +99,28 @@ class Solution2 {
         if (n < 0) {
             return false;
         }
-        if (n <= 1) {
-            return true;
+        if (edges == null || edges.length == 0) {
+            return n <= 1;
         }
-        if (edges == null || edges.length != n - 1) {
+        if (edges.length != n - 1) {
             return false;
         }
 
         Map<Integer, Set<Integer>> graph = new HashMap<>();
-        buildGraph(graph, edges);
-
-        Set<Integer> visited = new HashSet<>();
+        buildGraph(edges, graph);
         if (graph.size() != n) {
             return false;
         }
 
+        Set<Integer> visited = new HashSet<>();
         return !hasCycle(graph, visited, 0, -1) && visited.size() == n;
     }
 
-    private void buildGraph(Map<Integer, Set<Integer>> graph, int[][] edges) {
+    private void buildGraph(int[][] edges, Map<Integer, Set<Integer>> graph) {
         for (int[] e : edges) {
             graph.putIfAbsent(e[0], new HashSet<>());
-            graph.get(e[0]).add(e[1]);
             graph.putIfAbsent(e[1], new HashSet<>());
+            graph.get(e[0]).add(e[1]);
             graph.get(e[1]).add(e[0]);
         }
     }

@@ -1,4 +1,5 @@
-// LeetCode URL: https://leetcode.com/problems/3sum/
+// LeetCode Question URL: https://leetcode.com/problems/3sum/
+// LeetCode Discuss URL:
 
 import java.util.*;
 
