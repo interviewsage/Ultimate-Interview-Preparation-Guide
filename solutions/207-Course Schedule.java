@@ -19,6 +19,56 @@ import java.util.*;
 class Solution1 {
     public boolean canFinish(int numCourses, int[][] prerequisites) {
         if (numCourses < 0) {
+            throw new IllegalArgumentException("Input is invalid");
+        }
+        if (numCourses <= 1 || prerequisites == null || prerequisites.length == 0) {
+            return true;
+        }
+
+        Map<Integer, Set<Integer>> graph = new HashMap<>();
+        Set<Integer> toBeVisited = new HashSet<>(); // Nodes with zero in-degree
+        // Initializing toBeVisited with all possible courses
+        for (int i = 0; i < numCourses; i++) {
+            toBeVisited.add(i);
+            graph.put(i, new HashSet<>());
+        }
+        for (int[] p : prerequisites) {
+            graph.get(p[0]).add(p[1]);
+            toBeVisited.remove(p[1]);
+        }
+
+        Set<Integer> visited = new HashSet<>();
+
+        for (int course : toBeVisited) {
+            if (hasCycle(course, graph, new HashSet<>(), visited)) {
+                return false;
+            }
+        }
+
+        return visited.size() == numCourses;
+    }
+
+    private boolean hasCycle(int course, Map<Integer, Set<Integer>> graph, Set<Integer> visiting,
+            Set<Integer> visited) {
+        visiting.add(course);
+        for (int pre : graph.get(course)) {
+            if (visited.contains(pre)) {
+                continue;
+            }
+            if (visiting.contains(pre) || hasCycle(pre, graph, visiting, visited)) {
+                return true;
+            }
+        }
+
+        visiting.remove(course);
+        visited.add(course);
+        return false;
+    }
+}
+
+class Solution2 {
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        if (numCourses < 0) {
             throw new IllegalArgumentException("Invalid number of courses");
         }
 
@@ -90,41 +140,17 @@ class Solution1 {
  * N = Number of Courses or Number of vertices. P = Number of prerequisites or
  * Number of edges.
  */
-class Solution2 {
+class Solution3 {
     public boolean canFinish(int numCourses, int[][] prerequisites) {
+        if (numCourses < 0) {
+            throw new IllegalArgumentException("Input is invalid");
+        }
         if (numCourses <= 1 || prerequisites == null || prerequisites.length == 0) {
             return true;
         }
 
-        HashMap<Integer, HashSet<Integer>> graph = new HashMap<>();
+        Map<Integer, Set<Integer>> graph = new HashMap<>();
         int[] inDegree = new int[numCourses];
-        buildGraph(numCourses, prerequisites, graph, inDegree);
-
-        Queue<Integer> queue = new LinkedList<>();
-        for (int i = 0; i < numCourses; i++) {
-            if (inDegree[i] == 0) {
-                queue.offer(i);
-            }
-        }
-
-        int count = 0;
-
-        while (!queue.isEmpty()) {
-            int course = queue.poll();
-            count++;
-            for (int n : graph.get(course)) {
-                inDegree[n]--;
-                if (inDegree[n] == 0) {
-                    queue.offer(n);
-                }
-            }
-        }
-
-        return count == numCourses;
-    }
-
-    private void buildGraph(int numCourses, int[][] prerequisites, HashMap<Integer, HashSet<Integer>> graph,
-            int[] inDegree) {
         for (int i = 0; i < numCourses; i++) {
             graph.put(i, new HashSet<>());
         }
@@ -132,5 +158,25 @@ class Solution2 {
             graph.get(p[1]).add(p[0]);
             inDegree[p[0]]++;
         }
+
+        Queue<Integer> queue = new ArrayDeque<>();
+        for (int i = 0; i < numCourses; i++) {
+            if (inDegree[i] == 0) {
+                queue.offer(i);
+            }
+        }
+
+        int coursesCompleted = 0;
+        while (!queue.isEmpty()) {
+            int course = queue.poll();
+            coursesCompleted++;
+            for (int c : graph.get(course)) {
+                if (--inDegree[c] == 0) {
+                    queue.offer(c);
+                }
+            }
+        }
+
+        return coursesCompleted == numCourses;
     }
 }

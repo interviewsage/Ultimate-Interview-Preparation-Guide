@@ -11,54 +11,61 @@ import java.util.*;
  * <pre>
  * Time Complexity:
  * 1. processWordsArray --> All characters are visited = O(N * L) = O(C)
- * 2. DFS --> O(V + E) = O(U + min(U^2, N-1))
+ * 2. RemoveAll nonZeroInDegreeNodes --> O(U)
+ * 3. DFS --> O(V + E) = O(U + min(U*(U-1), N-1))
+ *
+ * Vertexes = U
+ * Edges = min(U*(U-1), N-1)
  *
  * Space Complexity:
- * 1. Graph --> 2 * min(U^2, N-1) --> All edges in teh graph
+ * 1. Graph --> 2 * min(U*(U-1), N-1) --> All edges in the graph
  * 2. toBeVisited --> O(U)
- * 3. visited + visiting --> O(U)
- * 4. DFS Recursion Depth --> O(min(U, min(U^2, N-1))) = O(min(U, N-1))
+ * 3. nonZeroInDegreeNodes --> O(U)
+ * 4. visited + visiting --> O(U)
+ * 5. DFS Recursion Depth --> O(min(U, min(U*(U-1), N-1))) = O(min(U, N-1))
  * </pre>
  */
-class Solution1 {
+class Solution {
     public String alienOrder(String[] words) {
-        if (words == null || words.length == 0) {
+        if (words == null) {
+            throw new IllegalArgumentException("Input array is null");
+        }
+        int numWords = words.length;
+        if (numWords == 0) {
             return "";
         }
 
         Map<Character, Set<Character>> graph = new HashMap<>();
         Set<Character> toBeVisited = new HashSet<>();
-        Set<Character> nodesWithNonZeroInDegree = new HashSet<>();
-        StringBuilder order = new StringBuilder();
+        Set<Character> nonZeroInDegreeNodes = new HashSet<>();
 
-        if (!processWordsArray(words, graph, toBeVisited, nodesWithNonZeroInDegree)) {
+        if (!processWords(words, graph, toBeVisited, nonZeroInDegreeNodes)) {
             return "";
         }
 
-        if (words.length == 1) {
+        StringBuilder order = new StringBuilder();
+        if (numWords == 1) {
             for (char c : toBeVisited) {
                 order.append(c);
             }
             return order.toString();
         }
 
+        int uniqueCharsNum = toBeVisited.size();
+        toBeVisited.removeAll(nonZeroInDegreeNodes);
         Set<Character> visited = new HashSet<>();
-        Set<Character> visiting = new HashSet<>();
-
-        int numUniqueNodes = toBeVisited.size();
-        toBeVisited.removeAll(nodesWithNonZeroInDegree);
 
         for (char c : toBeVisited) {
-            if (hasCycle(graph, visited, visiting, order, c)) {
+            if (hasCycle(c, graph, new HashSet<>(), visited, order)) {
                 return "";
             }
         }
 
-        return order.length() < numUniqueNodes ? "" : order.toString();
+        return visited.size() == uniqueCharsNum ? order.toString() : "";
     }
 
-    private boolean processWordsArray(String[] words, Map<Character, Set<Character>> graph, Set<Character> toBeVisited,
-            Set<Character> nodesWithNonZeroInDegree) {
+    private boolean processWords(String[] words, Map<Character, Set<Character>> graph, Set<Character> toBeVisited,
+            Set<Character> nonZeroInDegreeNodes) {
         for (int i = 0; i < words[0].length(); i++) {
             toBeVisited.add(words[0].charAt(i));
         }
@@ -78,7 +85,7 @@ class Solution1 {
                     graph.putIfAbsent(c2, new HashSet<>());
                     graph.get(c2).add(c1);
                     toBeVisited.add(c2);
-                    nodesWithNonZeroInDegree.add(c1);
+                    nonZeroInDegreeNodes.add(c1);
                     break;
                 }
                 j++;
@@ -87,7 +94,6 @@ class Solution1 {
             if (j == minLen && w1Len > w2Len) {
                 return false;
             }
-
             while (j < w2Len) {
                 toBeVisited.add(w2.charAt(j++));
             }
@@ -96,20 +102,17 @@ class Solution1 {
         return true;
     }
 
-    private boolean hasCycle(Map<Character, Set<Character>> graph, Set<Character> visited, Set<Character> visiting,
-            StringBuilder order, char c) {
-        if (visiting.contains(c)) {
-            return true;
-        }
-        if (visited.contains(c)) {
-            return false;
-        }
-
+    private boolean hasCycle(char c, Map<Character, Set<Character>> graph, Set<Character> visiting,
+            Set<Character> visited, StringBuilder order) {
         visiting.add(c);
 
-        if (graph.containsKey(c)) {
-            for (char n : graph.get(c)) {
-                if (hasCycle(graph, visited, visiting, order, n)) {
+        Set<Character> children = graph.get(c);
+        if (children != null) {
+            for (char child : children) {
+                if (visited.contains(child)) {
+                    continue;
+                }
+                if (visiting.contains(child) || hasCycle(child, graph, visiting, visited, order)) {
                     return true;
                 }
             }
@@ -118,7 +121,6 @@ class Solution1 {
         visiting.remove(c);
         visited.add(c);
         order.append(c);
-
         return false;
     }
 }
