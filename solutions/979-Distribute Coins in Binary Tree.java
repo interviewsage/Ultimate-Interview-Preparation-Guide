@@ -22,28 +22,51 @@ class TreeNode {
  *
  * Time Complexity: O(N)
  *
- * Space Complexity: O(Height)
+ * Space Complexity: O(H)
  */
-class Solution {
+class Solution1 {
     public int distributeCoins(TreeNode root) {
         if (root == null) {
             return 0;
         }
 
         int[] totalMoves = { 0 };
-        distributeCoinsHelper(root, totalMoves);
+        distributeCoinsDfsHelper(root, totalMoves);
         return totalMoves[0];
     }
 
-    private int distributeCoinsHelper(TreeNode node, int[] totalMoves) {
+    private int distributeCoinsDfsHelper(TreeNode node, int[] totalMoves) {
         if (node == null) {
             return 0;
         }
 
-        int extraCoinsLeft = distributeCoinsHelper(node.left, totalMoves);
-        int extraCoinsRight = distributeCoinsHelper(node.right, totalMoves);
+        int extraCoinsLeft = distributeCoinsDfsHelper(node.left, totalMoves);
+        int extraCoinsRight = distributeCoinsDfsHelper(node.right, totalMoves);
 
         totalMoves[0] += Math.abs(extraCoinsLeft) + Math.abs(extraCoinsRight);
         return node.val + extraCoinsLeft + extraCoinsRight - 1;
+    }
+}
+
+class Solution2 {
+    public int distributeCoins(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+
+        int moves = 0;
+
+        if (root.left != null) {
+            moves += distributeCoins(root.left);
+            root.val += root.left.val - 1;
+            moves += Math.abs(root.left.val - 1);
+        }
+        if (root.right != null) {
+            moves += distributeCoins(root.right);
+            root.val += root.right.val - 1;
+            moves += Math.abs(root.right.val - 1);
+        }
+
+        return moves;
     }
 }
