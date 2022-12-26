@@ -24,17 +24,23 @@ import java.util.*;
  *
  * M = Number of rows. N = Number of columns.
  */
-class Solution {
+class Solution1 {
     private static final int[][] DIRS = { { 0, 1 }, { 1, 1 }, { 1, 0 }, { 1, -1 }, { 0, -1 }, { -1, -1 }, { -1, 0 },
             { -1, 1 } };
 
     public void gameOfLife(int[][] board) {
-        if (board == null || board.length == 0 || board[0].length == 0) {
-            return;
+        if (board == null) {
+            throw new IllegalArgumentException("Input board is null");
         }
 
         int rows = board.length;
+        if (rows == 0) {
+            return;
+        }
         int cols = board[0].length;
+        if (cols == 0) {
+            return;
+        }
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -73,69 +79,6 @@ class Solution {
  * N = Number of live cells
  */
 class Solution2 {
-    private static final int[][] DIRS = { { 0, 1 }, { 1, 1 }, { 1, 0 }, { 1, -1 }, { 0, -1 }, { -1, -1 }, { -1, 0 },
-            { -1, 1 } };
-
-    public void gameOfLife(int[][] board) {
-        if (board == null || board.length == 0 || board[0].length == 0) {
-            return;
-        }
-
-        int rows = board.length;
-        int cols = board[0].length;
-        HashSet<Pair<Integer, Integer>> currentState = new HashSet<>();
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                if (board[i][j] == 1) {
-                    currentState.add(new Pair<>(i, j));
-                }
-            }
-        }
-
-        HashSet<Pair<Integer, Integer>> nextState = gameOfLifeInfinite(currentState);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                board[i][j] = nextState.contains(new Pair<>(i, j)) ? 1 : 0;
-            }
-        }
-    }
-
-    public HashSet<Pair<Integer, Integer>> gameOfLifeInfinite(HashSet<Pair<Integer, Integer>> currentState) {
-        HashSet<Pair<Integer, Integer>> nextState = new HashSet<>();
-        if (currentState == null || currentState.size() == 0) {
-            return nextState;
-        }
-
-        HashMap<Pair<Integer, Integer>, Integer> map = new HashMap<>();
-        for (Pair<Integer, Integer> c : currentState) {
-            for (int[] d : DIRS) {
-                Pair<Integer, Integer> neighbor = new Pair<>(c.getKey() + d[0], c.getValue() + d[1]);
-                map.put(neighbor, map.getOrDefault(neighbor, 0) + 1);
-            }
-        }
-        for (Pair<Integer, Integer> c : map.keySet()) {
-            int count = map.get(c);
-            if (count == 3 || (count == 2 && currentState.contains(c))) {
-                nextState.add(c);
-            }
-        }
-        return nextState;
-    }
-}
-
-/**
- * Infinite Grid
- *
- * Refer: Awesome explanation
- * https://leetcode.com/problems/game-of-life/discuss/73217/Infinite-board-solution/76083
- *
- * Time Complexity: O(8*N + 8*N) = O(N)
- *
- * Space Complexity: O(8*N + N) = O(N)
- *
- * N = Number of live cells
- */
-class Solution3 {
     private static final int[][] DIRS = { { 0, 1 }, { 1, 1 }, { 1, 0 }, { 1, -1 }, { 0, -1 }, { -1, -1 }, { -1, 0 },
             { -1, 1 } };
 
@@ -207,6 +150,70 @@ class Solution3 {
             }
         }
         for (Cell c : map.keySet()) {
+            int count = map.get(c);
+            if (count == 3 || (count == 2 && currentState.contains(c))) {
+                nextState.add(c);
+            }
+        }
+        return nextState;
+    }
+}
+
+/**
+ * Infinite Grid
+ *
+ * Refer: Awesome explanation
+ * https://leetcode.com/problems/game-of-life/discuss/73217/Infinite-board-solution/76083
+ *
+ * Time Complexity: O(8*N + 8*N) = O(N)
+ *
+ * Space Complexity: O(8*N + N) = O(N)
+ *
+ * N = Number of live cells
+ */
+class Solution3 {
+    private static final int[][] DIRS = { { 0, 1 }, { 1, 1 }, { 1, 0 }, { 1, -1 }, { 0, -1 }, { -1, -1 }, { -1, 0 },
+            { -1, 1 } };
+
+    public void gameOfLife(int[][] board) {
+        if (board == null || board.length == 0 || board[0].length == 0) {
+            return;
+        }
+
+        int rows = board.length;
+        int cols = board[0].length;
+        HashSet<Pair<Integer, Integer>> currentState = new HashSet<>();
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (board[i][j] == 1) {
+                    currentState.add(new Pair<>(i, j));
+                }
+            }
+        }
+        Pair<Integer, Integer> pair = new MutablePair<>(1, 2);
+
+        HashSet<Pair<Integer, Integer>> nextState = gameOfLifeInfinite(currentState);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                board[i][j] = nextState.contains(new Pair<>(i, j)) ? 1 : 0;
+            }
+        }
+    }
+
+    public HashSet<Pair<Integer, Integer>> gameOfLifeInfinite(HashSet<Pair<Integer, Integer>> currentState) {
+        HashSet<Pair<Integer, Integer>> nextState = new HashSet<>();
+        if (currentState == null || currentState.size() == 0) {
+            return nextState;
+        }
+
+        HashMap<Pair<Integer, Integer>, Integer> map = new HashMap<>();
+        for (Pair<Integer, Integer> c : currentState) {
+            for (int[] d : DIRS) {
+                Pair<Integer, Integer> neighbor = new Pair<>(c.getKey() + d[0], c.getValue() + d[1]);
+                map.put(neighbor, map.getOrDefault(neighbor, 0) + 1);
+            }
+        }
+        for (Pair<Integer, Integer> c : map.keySet()) {
             int count = map.get(c);
             if (count == 3 || (count == 2 && currentState.contains(c))) {
                 nextState.add(c);
