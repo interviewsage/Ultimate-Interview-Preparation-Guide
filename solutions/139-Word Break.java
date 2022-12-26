@@ -11,6 +11,7 @@ import java.util.*;
  * 1. Solution: https://leetcode.com/problems/word-break/discuss/43814/C++-Dynamic-Programming-simple-and-fast-solution-(4ms)-with-optimization
  * 2. Time Complexity Discussion: https://leetcode.com/problems/word-break/discuss/43790/Java-implementation-using-DP-in-two-ways/173773
  * 3. BFS Solution: https://leetcode.com/problems/word-break/solution/
+ * 4. Most Optimized Solution: https://leetcode.com/problems/word-break/discuss/43790/Java-implementation-using-DP-in-two-ways/1034994
  * </pre>
  *
  * DP[i] -> Can a string of length i be broken into a valid words.
@@ -25,14 +26,15 @@ import java.util.*;
  * s.substring(j, i) in wordDict.
  *
  * <pre>
- * Time Complexity: O(N^3 + W) Assuming substring takes O(1) time.
- * - There are two nested loops, and substring computation at each iteration.
+ * Time Complexity:
+ * 1. Compare & Add to HashSet --> O(W * N)
+ * 2. Nested For Loops + substring + contains --> (N * maxWordLen * (2 * maxWordLen)) = (N * maxWordLen^2)
+ * Total time complexity: O(W * N + N * maxWordLen^2)
+ *
+ * Space Complexity: O(N + W + maxWordLen) --> (DP Array + HashSet will contains references + substring)
  * </pre>
  *
- * Space Complexity: O(N + WD)
- *
- * N = Length of the input string. WD = Number of chars in wordDict. W = Number
- * of words in wordDict
+ * N = Length of the input string. W = Number of words in wordDict
  */
 class Solution {
     public boolean wordBreak(String s, List<String> wordDict) {
@@ -40,13 +42,22 @@ class Solution {
             return false;
         }
 
-        HashSet<String> wordSet = new HashSet<>(wordDict);
-        if (wordSet.contains(s)) {
-            return true;
+        Set<String> wordSet = new HashSet<>();
+        int maxWordLen = 0;
+        int minWordLen = Integer.MAX_VALUE;
+        for (String w : wordDict) {
+            if (s.equals(w)) {
+                return true;
+            }
+            wordSet.add(w);
+            maxWordLen = Math.max(maxWordLen, w.length());
+            minWordLen = Math.min(minWordLen, w.length());
         }
 
         int len = s.length();
-        if (len == 0) {
+        // This is done later as wordDict can contain an empty string which would have
+        // matched in the previous step.
+        if (len == 0 || len < minWordLen) {
             return false;
         }
 
@@ -54,7 +65,8 @@ class Solution {
         dp[0] = true;
 
         for (int i = 1; i <= len; i++) {
-            for (int j = i - 1; j >= 0; j--) {
+            int end = Math.max(0, i - maxWordLen);
+            for (int j = i - 1; j >= end; j--) {
                 if (dp[j] && wordSet.contains(s.substring(j, i))) {
                     dp[i] = true;
                     break;
