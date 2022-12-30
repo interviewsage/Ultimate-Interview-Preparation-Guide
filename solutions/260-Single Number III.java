@@ -1,4 +1,5 @@
 // LeetCode Question URL: https://leetcode.com/problems/single-number-iii/
+// LeetCode Discuss URL:
 
 /**
  * Two Pass solution
@@ -21,7 +22,7 @@
 class Solution {
     public int[] singleNumber(int[] nums) {
         if (nums == null || nums.length < 2 || nums.length % 2 != 0) {
-            throw new IllegalArgumentException("Invalid Input");
+            throw new IllegalArgumentException("Input array is invalid");
         }
 
         int aXORb = 0;
@@ -29,20 +30,15 @@ class Solution {
             aXORb ^= n;
         }
 
-        int rightSetBit = aXORb & -aXORb;
-        int a = 0;
+        int rightMostSetBit = aXORb & -aXORb;
+        int[] result = new int[2];
         for (int n : nums) {
-            if ((n & rightSetBit) != 0) {
-                a ^= n;
+            if ((n & rightMostSetBit) != 0) {
+                result[0] ^= n;
             }
         }
 
-        return new int[] { a, aXORb ^ a };
+        result[1] = result[0] ^ aXORb;
+        return result;
     }
 }
-
-/*
- * Two Pass Solution
- *
- *
- */

@@ -14,57 +14,61 @@ import java.util.*;
  */
 class RandomizedCollection {
 
+    Map<Integer, Set<Integer>> map;
     List<Integer> nums;
-    Map<Integer, Set<Integer>> idxMap;
     Random random;
 
     public RandomizedCollection() {
+        map = new HashMap<>();
         nums = new ArrayList<>();
-        idxMap = new HashMap<>();
         random = new Random();
     }
 
     public boolean insert(int val) {
-        boolean response = !idxMap.containsKey(val);
-
-        if (response) {
-            idxMap.put(val, new HashSet<>());
+        Set<Integer> idxSet = map.get(val);
+        if (idxSet == null) {
+            idxSet = new HashSet<>();
+            map.put(val, idxSet);
         }
-        idxMap.get(val).add(nums.size());
+        idxSet.add(nums.size());
         nums.add(val);
 
-        return response;
+        return idxSet.size() == 1;
     }
 
     public boolean remove(int val) {
-        if (!idxMap.containsKey(val)) {
+        Set<Integer> idxSet = map.get(val);
+        if (idxSet == null) {
             return false;
         }
 
-        Set<Integer> idxSet = idxMap.get(val);
-        int idxToBeRemoved = idxSet.iterator().next();
+        int lastIdx = nums.size() - 1;
+        int lastNum = nums.remove(lastIdx);
+        // If the input val is same as last number, then we can just remove the lastIdx.
+        int idxToBeRemoved = lastNum == val ? lastIdx : idxSet.iterator().next();
+
         if (idxSet.size() == 1) {
-            idxMap.remove(val);
+            map.remove(val);
         } else {
             idxSet.remove(idxToBeRemoved);
         }
 
-        int lastIdx = nums.size() - 1;
         if (idxToBeRemoved != lastIdx) {
-            int lastVal = nums.get(lastIdx);
-            Set<Integer> lastIdxSet = idxMap.get(lastVal);
-            lastIdxSet.add(idxToBeRemoved);
-            lastIdxSet.remove(lastIdx);
-            nums.set(idxToBeRemoved, lastVal);
+            Set<Integer> lastNumIdxSet = map.get(lastNum);
+            lastNumIdxSet.remove(lastIdx);
+            lastNumIdxSet.add(idxToBeRemoved);
+            nums.set(idxToBeRemoved, lastNum);
         }
-
-        nums.remove(lastIdx);
 
         return true;
     }
 
     public int getRandom() {
-        return nums.get(random.nextInt(nums.size()));
+        int size = nums.size();
+        if (size == 0) {
+            throw new NoSuchElementException("Empty Set");
+        }
+        return nums.get(random.nextInt(size));
     }
 }
 

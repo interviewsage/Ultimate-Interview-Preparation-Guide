@@ -16,7 +16,7 @@
 class Solution {
     public int singleNonDuplicate(int[] nums) {
         if (nums == null || (nums.length & 1) == 0) {
-            throw new IllegalArgumentException("Input is invalid");
+            throw new IllegalArgumentException("Input nums array is invalid");
         }
 
         int len = nums.length;
@@ -28,7 +28,6 @@ class Solution {
         // even indexes.
         int start = 0;
         int end = len - 1;
-
         while (start < end) {
             int mid = start + (end - start) / 2;
 

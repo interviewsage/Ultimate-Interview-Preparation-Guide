@@ -14,45 +14,47 @@ import java.util.*;
  */
 class RandomizedSet {
 
+    Map<Integer, Integer> map;
     List<Integer> nums;
-    Map<Integer, Integer> idxMap;
     Random random;
 
     public RandomizedSet() {
+        map = new HashMap<>();
         nums = new ArrayList<>();
-        idxMap = new HashMap<>();
         random = new Random();
     }
 
     public boolean insert(int val) {
-        if (idxMap.containsKey(val)) {
+        if (map.containsKey(val)) {
             return false;
         }
 
-        idxMap.put(val, nums.size());
+        map.put(val, nums.size());
         nums.add(val);
         return true;
     }
 
     public boolean remove(int val) {
-        if (!idxMap.containsKey(val)) {
+        Integer idx = map.remove(val);
+        if (idx == null) {
             return false;
         }
 
-        int idx = idxMap.get(val);
         int lastIdx = nums.size() - 1;
+        int lastNum = nums.remove(lastIdx);
         if (idx != lastIdx) {
-            int lastVal = nums.get(lastIdx);
-            nums.set(idx, lastVal);
-            idxMap.put(lastVal, idx);
+            nums.set(idx, lastNum);
+            map.put(lastNum, idx);
         }
-        nums.remove(lastIdx);
-        idxMap.remove(val);
         return true;
     }
 
-    public int getRandom() {
-        return nums.get(random.nextInt(nums.size()));
+    public int getRandom() throws NoSuchElementException {
+        int size = nums.size();
+        if (size == 0) {
+            throw new NoSuchElementException("Empty Set");
+        }
+        return nums.get(random.nextInt(size));
     }
 }
 
