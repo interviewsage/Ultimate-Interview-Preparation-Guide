@@ -27,16 +27,12 @@ class Solution {
     private static final int[][] DIRS = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
 
     public int uniquePathsIII(int[][] grid) {
-        if (grid == null || grid.length == 0 || grid[0].length == 0) {
-            return 0;
+        if (grid == null || grid.length == 0 || grid.length * grid[0].length < 2) {
+            throw new IllegalArgumentException("Input grid is invalid");
         }
 
         int rows = grid.length;
         int cols = grid[0].length;
-        if (rows == 1 && cols == 1) {
-            return 0;
-        }
-
         int[] start = null;
         int[] end = null;
         int nonObstacleSquares = 0;
@@ -47,29 +43,31 @@ class Solution {
             for (int j = 0; j < cols; j++) {
                 switch (grid[i][j]) {
                     case 1:
-                        // If the input grid has two cells marked as start, then return 0
+                        // If the input grid has two cells marked as start, then throw exception
                         if (start != null) {
-                            return 0;
+                            throw new IllegalArgumentException("Multiple starting squares");
                         }
                         start = new int[] { i, j };
                         nonObstacleSquares++;
                         break;
                     case 2:
-                        // If the input grid has two cells marked as end, then return 0
+                        // If the input grid has two cells marked as end, then throw exception
                         if (end != null) {
-                            return 0;
+                            throw new IllegalArgumentException("Multiple ending squares");
                         }
                         end = new int[] { i, j };
                         nonObstacleSquares++;
                         break;
                     case 0:
                         nonObstacleSquares++;
-                        break;
                 }
             }
         }
 
         if (start == null || end == null) {
+            throw new IllegalArgumentException("Starting / Ending squares not found");
+        }
+        if (nonObstacleSquares < (Math.abs(start[0] - end[0]) + Math.abs(start[1] - end[1]) + 1)) {
             return 0;
         }
 
@@ -77,11 +75,6 @@ class Solution {
     }
 
     private int dfsHelper(int[][] grid, int row, int col, int nonObstacleSquares) {
-        if (row < 0 || row >= grid.length || col < 0 || col >= grid[0].length || grid[row][col] == -1
-                || grid[row][col] == 3) {
-            return 0;
-        }
-
         // Found the end square. If number of cells to be visited is 1, then count this
         // path.
         if (grid[row][col] == 2) {
@@ -89,11 +82,18 @@ class Solution {
         }
 
         int preVal = grid[row][col];
-        grid[row][col] = 3;
+        grid[row][col] = -2;
         int pathCount = 0;
+
         for (int[] d : DIRS) {
-            pathCount += dfsHelper(grid, row + d[0], col + d[1], nonObstacleSquares - 1);
+            int x = d[0] + row;
+            int y = d[1] + col;
+
+            if (x >= 0 && y >= 0 && x < grid.length && y < grid[0].length && grid[x][y] >= 0) {
+                pathCount += dfsHelper(grid, x, y, nonObstacleSquares - 1);
+            }
         }
+
         grid[row][col] = preVal;
         return pathCount;
     }

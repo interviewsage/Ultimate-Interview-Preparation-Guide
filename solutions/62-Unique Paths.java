@@ -24,14 +24,18 @@ import java.util.*;
  */
 class Solution1 {
     public int uniquePaths(int m, int n) {
-        if (m <= 0 || n <= 0) {
+        if (m < 0 || n < 0) {
+            throw new IllegalArgumentException("Input is invalid");
+        }
+        if (m == 0 || n == 0) {
             return 0;
         }
         if (m == 1 || n == 1) {
             return 1;
         }
+
         if (m < n) {
-            uniquePaths(n, m);
+            return uniquePaths(n, m);
         }
 
         int[] dp = new int[n];
@@ -48,7 +52,7 @@ class Solution1 {
 }
 
 /**
- * Find the total permutations of the directions to be travelled. For example
+ * Find the total permutations of the directions to be traveled. For example
  * D,D,D,D,R,R,R,R -> Find permutations of this list
  *
  * This is a combinatorial problem and can be solved without DP. For mxn grid,
@@ -67,9 +71,14 @@ class Solution1 {
  * Total permutations = (m+n)! / (m! * n!)
  *
  * <pre>
+ * Proof of the formula:
+ * 1) https://math.stackexchange.com/questions/119044/what-is-the-proof-of-permutations-of-similar-objects
+ * 2) https://testbook.com/learn/maths-permutation-with-repetition/#:~:text=The%20Permutation%20with%20Repetition%20is,(r%20times
+ *
  * Refer:
  * 1) https://leetcode.com/problems/unique-paths/discuss/22958/Math-solution-O(1)-space
- * 2) Approach 2 (Math) - https://leetcode.com/problems/unique-paths/solution/
+ * 2) https://leetcode.com/problems/unique-paths/discuss/22958/Math-solution-O(1)-space/22394
+ * 3) Approach 2 (Math) - https://leetcode.com/problems/unique-paths/solution/
  * </pre>
  *
  * Time Complexity: O(min(M,N)). Assuming Multiplication and Division takes
@@ -79,20 +88,28 @@ class Solution1 {
  */
 class Solution2 {
     public int uniquePaths(int m, int n) {
-        if (m <= 0 || n <= 0) {
+        if (m < 0 || n < 0) {
+            throw new IllegalArgumentException("Input is invalid");
+        }
+        if (m == 0 || n == 0) {
             return 0;
         }
         if (m == 1 || n == 1) {
             return 1;
         }
+
         if (m < n) {
-            uniquePaths(n, m);
+            return uniquePaths(n, m);
         }
 
         m--;
         n--;
 
         long paths = 1;
+        // Direction of for loop and order of statements have to be this to get the
+        // correct answer. We cannot change the order and direction.
+        // As we are diving from 1 to n.. we are making sure that the numerator has the
+        // numbers that can be divided by the denominator.
         for (int i = 1; i <= n; i++) {
             paths *= (m + i);
             paths /= i;

@@ -18,7 +18,7 @@
 class Solution {
     public int firstMissingPositive(int[] nums) {
         if (nums == null) {
-            throw new IllegalArgumentException("Null Input");
+            throw new IllegalArgumentException("Inout nums array is null");
         }
 
         int len = nums.length;
@@ -37,9 +37,14 @@ class Solution {
                 // Placing nums[i] to its correct index, which is nums[i]-1.
                 // Each number will be placed at its correct index once. Thus this loop will
                 // never run for infinite time.
-                int temp = nums[i];
-                nums[i] = nums[temp - 1];
-                nums[temp - 1] = temp;
+
+                int t = nums[i];
+                nums[i] = nums[t - 1];
+                nums[t - 1] = t;
+
+                // int t = nums[nums[i]-1];
+                // nums[nums[i]-1] = nums[i];
+                // nums[i] = t;
             }
         }
 

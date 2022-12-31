@@ -14,12 +14,12 @@ class TicTacToe {
 
     int[] rows;
     int[] cols;
-    int diag1;
-    int diag2;
+    int diag;
+    int antiDiag;
 
     public TicTacToe(int n) {
         if (n <= 0) {
-            throw new IllegalArgumentException("Invalid size");
+            throw new IllegalArgumentException("Input board is invalid");
         }
 
         rows = new int[n];
@@ -29,16 +29,17 @@ class TicTacToe {
     public int move(int row, int col, int player) {
         int n = rows.length;
         int val = player == 1 ? 1 : -1;
+
         rows[row] += val;
         cols[col] += val;
         if (row == col) {
-            diag1 += val;
+            diag += val;
         }
         if (row + col == n - 1) {
-            diag2 += val;
+            antiDiag += val;
         }
 
-        if (Math.abs(rows[row]) == n || Math.abs(cols[col]) == n || Math.abs(diag1) == n || Math.abs(diag2) == n) {
+        if (Math.abs(rows[row]) == n || Math.abs(cols[col]) == n || Math.abs(diag) == n || Math.abs(antiDiag) == n) {
             return player;
         }
         return 0;

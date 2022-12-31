@@ -12,22 +12,22 @@ import java.util.*;
  */
 class Solution1 {
     public int evalRPN(String[] tokens) {
-        if (tokens == null || tokens.length == 0) {
-            return 0;
+        if (tokens == null) {
+            throw new IllegalArgumentException("Input array is null");
         }
-        if (tokens.length == 1) {
-            return Integer.parseInt(tokens[0]);
+        if (tokens.length == 0) {
+            return 0;
         }
 
         Deque<Integer> stack = new ArrayDeque<>();
-
         for (String token : tokens) {
             switch (token) {
                 case "+":
                     stack.push(stack.pop() + stack.pop());
                     break;
                 case "-":
-                    stack.push(-stack.pop() + stack.pop());
+                    int nums = stack.pop();
+                    stack.push(stack.pop() - nums);
                     break;
                 case "*":
                     stack.push(stack.pop() * stack.pop());
@@ -43,9 +43,8 @@ class Solution1 {
                     try {
                         stack.push(Integer.parseInt(token));
                     } catch (NumberFormatException e) {
-                        throw new IllegalArgumentException("Invalid RPN Expression: Token not supported: " + token);
+                        throw new IllegalArgumentException("Invalid RPN Expression: Token not supported: " + token, e);
                     }
-
             }
         }
 
@@ -119,7 +118,7 @@ class Solution2 {
  *
  * Space Complexity: O(N)
  */
-public class ReversePolishNotation {
+class ReversePolishNotation {
 
     public int evalRPN(String[] tokens) throws IllegalArgumentException, ArithmeticException {
         if (tokens == null) {
@@ -129,57 +128,51 @@ public class ReversePolishNotation {
             return 0;
         }
 
-        Stack<Integer> stack = new Stack<>();
-        HashSet<String> operators = new HashSet<>(Arrays.asList("/", "*", "+", "-", "!", "<=", ">="));
+        Deque<Integer> stack = new ArrayDeque<>();
 
         for (String token : tokens) {
             if (token == null || token.length() == 0) {
                 throw new IllegalArgumentException("Invalid RPN Expression");
             }
 
-            if (operators.contains(token)) {
-                int[] nums;
-
-                switch (token) {
-                    case "/":
-                        nums = getTwoNumbers(stack);
-                        if (nums[1] == 0) {
-                            throw new ArithmeticException("Division by zero");
-                        }
-                        stack.push(nums[0] / nums[1]);
-                        break;
-                    case "*":
-                        nums = getTwoNumbers(stack);
-                        stack.push(nums[0] * nums[1]);
-                        break;
-                    case "+":
-                        nums = getTwoNumbers(stack);
-                        stack.push(nums[0] + nums[1]);
-                        break;
-                    case "-":
-                        nums = getTwoNumbers(stack);
-                        stack.push(nums[0] - nums[1]);
-                        break;
-                    case "!":
-                        stack.push(fact(getOneNumber(stack)));
-                        break;
-                    case "<=":
-                        nums = getTwoNumbers(stack);
-                        stack.push(nums[0] <= nums[1] ? 1 : 0);
-                        break;
-                    case ">=":
-                        nums = getTwoNumbers(stack);
-                        stack.push(nums[0] >= nums[1] ? 1 : 0);
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Operator not supported");
-                }
-            } else {
-                try {
-                    stack.push(Integer.parseInt(token));
-                } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Invalid RPN Expression: Token not supported: " + token);
-                }
+            int[] nums;
+            switch (token) {
+                case "/":
+                    nums = getTwoNumbers(stack);
+                    if (nums[1] == 0) {
+                        throw new ArithmeticException("Division by zero");
+                    }
+                    stack.push(nums[0] / nums[1]);
+                    break;
+                case "*":
+                    nums = getTwoNumbers(stack);
+                    stack.push(nums[0] * nums[1]);
+                    break;
+                case "+":
+                    nums = getTwoNumbers(stack);
+                    stack.push(nums[0] + nums[1]);
+                    break;
+                case "-":
+                    nums = getTwoNumbers(stack);
+                    stack.push(nums[0] - nums[1]);
+                    break;
+                case "!":
+                    stack.push(fact(getOneNumber(stack)));
+                    break;
+                case "<=":
+                    nums = getTwoNumbers(stack);
+                    stack.push(nums[0] <= nums[1] ? 1 : 0);
+                    break;
+                case ">=":
+                    nums = getTwoNumbers(stack);
+                    stack.push(nums[0] >= nums[1] ? 1 : 0);
+                    break;
+                default:
+                    try {
+                        stack.push(Integer.parseInt(token));
+                    } catch (NumberFormatException e) {
+                        throw new IllegalArgumentException("Invalid RPN Expression: Token not supported: " + token, e);
+                    }
             }
         }
 
@@ -190,7 +183,7 @@ public class ReversePolishNotation {
         return stack.pop();
     }
 
-    private int[] getTwoNumbers(Stack<Integer> stack) throws IllegalArgumentException {
+    private int[] getTwoNumbers(Deque<Integer> stack) throws IllegalArgumentException {
         if (stack.size() < 2) {
             throw new IllegalArgumentException("Invalid RPN Expression");
         }
@@ -201,7 +194,7 @@ public class ReversePolishNotation {
         return new int[] { num1, num2 };
     }
 
-    private int getOneNumber(Stack<Integer> stack) throws IllegalArgumentException {
+    private int getOneNumber(Deque<Integer> stack) throws IllegalArgumentException {
         if (stack.isEmpty()) {
             throw new IllegalArgumentException("Invalid RPN Expression");
         }
