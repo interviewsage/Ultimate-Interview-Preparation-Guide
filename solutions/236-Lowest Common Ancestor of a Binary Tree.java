@@ -1,12 +1,7 @@
 // LeetCode Question URL: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/
+// LeetCode Discuss URL:
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 // Definition for a binary tree node.
 class TreeNode {
@@ -33,24 +28,76 @@ class TreeNode {
  */
 class Solution1 {
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        if (root == null || p == null || q == null) {
-            return null;
-        }
-
-        if (root == p || root == q) {
+        if (root == null || root == p || root == q) {
             return root;
         }
 
         TreeNode left = lowestCommonAncestor(root.left, p, q);
         TreeNode right = lowestCommonAncestor(root.right, p, q);
 
-        if (left == null) {
-            return right;
+        if (left != null && right != null) {
+            return root;
         }
-        if (right == null) {
-            return left;
+        return left != null ? left : right;
+    }
+}
+
+/**
+ * Iterative Solution - PostOrder
+ *
+ * This solution assumes that both nodes are present in the tree.
+ *
+ * Time Complexity: O(N) - Every node is inserted into stack once and then
+ * popped once.
+ *
+ * Space Complexity: O(H) - In worst case of skewed tree, the recursion stack
+ * can grow up to O(N).
+ *
+ * N = Number of nodes in the tree. H = Height of the tree.
+ */
+class Solution2 {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || root == p || root == q) {
+            return root;
         }
-        return root;
+
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        TreeNode cur = root;
+        TreeNode pre = null;
+        TreeNode lca = null;
+        boolean oneNodeFound = false;
+
+        while (cur != null || !stack.isEmpty()) {
+            while (cur != null) {
+                if (cur == p || cur == q) {
+                    if (oneNodeFound) {
+                        return lca;
+                    }
+                    oneNodeFound = true;
+                    lca = cur;
+                }
+                stack.push(cur);
+                cur = cur.left;
+            }
+
+            cur = stack.peek();
+            if (cur.right != null && cur.right != pre) {
+                cur = cur.right;
+                continue;
+            }
+
+            stack.pop();
+            if (oneNodeFound && lca == cur) {
+                if (stack.isEmpty()) {
+                    return null;
+                }
+                lca = stack.peek();
+            }
+            pre = cur;
+            cur = null;
+        }
+
+        return null;
     }
 }
 
@@ -70,7 +117,7 @@ class Solution1 {
  *
  * N = Number of nodes in the tree.
  */
-class Solution2 {
+class Solution3 {
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
         if (root == null || p == null || q == null) {
             return null;
@@ -109,55 +156,6 @@ class Solution2 {
                 return q;
             }
             q = parentMap.get(q);
-        }
-
-        return null;
-    }
-}
-
-class Solution3 {
-    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        if (root == null || p == null || q == null) {
-            return null;
-        }
-        if (root == p || root == q) {
-            return root;
-        }
-
-        Deque<TreeNode> stack = new ArrayDeque<>();
-        TreeNode cur = root;
-        TreeNode pre = null;
-        TreeNode lca = null;
-        boolean oneNodeFound = false;
-
-        while (cur != null || !stack.isEmpty()) {
-            while (cur != null) {
-                if (cur == p || cur == q) {
-                    if (oneNodeFound) {
-                        return lca;
-                    }
-                    lca = cur;
-                    oneNodeFound = true;
-                }
-
-                stack.push(cur);
-                cur = cur.left;
-            }
-
-            cur = stack.peek();
-            if (cur.right != null && cur.right != pre) {
-                cur = cur.right;
-                continue;
-            }
-
-            pre = stack.pop();
-            if (oneNodeFound && lca == pre) {
-                if (stack.isEmpty()) {
-                    return null;
-                }
-                lca = stack.peek();
-            }
-            cur = null;
         }
 
         return null;
