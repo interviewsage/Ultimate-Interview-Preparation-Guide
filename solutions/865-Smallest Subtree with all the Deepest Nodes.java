@@ -1,4 +1,4 @@
-// LeetCode Question URL: https://leetcode.com/problems/lowest-common-ancestor-of-deepest-leaves/
+// LeetCode Question URL: https://leetcode.com/problems/smallest-subtree-with-all-the-deepest-nodes/
 // LeetCode Discuss URL:
 
 import java.util.*;
@@ -45,20 +45,20 @@ class Solution1 {
         }
     }
 
-    public TreeNode lcaDeepestLeaves(TreeNode root) {
+    public TreeNode subtreeWithAllDeepest(TreeNode root) {
         if (root == null) {
             return null;
         }
-        return lcaDeepestLeavesHelper(root).lca;
+        return subtreeWithAllDeepestHelper(root).lca;
     }
 
-    private LcaResponse lcaDeepestLeavesHelper(TreeNode node) {
+    private LcaResponse subtreeWithAllDeepestHelper(TreeNode node) {
         if (node == null) {
             return new LcaResponse(null, -1);
         }
 
-        LcaResponse left = lcaDeepestLeavesHelper(node.left);
-        LcaResponse right = lcaDeepestLeavesHelper(node.right);
+        LcaResponse left = subtreeWithAllDeepestHelper(node.left);
+        LcaResponse right = subtreeWithAllDeepestHelper(node.right);
 
         LcaResponse response = new LcaResponse();
         response.height = Math.max(left.height, right.height) + 1;
@@ -85,7 +85,7 @@ class Solution1 {
  * N = Number of nodes in tree. W = Width of the tree.
  */
 class Solution2 {
-    public TreeNode lcaDeepestLeaves(TreeNode root) {
+    public TreeNode subtreeWithAllDeepest(TreeNode root) {
         if (root == null) {
             return null;
         }
@@ -129,7 +129,7 @@ class Solution2 {
  *
  * Using height to determine the subtree with deepest nodes.
  *
- * Time Complexity: O(N) - All nodes are visited once
+ * Time Complexity: O(N)
  *
  * Space Complexity: O(H) = O(N) in worst case.
  *
@@ -146,7 +146,7 @@ class Solution3 {
         }
     }
 
-    public TreeNode lcaDeepestLeaves(TreeNode root) {
+    public TreeNode subtreeWithAllDeepest(TreeNode root) {
         if (root == null) {
             return null;
         }
