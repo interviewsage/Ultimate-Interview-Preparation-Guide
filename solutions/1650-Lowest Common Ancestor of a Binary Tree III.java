@@ -1,4 +1,5 @@
 // LeetCode Question URL: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree-iii/
+// LeetCode Discuss URL:
 
 // Definition for a Node.
 class Node {
@@ -11,6 +12,9 @@ class Node {
 /**
  * Using the same concept as the intersection of the linked list.
  *
+ * This solution handles the case when the nodes are not part of same
+ * tree.
+ *
  * Time Complexity: O(D1 + D2) = O(Depth of Node P + Depth of Node Q)
  *
  * Space Complexity: O(1)
@@ -18,22 +22,15 @@ class Node {
 class Solution {
     public Node lowestCommonAncestor(Node p, Node q) {
         if (p == null || q == null) {
-            throw new IllegalArgumentException("Input is invalid");
+            return null;
         }
 
         Node p1 = p;
         Node p2 = q;
 
         while (p1 != p2) {
-            p1 = p1.parent;
-            p2 = p2.parent;
-
-            if (p1 == null) {
-                p1 = q;
-            }
-            if (p2 == null) {
-                p2 = p;
-            }
+            p1 = (p1 == null) ? q : p1.parent;
+            p2 = (p2 == null) ? p : p2.parent;
         }
 
         return p1;
@@ -41,6 +38,8 @@ class Solution {
 }
 
 /**
+ * THIS SOLUTION IS NOT NEEDED
+ *
  * In this solution we are handling the case when the nodes are not part of same
  * tree. This solution will ensure that we do not go into endless loop and exit
  * when the root is reached second time.
