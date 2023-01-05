@@ -30,7 +30,10 @@ class Solution1 {
         }
 
         int j = len - 1;
-        while (j > i && (arr[i] <= arr[j] || arr[j - 1] == arr[j])) {
+        // Here we can skip j > i.. as we have already found a valid pivot and there
+        // will be a number less than pivot.
+        // while (j > i && (arr[i] <= arr[j] || arr[j - 1] == arr[j])) {
+        while (arr[i] <= arr[j] || arr[j - 1] == arr[j]) {
             j--;
         }
 
