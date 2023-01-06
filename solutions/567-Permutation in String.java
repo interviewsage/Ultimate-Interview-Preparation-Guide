@@ -16,48 +16,45 @@ import java.util.*;
 class Solution1 {
     public boolean checkInclusion(String s1, String s2) {
         if (s1 == null || s2 == null) {
-            throw new IllegalArgumentException("Input string is null");
+            throw new IllegalArgumentException("Input is invalid");
         }
 
-        int l1 = s1.length();
-        int l2 = s2.length();
-        if (l1 == 0) {
+        int len1 = s1.length();
+        int len2 = s2.length();
+        if (len1 == 0) {
             return true;
         }
-        if (l2 < l1) {
+        if (len1 > len2) {
             return false;
         }
 
-        HashMap<Character, Integer> countMap = new HashMap<>();
-        for (int i = 0; i < l1; i++) {
-            countMap.put(s1.charAt(i), countMap.getOrDefault(s1.charAt(i), 0) + 1);
+        Map<Character, Integer> countMap = new HashMap<>();
+        for (int i = 0; i < len1; i++) {
+            char c = s1.charAt(i);
+            countMap.put(c, countMap.getOrDefault(c, 0) + 1);
         }
 
         int toBeMatched = countMap.size();
-        int start = 0;
-        int end = 0;
 
-        while (end < l2) {
-            char eChar = s2.charAt(end);
-            if (countMap.containsKey(eChar)) {
-                int count = countMap.get(eChar);
+        for (int i = 0; i < len2; i++) {
+            char c = s2.charAt(i);
+            Integer count = countMap.get(c);
+            if (count != null) {
                 if (count == 1) {
                     toBeMatched--;
                 }
-                countMap.put(eChar, count - 1);
+                countMap.put(c, count - 1);
             }
-            end++;
 
-            if (end - start > l1) {
-                char sChar = s2.charAt(start);
-                if (countMap.containsKey(sChar)) {
-                    int count = countMap.get(sChar);
+            if (i >= len1) {
+                c = s2.charAt(i - len1);
+                count = countMap.get(c);
+                if (count != null) {
                     if (count == 0) {
                         toBeMatched++;
                     }
-                    countMap.put(sChar, count + 1);
+                    countMap.put(c, count + 1);
                 }
-                start++;
             }
 
             if (toBeMatched == 0) {

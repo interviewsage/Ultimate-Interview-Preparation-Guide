@@ -14,27 +14,30 @@
  */
 class Solution1 {
     public int minSubArrayLen(int target, int[] nums) {
-        if (nums == null || target < 0) {
+        if (nums == null) {
             throw new IllegalArgumentException("Input array is null");
         }
 
         int len = nums.length;
+        if (len == 0 || target <= 0) {
+            return 0;
+        }
+
         int start = 0;
         int end = 0;
         int minLen = len + 1;
 
         while (end < len) {
-            target -= nums[end];
-            end++;
+            target -= nums[end++];
 
             while (target <= 0) {
                 minLen = Math.min(minLen, end - start);
-                target += nums[start];
-                start++;
+                target += nums[start++];
             }
         }
 
-        return minLen % (len + 1);
+        // return minLen % (len + 1);
+        return minLen == len + 1 ? 0 : minLen;
     }
 }
 
@@ -55,18 +58,22 @@ class Solution1 {
  */
 class Solution2 {
     public int minSubArrayLen(int target, int[] nums) {
-        if (nums == null || target < 0) {
+        if (nums == null) {
             throw new IllegalArgumentException("Input array is null");
         }
 
         int len = nums.length;
+        if (len == 0 || target <= 0) {
+            return 0;
+        }
+
         int start = 1;
         int end = len;
         int minLen = len + 1;
 
         while (start <= end) {
             int mid = start + (end - start) / 2;
-            int foundWindowSize = windowExists(nums, target, mid);
+            int foundWindowSize = doesWindowExists(nums, target, mid);
             if (foundWindowSize > 0) {
                 end = foundWindowSize - 1;
                 minLen = foundWindowSize;
@@ -75,18 +82,19 @@ class Solution2 {
             }
         }
 
-        return minLen % (len + 1);
+        // return minLen % (len + 1);
+        return minLen == len + 1 ? 0 : minLen;
     }
 
-    private int windowExists(int[] nums, int target, int maxWindowSize) {
+    private int doesWindowExists(int[] nums, int target, int maxWindowSize) {
         int foundWindowSize = 0;
         for (int i = 0; i < nums.length; i++) {
             target -= nums[i];
-            foundWindowSize++;
 
             if (i >= maxWindowSize) {
-                foundWindowSize--;
                 target += nums[i - maxWindowSize];
+            } else {
+                foundWindowSize++;
             }
 
             if (target <= 0) {

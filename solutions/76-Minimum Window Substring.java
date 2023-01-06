@@ -13,55 +13,58 @@ import javafx.util.*;
  *
  * S = length of String s. T = length of String t
  */
-class Solution1 {
+class Solution {
     public String minWindow(String s, String t) {
         if (s == null || t == null) {
             throw new IllegalArgumentException("Input string is null");
         }
-        if (s.length() < t.length() || t.length() == 0) {
+
+        int sLen = s.length();
+        int tLen = t.length();
+        if (sLen < tLen || tLen == 0) {
             return "";
         }
 
-        HashMap<Character, Integer> map = new HashMap<>();
-        for (int i = 0; i < t.length(); i++) {
-            map.put(t.charAt(i), map.getOrDefault(t.charAt(i), 0) + 1);
+        Map<Character, Integer> countMap = new HashMap<>();
+        for (int i = 0; i < tLen; i++) {
+            char c = t.charAt(i);
+            countMap.put(c, countMap.getOrDefault(c, 0) + 1);
         }
 
+        int minStart = 0;
+        int minLen = sLen + 1;
         int start = 0;
         int end = 0;
-        int charTLeft = t.length();
-        int minStart = 0;
-        int minLen = Integer.MAX_VALUE;
 
-        while (end < s.length()) {
-            char eChar = s.charAt(end);
-            if (map.containsKey(eChar)) {
-                int count = map.get(eChar);
-                if (count > 0) {
-                    charTLeft--;
+        while (end < sLen) {
+            char eChar = s.charAt(end++);
+            Integer eCount = countMap.get(eChar);
+            if (eCount != null) {
+                if (eCount > 0) {
+                    tLen--;
                 }
-                map.put(eChar, count - 1);
+                countMap.put(eChar, eCount - 1);
             }
-            end++;
 
-            while (charTLeft == 0) {
+            while (tLen == 0) {
                 if (minLen > end - start) {
-                    minLen = end - start;
                     minStart = start;
+                    minLen = end - start;
                 }
-                char sChar = s.charAt(start);
-                if (map.containsKey(sChar)) {
-                    int count = map.get(sChar);
-                    if (count == 0) {
-                        charTLeft++;
+                char sChar = s.charAt(start++);
+                Integer sCount = countMap.get(sChar);
+                if (sCount != null) {
+                    // Here sCount can be negative or zero. As soon as the count becomes greater
+                    // than zero, the window is not valid.
+                    if (sCount == 0) {
+                        tLen++;
                     }
-                    map.put(sChar, count + 1);
+                    countMap.put(sChar, sCount + 1);
                 }
-                start++;
             }
         }
 
-        return minLen == Integer.MAX_VALUE ? "" : s.substring(minStart, minStart + minLen);
+        return minLen == sLen + 1 ? "" : s.substring(minStart, minStart + minLen);
     }
 }
 

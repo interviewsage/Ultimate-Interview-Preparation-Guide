@@ -18,50 +18,52 @@ import java.util.*;
 class Solution {
     public List<Integer> findAnagrams(String s, String p) {
         if (s == null || p == null) {
-            throw new IllegalArgumentException("Input string is null");
+            throw new IllegalArgumentException("Input is invalid");
         }
 
-        List<Integer> result = new ArrayList<>();
         int sLen = s.length();
         int pLen = p.length();
-        if (sLen * pLen == 0 || sLen < pLen) {
+        List<Integer> result = new ArrayList<>();
+        // (Ask Interviewer) If we have to handle this, then add all indexes using a for
+        // loop and then return it.
+        // if (pLen == 0) {
+        // return true;
+        // }
+        if (sLen < pLen) {
             return result;
         }
 
-        Map<Character, Integer> map = new HashMap<>();
-        for (int i = 0; i < p.length(); i++) {
-            map.put(p.charAt(i), map.getOrDefault(p.charAt(i), 0) + 1);
+        Map<Character, Integer> countMap = new HashMap<>();
+        for (int i = 0; i < pLen; i++) {
+            char c = p.charAt(i);
+            countMap.put(c, countMap.getOrDefault(c, 0) + 1);
         }
 
-        int toBeMatched = map.size();
-        int start = 0;
-        int end = 0;
+        int toBeMatched = countMap.size();
 
-        while (end < sLen) {
-            char eChar = s.charAt(end);
-            if (map.containsKey(eChar)) {
-                int count = map.get(eChar);
+        for (int i = 0; i < sLen; i++) {
+            char c = s.charAt(i);
+            Integer count = countMap.get(c);
+            if (count != null) {
                 if (count == 1) {
                     toBeMatched--;
                 }
-                map.put(eChar, count - 1);
+                countMap.put(c, count - 1);
             }
-            end++;
 
-            if (end - start > pLen) {
-                char sChar = s.charAt(start);
-                if (map.containsKey(sChar)) {
-                    int count = map.get(sChar);
+            if (i >= pLen) {
+                c = s.charAt(i - pLen);
+                count = countMap.get(c);
+                if (count != null) {
                     if (count == 0) {
                         toBeMatched++;
                     }
-                    map.put(sChar, count + 1);
+                    countMap.put(c, count + 1);
                 }
-                start++;
             }
 
             if (toBeMatched == 0) {
-                result.add(start);
+                result.add(i - pLen + 1);
             }
         }
 
