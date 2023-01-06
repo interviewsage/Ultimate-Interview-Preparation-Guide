@@ -14,32 +14,37 @@ import java.util.*;
  */
 class Solution1 {
     public int[] intersection(int[] nums1, int[] nums2) {
-        if (nums1 == null || nums2 == null || nums1.length == 0 || nums2.length == 0) {
+        if (nums1 == null || nums2 == null) {
+            throw new IllegalArgumentException("Input arrays are null");
+        }
+
+        int len1 = nums1.length;
+        int len2 = nums2.length;
+        if (len1 == 0 || len2 == 0) {
             return new int[0];
         }
 
-        if (nums1.length > nums2.length) {
+        if (len1 > len2) {
             return intersection(nums2, nums1);
         }
 
-        HashSet<Integer> set = new HashSet<>();
-        for (int n : nums1) {
-            set.add(n);
+        Set<Integer> nums1Set = new HashSet<>();
+        for (int n1 : nums1) {
+            nums1Set.add(n1);
         }
 
-        HashSet<Integer> resultSet = new HashSet<>();
-        for (int n : nums2) {
-            if (set.remove(n)) {
-                resultSet.add(n);
+        List<Integer> resultList = new ArrayList<>();
+        for (int n2 : nums2) {
+            if (nums1Set.remove(n2)) {
+                resultList.add(n2);
             }
         }
 
-        int[] result = new int[resultSet.size()];
-        int i = 0;
-        for (int n : resultSet) {
-            result[i++] = n;
+        int[] result = new int[resultList.size()];
+        int idx = 0;
+        for (int n : resultList) {
+            result[idx++] = n;
         }
-
         return result;
     }
 }
@@ -55,30 +60,33 @@ class Solution1 {
  */
 class Solution2 {
     public int[] intersection(int[] nums1, int[] nums2) {
-        if (nums1 == null || nums2 == null || nums1.length == 0 || nums2.length == 0) {
+        if (nums1 == null || nums2 == null) {
+            throw new IllegalArgumentException("Input arrays are null");
+        }
+
+        int len1 = nums1.length;
+        int len2 = nums2.length;
+        if (len1 == 0 || len2 == 0) {
             return new int[0];
         }
 
-        if (nums1.length > nums2.length) {
+        if (len1 > len2) {
             return intersection(nums2, nums1);
         }
 
         Arrays.sort(nums1);
-
-        HashSet<Integer> set = new HashSet<>();
-
-        for (int n : nums2) {
-            if (!set.contains(n) && Arrays.binarySearch(nums1, n) >= 0) {
-                set.add(n);
+        Set<Integer> resultSet = new HashSet<>();
+        for (int n2 : nums2) {
+            if (!resultSet.contains(n2) & Arrays.binarySearch(nums1, n2) >= 0) {
+                resultSet.add(n2);
             }
         }
 
-        int[] result = new int[set.size()];
-        int i = 0;
-        for (int n : set) {
-            result[i++] = n;
+        int[] result = new int[resultSet.size()];
+        int idx = 0;
+        for (int n : resultSet) {
+            result[idx++] = n;
         }
-
         return result;
     }
 }
@@ -94,36 +102,39 @@ class Solution2 {
  */
 class Solution3 {
     public int[] intersection(int[] nums1, int[] nums2) {
-        if (nums1 == null || nums2 == null || nums1.length == 0 || nums2.length == 0) {
+        if (nums1 == null || nums2 == null) {
+            throw new IllegalArgumentException("Input arrays are null");
+        }
+
+        int len1 = nums1.length;
+        int len2 = nums2.length;
+        if (len1 == 0 || len2 == 0) {
             return new int[0];
         }
 
-        HashSet<Integer> set = new HashSet<>();
-
         Arrays.sort(nums1);
         Arrays.sort(nums2);
-
+        Set<Integer> resultSet = new HashSet<>();
         int i = 0;
         int j = 0;
 
-        while (i < nums1.length && j < nums2.length) {
+        while (i < len1 && j < len2) {
             if (nums1[i] < nums2[j]) {
                 i++;
             } else if (nums1[i] > nums2[j]) {
                 j++;
             } else {
-                set.add(nums1[i]);
+                resultSet.add(nums1[i]);
                 i++;
                 j++;
             }
         }
 
-        int[] result = new int[set.size()];
-        i = 0;
-        for (int n : set) {
-            result[i++] = n;
+        int[] result = new int[resultSet.size()];
+        int idx = 0;
+        for (int n : resultSet) {
+            result[idx++] = n;
         }
-
         return result;
     }
 }

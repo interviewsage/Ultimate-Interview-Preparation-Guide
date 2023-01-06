@@ -18,8 +18,8 @@ import java.util.*;
  *
  * Above equations can be added together to get:
  * T(n) = n (1 + n + n*(n-1) + ... + (n....2) + (n....1))
- *      = n (P(n,0) + P(n,1) + P(n,1) + ... + P(n,n-1) + P(n,n))
- *      = n * Floor(e*n!)
+ *      = n (P(n,0) + P(n,1) + P(n,1) + ... + P(n,n-1))
+ *      = n * (Floor(e*n!) - P(n,n))
  *      = O(N * N!)
  * Refer: https://math.stackexchange.com/questions/2019675/sum-of-permutations-from-0-to-n
  * </pre>
@@ -140,8 +140,8 @@ class Solution2 {
  *
  * Above equations can be added together to get:
  * T(n) = n (1 + n + n*(n-1) + ... + (n....2) + (n....1))
- *      = n (P(n,0) + P(n,1) + P(n,1) + ... + P(n,n-1) + P(n,n))
- *      = n * Floor(e*n!)
+ *      = n (P(n,0) + P(n,1) + P(n,1) + ... + P(n,n-1))
+ *      = n * (Floor(e*n!) - P(n,n))
  *      = O(N * N!)
  * Refer: https://math.stackexchange.com/questions/2019675/sum-of-permutations-from-0-to-n
  * </pre>

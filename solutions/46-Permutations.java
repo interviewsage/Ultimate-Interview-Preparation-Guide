@@ -32,17 +32,19 @@ import java.util.*;
  */
 class Solution1 {
     public List<List<Integer>> permute(int[] nums) {
+        if (nums == null) {
+            throw new IllegalArgumentException("Input is nums array null");
+        }
         List<List<Integer>> result = new ArrayList<>();
-        if (nums == null || nums.length == 0) {
+        if (nums.length == 0) {
             return result;
         }
 
-        permutationsHelper(result, nums, 0);
-
+        permuteHelper(result, nums, 0);
         return result;
     }
 
-    private void permutationsHelper(List<List<Integer>> result, int[] nums, int start) {
+    private void permuteHelper(List<List<Integer>> result, int[] nums, int start) {
         if (start == nums.length - 1) {
             List<Integer> list = new ArrayList<>();
             for (int n : nums) {
@@ -54,15 +56,17 @@ class Solution1 {
 
         for (int i = start; i < nums.length; i++) {
             swap(nums, start, i);
-            permutationsHelper(result, nums, start + 1);
+            permuteHelper(result, nums, start + 1);
             swap(nums, start, i);
         }
     }
 
-    private void swap(int[] nums, int x, int y) {
-        int t = nums[x];
-        nums[x] = nums[y];
-        nums[y] = t;
+    private void swap(int[] nums, int a, int b) {
+        if (a != b) {
+            int t = nums[a];
+            nums[a] = nums[b];
+            nums[b] = t;
+        }
     }
 }
 
@@ -131,8 +135,8 @@ class Solution2 {
  *
  * Above equations can be added together to get:
  * T(n) = n (1 + n + n*(n-1) + ... + (n....2) + (n....1))
- *      = n (P(n,0) + P(n,1) + P(n,1) + ... + P(n,n-1) + P(n,n))
- *      = n * Floor(e*n!)
+ *      = n (P(n,0) + P(n,1) + P(n,1) + ... + P(n,n-1))
+ *      = n * (Floor(e*n!) - P(n,n))
  *      = O(N * N!)
  * Refer: https://math.stackexchange.com/questions/2019675/sum-of-permutations-from-0-to-n
  * </pre>

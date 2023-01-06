@@ -10,16 +10,16 @@
  */
 class Solution {
     public char findTheDifference(String s, String t) {
-        if (s == null || t == null || t.length() != s.length() + 1) {
+        if (s == null || t == null || t.length() - s.length() != 1) {
             throw new IllegalArgumentException("Input is invalid");
         }
 
-        int len = s.length();
-        char xor = t.charAt(len);
-        for (int i = 0; i < len; i++) {
-            xor ^= s.charAt(i) ^ t.charAt(i);
+        int sLen = s.length();
+        char result = t.charAt(sLen);
+        for (int i = 0; i < sLen; i++) {
+            result ^= s.charAt(i) ^ t.charAt(i);
         }
 
-        return xor;
+        return result;
     }
 }

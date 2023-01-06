@@ -19,34 +19,26 @@ import java.util.List;
  */
 class Solution1 {
     public List<String> letterCasePermutation(String s) {
-        List<String> result = new ArrayList<>();
         if (s == null) {
-            return result;
-        }
-        if (s.length() == 0) {
-            result.add(s);
-            return result;
+            throw new IllegalArgumentException("Input string is null");
         }
 
-        letterCasePermutationHelper(s.toCharArray(), 0, result);
-        return result;
+        List<String> resultList = new ArrayList<>();
+        letterCasePermutationHelper(resultList, s.toCharArray(), 0);
+        return resultList;
     }
 
-    private void letterCasePermutationHelper(char[] chArr, int idx, List<String> result) {
+    private void letterCasePermutationHelper(List<String> resultList, char[] chArr, int idx) {
         if (idx == chArr.length) {
-            result.add(new String(chArr));
+            resultList.add(new String(chArr));
             return;
         }
 
-        char c = chArr[idx];
-        if (!Character.isLetter(c)) {
-            letterCasePermutationHelper(chArr, idx + 1, result);
-        } else {
-            chArr[idx] = Character.toLowerCase(c);
-            letterCasePermutationHelper(chArr, idx + 1, result);
-
-            chArr[idx] = Character.toUpperCase(c);
-            letterCasePermutationHelper(chArr, idx + 1, result);
+        letterCasePermutationHelper(resultList, chArr, idx + 1);
+        if (Character.isLetter(chArr[idx])) {
+            chArr[idx] = Character.isUpperCase(chArr[idx]) ? Character.toLowerCase(chArr[idx])
+                    : Character.toUpperCase(chArr[idx]);
+            letterCasePermutationHelper(resultList, chArr, idx + 1);
         }
     }
 }
@@ -62,31 +54,25 @@ class Solution1 {
  */
 class Solution2 {
     public List<String> letterCasePermutation(String s) {
-        List<String> result = new ArrayList<>();
         if (s == null) {
-            return result;
-        }
-        if (s.length() == 0) {
-            result.add(s);
-            return result;
+            throw new IllegalArgumentException("Input string is null");
         }
 
-        letterCasePermutationHelper(s.toCharArray(), 0, result);
-        return result;
+        List<String> resultList = new ArrayList<>();
+        letterCasePermutationHelper(resultList, s.toCharArray(), 0);
+        return resultList;
     }
 
-    private void letterCasePermutationHelper(char[] chArr, int idx, List<String> result) {
+    private void letterCasePermutationHelper(List<String> resultList, char[] chArr, int idx) {
         if (idx == chArr.length) {
-            result.add(new String(chArr));
+            resultList.add(new String(chArr));
             return;
         }
 
-        letterCasePermutationHelper(chArr, idx + 1, result);
-        char c = chArr[idx];
+        letterCasePermutationHelper(resultList, chArr, idx + 1);
         if (Character.isLetter(chArr[idx])) {
-            // Toggle character's case
             chArr[idx] ^= (1 << 5);
-            letterCasePermutationHelper(chArr, idx + 1, result);
+            letterCasePermutationHelper(resultList, chArr, idx + 1);
         }
     }
 }
@@ -99,6 +85,42 @@ class Solution2 {
  * 1. Approach #1: Recursion [Accepted] - https://leetcode.com/problems/letter-case-permutation/solution/
  * </pre>
  */
+class Solution3 {
+    public List<String> letterCasePermutation(String s) {
+        if (s == null) {
+            throw new IllegalArgumentException("Input string is null");
+        }
+
+        List<StringBuilder> resultList = new ArrayList<>();
+        resultList.add(new StringBuilder());
+
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            int curSize = resultList.size();
+            if (Character.isLetter(c)) {
+                // char toggledC = Character.isUpperCase(c) ? Character.toLowerCase(c) :
+                // Character.toUpperCase(c);
+                char toggledC = (char) (c ^ (1 << 5));
+                for (int j = 0; j < curSize; j++) {
+                    resultList.add(new StringBuilder(resultList.get(j)));
+                    resultList.get(j).append(c);
+                    resultList.get(curSize + j).append(toggledC);
+                }
+            } else {
+                for (int j = 0; j < curSize; j++) {
+                    resultList.get(j).append(c);
+                }
+            }
+        }
+
+        List<String> result = new ArrayList<>();
+        for (StringBuilder sb : resultList) {
+            result.add(sb.toString());
+        }
+
+        return result;
+    }
+}
 
 /**
  * DFS (Using string builder)
@@ -113,7 +135,7 @@ class Solution2 {
  *
  * N = length of input string.
  */
-class Solution3 {
+class Solution4 {
     public List<String> letterCasePermutation(String S) {
         List<String> result = new ArrayList<>();
         if (S == null) {

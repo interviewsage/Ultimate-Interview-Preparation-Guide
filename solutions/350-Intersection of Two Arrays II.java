@@ -20,39 +20,44 @@ import java.util.*;
  */
 class Solution1 {
     public int[] intersect(int[] nums1, int[] nums2) {
-        if (nums1 == null || nums2 == null || nums1.length == 0 || nums2.length == 0) {
+        if (nums1 == null || nums2 == null) {
+            throw new IllegalArgumentException("Input arrays are null");
+        }
+
+        int len1 = nums1.length;
+        int len2 = nums2.length;
+        if (len1 == 0 || len2 == 0) {
             return new int[0];
         }
 
-        if (nums1.length > nums2.length) {
+        if (len1 > len2) {
             return intersect(nums2, nums1);
         }
 
-        HashMap<Integer, Integer> countMap = new HashMap<>();
-        for (int n : nums1) {
-            countMap.put(n, countMap.getOrDefault(n, 0) + 1);
+        Map<Integer, Integer> countMap = new HashMap<>();
+        for (int n1 : nums1) {
+            countMap.put(n1, countMap.getOrDefault(n1, 0) + 1);
         }
 
-        ArrayList<Integer> resultList = new ArrayList<>();
-        for (int n : nums2) {
-            Integer count = countMap.get(n);
+        List<Integer> resultList = new ArrayList<>();
+        for (int n2 : nums2) {
+            Integer count = countMap.get(n2);
             if (count == null) {
                 continue;
             }
-            resultList.add(n);
-            if (count > 1) {
-                countMap.put(n, count - 1);
+            resultList.add(n2);
+            if (count == 1) {
+                countMap.remove(n2);
             } else {
-                countMap.remove(n);
+                countMap.put(n2, count - 1);
             }
         }
 
         int[] result = new int[resultList.size()];
-        int i = 0;
+        int idx = 0;
         for (int n : resultList) {
-            result[i++] = n;
+            result[idx++] = n;
         }
-
         return result;
     }
 }
@@ -68,35 +73,39 @@ class Solution1 {
  */
 class Solution2 {
     public int[] intersect(int[] nums1, int[] nums2) {
-        if (nums1 == null || nums2 == null || nums1.length == 0 || nums2.length == 0) {
+        if (nums1 == null || nums2 == null) {
+            throw new IllegalArgumentException("Input arrays are null");
+        }
+
+        int len1 = nums1.length;
+        int len2 = nums2.length;
+        if (len1 == 0 || len2 == 0) {
             return new int[0];
         }
 
         Arrays.sort(nums1);
         Arrays.sort(nums2);
-
-        ArrayList<Integer> resultList = new ArrayList<>();
+        List<Integer> resultList = new ArrayList<>();
         int i = 0;
         int j = 0;
 
-        while (i < nums1.length && j < nums2.length) {
-            if (nums1[i] == nums2[j]) {
+        while (i < len1 && j < len2) {
+            if (nums1[i] < nums2[j]) {
+                i++;
+            } else if (nums1[i] > nums2[j]) {
+                j++;
+            } else {
                 resultList.add(nums1[i]);
                 i++;
-                j++;
-            } else if (nums1[i] < nums2[j]) {
-                i++;
-            } else {
                 j++;
             }
         }
 
         int[] result = new int[resultList.size()];
-        int k = 0;
+        int idx = 0;
         for (int n : resultList) {
-            result[k++] = n;
+            result[idx++] = n;
         }
-
         return result;
     }
 }
@@ -120,23 +129,23 @@ class Solution2 {
  */
 class Solution3 {
     public int[] intersect(int[] nums1, int[] nums2) {
-        if (nums1 == null || nums2 == null || nums1.length == 0 || nums2.length == 0) {
-            return new int[0];
+        if (nums1 == null || nums2 == null) {
+            throw new IllegalArgumentException("Input arrays are null");
         }
-        if (nums1.length > nums2.length) {
-            return intersect(nums2, nums1);
+
+        int len1 = nums1.length;
+        int len2 = nums2.length;
+        if (len1 == 0 || len2 == 0) {
+            return new int[0];
         }
 
         Arrays.sort(nums1);
         Arrays.sort(nums2);
-
         List<Integer> resultList = new ArrayList<>();
-
-        int len1 = nums1.length;
         int i = 0;
-        int nums2Start = 0;
+        int nextNums2Start = 0;
 
-        while (i < len1 && nums2Start < nums2.length) {
+        while (i < len1 && nextNums2Start < len2) {
             int n = nums1[i++];
             int count = 1;
             while (i < len1 && nums1[i] == n) {
@@ -144,30 +153,28 @@ class Solution3 {
                 count++;
             }
 
-            int[] range = getRange(nums2, n, nums2Start);
-            nums2Start = range[1] + 1;
-            if (nums2[range[0]] != n) {
+            int[] range = getRange(nums2, n, nextNums2Start);
+            nextNums2Start = range[1] + 1;
+            if (n != nums2[range[0]]) {
                 continue;
             }
 
-            int l = Math.min(count, range[1] - range[0] + 1);
-            for (int j = 0; j < l; j++) {
+            count = Math.min(count, range[1] - range[0] + 1);
+            while (count-- > 0) {
                 resultList.add(n);
             }
         }
 
         int[] result = new int[resultList.size()];
-        int k = 0;
+        int idx = 0;
         for (int n : resultList) {
-            result[k++] = n;
+            result[idx++] = n;
         }
         return result;
     }
 
     private int[] getRange(int[] nums, int target, int start) {
-        int[] range = new int[2];
         int end = nums.length - 1;
-
         while (start < end) {
             int mid = start + (end - start) / 2;
             if (nums[mid] < target) {
@@ -177,6 +184,7 @@ class Solution3 {
             }
         }
 
+        int[] range = new int[2];
         range[0] = start;
 
         if (nums[start] != target) {
@@ -192,7 +200,6 @@ class Solution3 {
         }
 
         end = nums.length - 1;
-
         while (start < end) {
             int mid = start + (end - start + 1) / 2;
             if (nums[mid] > target) {
@@ -208,8 +215,9 @@ class Solution3 {
 }
 
 /**
- * Sort both arrays. Find range in both smaller and larger array. This solution
- * can be used if both arrays are sorted and one array is very small.
+ * IGNORE THIS: Sort both arrays. Find range in both smaller and larger array.
+ * This solution can be used if both arrays are sorted and one array is very
+ * small.
  *
  * Time Complexity: O(M*2*logN) = O(M*logN)
  *
