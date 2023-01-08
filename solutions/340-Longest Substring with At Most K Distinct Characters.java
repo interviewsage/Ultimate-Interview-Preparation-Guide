@@ -19,31 +19,29 @@ class Solution1 {
         }
 
         int len = s.length();
-        if (k * len == 0) {
+        if (len == 0 || k == 0) {
             return 0;
         }
         if (len <= k) {
             return len;
         }
 
-        LinkedHashMap<Character, Integer> idxMap = new LinkedHashMap<>();
+        LinkedHashMap<Character, Integer> charIdxMap = new LinkedHashMap<>();
         int start = 0;
-        int end = 0;
         int maxLen = 0;
 
-        while (end < len) {
+        for (int end = 0; end < len; end++) {
             char eChar = s.charAt(end);
-            idxMap.remove(eChar);
-            idxMap.put(eChar, end);
-            end++;
+            charIdxMap.remove(eChar);
+            charIdxMap.put(eChar, end);
 
-            if (idxMap.size() > k) {
-                Map.Entry<Character, Integer> leftMostEntry = idxMap.entrySet().iterator().next();
-                idxMap.remove(leftMostEntry.getKey());
-                start = leftMostEntry.getValue() + 1;
+            if (charIdxMap.size() > k) {
+                Map.Entry<Character, Integer> oldestEntry = charIdxMap.entrySet().iterator().next();
+                charIdxMap.remove(oldestEntry.getKey());
+                start = oldestEntry.getValue() + 1;
+            } else {
+                maxLen = Math.max(maxLen, end - start + 1);
             }
-
-            maxLen = Math.max(maxLen, end - start);
         }
 
         return maxLen;

@@ -13,39 +13,35 @@ import java.util.*;
  * N = Length of input string s
  */
 class Solution1 {
-    class Solution {
-        public int lengthOfLongestSubstringTwoDistinct(String s) {
-            if (s == null) {
-                throw new IllegalArgumentException("Input is invalid");
-            }
-
-            int len = s.length();
-            if (len <= 2) {
-                return len;
-            }
-
-            LinkedHashMap<Character, Integer> idxMap = new LinkedHashMap<>();
-            int start = 0;
-            int end = 0;
-            int maxLen = 0;
-
-            while (end < len) {
-                char eChar = s.charAt(end);
-                idxMap.remove(eChar);
-                idxMap.put(eChar, end);
-                end++;
-
-                if (idxMap.size() > 2) {
-                    Map.Entry<Character, Integer> leftMostEntry = idxMap.entrySet().iterator().next();
-                    idxMap.remove(leftMostEntry.getKey());
-                    start = leftMostEntry.getValue() + 1;
-                }
-
-                maxLen = Math.max(maxLen, end - start);
-            }
-
-            return maxLen;
+    public int lengthOfLongestSubstringTwoDistinct(String s) {
+        if (s == null) {
+            throw new IllegalArgumentException("Input string is null");
         }
+
+        int len = s.length();
+        if (len <= 2) {
+            return len;
+        }
+
+        LinkedHashMap<Character, Integer> charIdxMap = new LinkedHashMap<>();
+        int start = 0;
+        int maxLen = 0;
+
+        for (int end = 0; end < len; end++) {
+            char eChar = s.charAt(end);
+            charIdxMap.remove(eChar);
+            charIdxMap.put(eChar, end);
+
+            if (charIdxMap.size() > 2) {
+                Map.Entry<Character, Integer> oldestEntry = charIdxMap.entrySet().iterator().next();
+                charIdxMap.remove(oldestEntry.getKey());
+                start = oldestEntry.getValue() + 1;
+            }
+
+            maxLen = Math.max(maxLen, end - start + 1);
+        }
+
+        return maxLen;
     }
 }
 
@@ -62,7 +58,7 @@ class Solution1 {
 class Solution2 {
     public int lengthOfLongestSubstringTwoDistinct(String s) {
         if (s == null) {
-            throw new IllegalArgumentException("Input is invalid");
+            throw new IllegalArgumentException("Input string is null");
         }
 
         int len = s.length();
@@ -70,23 +66,21 @@ class Solution2 {
             return len;
         }
 
-        HashMap<Character, Integer> idxMap = new HashMap<>();
+        HashMap<Character, Integer> charIdxMap = new HashMap<>();
         int start = 0;
-        int end = 0;
         int maxLen = 0;
 
-        while (end < len) {
+        for (int end = 0; end < len; end++) {
             char eChar = s.charAt(end);
-            idxMap.put(eChar, end);
-            end++;
+            charIdxMap.put(eChar, end);
 
-            if (idxMap.size() > 2) {
-                int idx = Collections.min(idxMap.values());
-                idxMap.remove(s.charAt(idx));
+            if (charIdxMap.size() > 2) {
+                int idx = Collections.min(charIdxMap.values());
+                charIdxMap.remove(s.charAt(idx));
                 start = idx + 1;
             }
 
-            maxLen = Math.max(maxLen, end - start);
+            maxLen = Math.max(maxLen, end - start + 1);
         }
 
         return maxLen;
