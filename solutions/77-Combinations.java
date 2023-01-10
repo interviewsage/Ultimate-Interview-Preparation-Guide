@@ -7,8 +7,10 @@ import java.util.*;
  * Backtracking
  *
  * <pre>
- * Time complexity = InternalNodes in the RecursionTree   +   K * LeafNodes in RecursionTree
- *                 = (C(N,0) + C(N,1) + ... + C(N,K-1))   +   K * C(N,K)
+ * Here we will only recurse on valid nodes / paths that will lead to a valid combination.
+ * Time complexity = Time taken to build each combination + Time taken to add each combination in result
+ *                 = O(K * C(N,K))    +     O(K * C(N,K))
+ *                 = O(2 * K * C(N,K))
  *
  * Space Complexity = O(k) -> Depth of Recursion tree + Size of TempList
  * </pre>
@@ -17,30 +19,122 @@ import java.util.*;
  */
 class Solution1 {
     public List<List<Integer>> combine(int n, int k) {
-        if (n <= 0 || k < 0) {
-            throw new IllegalArgumentException("invalid input");
+        if (n < 0 || k < 0 || n < k) {
+            throw new IllegalArgumentException("Input is invalid");
         }
 
         List<List<Integer>> result = new ArrayList<>();
-        if (k == 0) {
+        if (n == 0 || k == 0) {
             result.add(new ArrayList<>());
             return result;
         }
 
-        combineHelper(n, k, new ArrayList<>(), result);
+        combineHelper(result, n, k, 1, new ArrayList<>());
         return result;
     }
 
-    private void combineHelper(int n, int k, List<Integer> temp, List<List<Integer>> result) {
+    private void combineHelper(List<List<Integer>> result, int n, int k, int start, ArrayList<Integer> tempList) {
         if (k == 0) {
-            result.add(new ArrayList<>(temp));
+            result.add(new ArrayList<>(tempList));
+            return;
+        }
+
+        // We do not need to go beyond n-k+1 as the numbers in each subset will be in
+        // ascending order.
+        for (int i = start; i <= n - k + 1; i++) {
+            tempList.add(i);
+            combineHelper(result, n, k - 1, i + 1, tempList);
+            tempList.remove(tempList.size() - 1);
+        }
+    }
+}
+
+/**
+ * Backtracking
+ *
+ * <pre>
+ * Here we will only recurse on valid nodes / paths that will lead to a valid combination.
+ * Time complexity = Time taken to build each combination + Time taken to add each combination in result
+ *                 = O(K * C(N,K))    +     O(K * C(N,K))
+ *                 = O(2 * K * C(N,K))
+ *
+ * Space Complexity = O(k) -> Depth of Recursion tree + Size of TempList
+ * </pre>
+ *
+ * N, K -> Input numbers.
+ */
+class Solution2 {
+    public List<List<Integer>> combine(int n, int k) {
+        if (n < 0 || k < 0 || n < k) {
+            throw new IllegalArgumentException("Input is invalid");
+        }
+
+        List<List<Integer>> result = new ArrayList<>();
+        if (n == 0 || k == 0) {
+            result.add(new ArrayList<>());
+            return result;
+        }
+
+        combineHelper(result, n, k, new ArrayList<>());
+        return result;
+    }
+
+    private void combineHelper(List<List<Integer>> result, int n, int k, ArrayList<Integer> tempList) {
+        if (k == 0) {
+            result.add(new ArrayList<>(tempList));
+            return;
+        }
+
+        // We do not need to go below k as the numbers in each subset will be in
+        // decreasing order.
+        for (int i = n; i >= k; i--) {
+            tempList.add(i);
+            combineHelper(result, i - 1, k - 1, tempList);
+            tempList.remove(tempList.size() - 1);
+        }
+    }
+}
+
+/**
+ * NO NEED TO SOLVE THIS IN INTERVIEW. BUT REMEMBER FOR EXPLANATION
+ *
+ * Backtracking
+ *
+ * <pre>
+ * Time complexity = InternalNodes in the RecursionTree   +   K * LeafNodes in RecursionTree
+ *                 = (C(N,0) + C(N,1) + ... + C(N,K-1))   +   K * C(N,K)
+ *
+ * Space Complexity = O(k) -> Depth of Recursion tree + Size of TempList
+ * </pre>
+ *
+ * N, K -> Input numbers.
+ */
+class Solution3 {
+    public List<List<Integer>> combine(int n, int k) {
+        if (n < 0 || k < 0 || n < k) {
+            throw new IllegalArgumentException("Input is invalid");
+        }
+
+        List<List<Integer>> result = new ArrayList<>();
+        if (n == 0 || k == 0) {
+            result.add(new ArrayList<>());
+            return result;
+        }
+
+        combineHelper(result, n, k, new ArrayList<>());
+        return result;
+    }
+
+    private void combineHelper(List<List<Integer>> result, int n, int k, ArrayList<Integer> tempList) {
+        if (k == 0) {
+            result.add(new ArrayList<>(tempList));
             return;
         }
 
         for (int i = n; i >= 1; i--) {
-            temp.add(i);
-            combineHelper(i - 1, k - 1, temp, result);
-            temp.remove(temp.size() - 1);
+            tempList.add(i);
+            combineHelper(result, i - 1, k - 1, tempList);
+            tempList.remove(tempList.size() - 1);
         }
     }
 }
@@ -83,33 +177,33 @@ class Solution1 {
  *
  * N, K -> Input numbers.
  */
-class Solution2 {
+class Solution4 {
     public List<List<Integer>> combine(int n, int k) {
-        if (n <= 0 || k < 0) {
-            throw new IllegalArgumentException("invalid input");
+        if (n < 0 || k < 0 || n < k) {
+            throw new IllegalArgumentException("Input is invalid");
         }
 
         List<List<Integer>> result = new ArrayList<>();
-        if (k == 0) {
+        if (n == 0 || k == 0) {
             result.add(new ArrayList<>());
             return result;
         }
 
-        List<Integer> temp = new ArrayList<>(k + 1);
+        List<Integer> tempList = new ArrayList<>();
         for (int i = 1; i <= k; i++) {
-            temp.add(i);
+            tempList.add(i);
         }
-        temp.add(n + 1);
+        tempList.add(n + 1);
 
         int i = 0;
         while (i < k) {
-            result.add(new ArrayList<>(temp.subList(0, k)));
+            result.add(new ArrayList<>(tempList.subList(0, k)));
             i = 0;
-            while (i < k && (temp.get(i) + 1 == temp.get(i + 1))) {
-                temp.set(i, i + 1);
+            while (i < k && tempList.get(i) + 1 == tempList.get(i + 1)) {
+                tempList.set(i, i + 1);
                 i++;
             }
-            temp.set(i, temp.get(i) + 1);
+            tempList.set(i, tempList.get(i) + 1);
         }
 
         return result;

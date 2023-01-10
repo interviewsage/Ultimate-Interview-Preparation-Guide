@@ -11,45 +11,45 @@
 class Solution {
     public boolean backspaceCompare(String s, String t) {
         if (s == null || t == null) {
-            return false;
+            throw new IllegalArgumentException("Input in invalid");
         }
 
-        int i = s.length() - 1;
-        int j = t.length() - 1;
+        int sIdx = s.length() - 1;
+        int tIdx = t.length() - 1;
         int skipS = 0;
         int skipT = 0;
 
-        while (i >= 0 || j >= 0) {
-            while (i >= 0) {
-                if (s.charAt(i) == '#') {
+        while (sIdx >= 0 || tIdx >= 0) {
+            while (sIdx >= 0) {
+                if (s.charAt(sIdx) == '#') {
                     skipS++;
                 } else if (skipS > 0) {
                     skipS--;
                 } else {
                     break;
                 }
-                i--;
+                sIdx--;
             }
 
-            while (j >= 0) {
-                if (t.charAt(j) == '#') {
+            while (tIdx >= 0) {
+                if (t.charAt(tIdx) == '#') {
                     skipT++;
                 } else if (skipT > 0) {
                     skipT--;
                 } else {
                     break;
                 }
-                j--;
+                tIdx--;
             }
 
-            if (i >= 0 && j >= 0 && s.charAt(i) == t.charAt(j)) {
-                i--;
-                j--;
+            if (sIdx >= 0 && tIdx >= 0 && s.charAt(sIdx) == t.charAt(tIdx)) {
+                sIdx--;
+                tIdx--;
             } else {
                 break;
             }
         }
 
-        return (i == -1) && (j == -1);
+        return sIdx == -1 && tIdx == -1;
     }
 }
