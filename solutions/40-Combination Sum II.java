@@ -22,18 +22,22 @@ import java.util.*;
  */
 class Solution1 {
     public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        if (candidates == null) {
+            throw new IllegalArgumentException("Input candidates array is null");
+        }
+
         List<List<Integer>> result = new ArrayList<>();
-        if (candidates == null || candidates.length == 0) {
+        if (candidates.length == 0) {
             return result;
         }
 
         Arrays.sort(candidates);
-        combinationSum2Helper(candidates, 0, target, new ArrayList<>(), result);
+        combinationSum2Helper(candidates, 0, target, result, new ArrayList<>());
         return result;
     }
 
-    private void combinationSum2Helper(int[] candidates, int start, int target, List<Integer> tempList,
-            List<List<Integer>> result) {
+    private void combinationSum2Helper(int[] candidates, int start, int target, List<List<Integer>> result,
+            List<Integer> tempList) {
         if (target == 0) {
             result.add(new ArrayList<>(tempList));
             // Remove the following return statement if input array can contain negative
@@ -50,8 +54,9 @@ class Solution1 {
             if (candidates[i] > target) {
                 break;
             }
+
             tempList.add(candidates[i]);
-            combinationSum2Helper(candidates, i + 1, target - candidates[i], tempList, result);
+            combinationSum2Helper(candidates, i + 1, target - candidates[i], result, tempList);
             tempList.remove(tempList.size() - 1);
         }
     }
@@ -66,8 +71,12 @@ class Solution1 {
  */
 class Solution2 {
     public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        if (candidates == null) {
+            throw new IllegalArgumentException("Input candidates array is null");
+        }
+
         List<List<Integer>> result = new ArrayList<>();
-        if (candidates == null || candidates.length == 0) {
+        if (candidates.length == 0) {
             return result;
         }
 
