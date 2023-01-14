@@ -10,7 +10,7 @@
  * Time Complexity:
  * floor(log30 N) + floor(log15 (N / 30^floor(log30 N))) + ... (similarly for all factors)
  *
- * In worst case, if the number if power of two, then the complexity will be O(log2 N)
+ * In worst case, if the number is power of two, then the complexity will be O(log2 N)
  *
  * Space Complexity: O(1)
  * </pre>
