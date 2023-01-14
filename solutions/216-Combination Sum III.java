@@ -19,12 +19,13 @@ import java.util.*;
 class Solution {
     public List<List<Integer>> combinationSum3(int k, int n) {
         List<List<Integer>> result = new ArrayList<>();
-
-        if (k <= 0 || k > 9 || n <= 0 || n > 45 || (k == 1 && n > 9) || (k == 9 && n != 45) || (n < k * (k + 1) / 2)) {
+        if (k <= 0 || k > 9 || n <= 0 || n > 45 || n < k * (k + 1) / 2) {
             return result;
         }
         if (k == 1) {
-            result.add(List.of(n));
+            if (n <= 9) {
+                result.add(List.of(n));
+            }
             return result;
         }
         if (k == 9) {
@@ -32,11 +33,11 @@ class Solution {
             return result;
         }
 
-        combinationSum3(1, k, n, new ArrayList<>(), result);
+        combinationSum3Helper(1, k, n, result, new ArrayList<>());
         return result;
     }
 
-    private void combinationSum3(int start, int k, int n, List<Integer> tempList, List<List<Integer>> result) {
+    private void combinationSum3Helper(int start, int k, int n, List<List<Integer>> result, List<Integer> tempList) {
         if (k == 0) {
             if (n == 0) {
                 result.add(new ArrayList<>(tempList));
@@ -49,7 +50,7 @@ class Solution {
                 break;
             }
             tempList.add(i);
-            combinationSum3(i + 1, k - 1, n - i, tempList, result);
+            combinationSum3Helper(i + 1, k - 1, n - i, result, tempList);
             tempList.remove(tempList.size() - 1);
         }
     }

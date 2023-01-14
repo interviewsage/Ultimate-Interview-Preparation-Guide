@@ -22,7 +22,12 @@ import java.util.*;
  */
 class Solution1 {
     public int combinationSum4(int[] nums, int target) {
-        if (nums == null || nums.length == 0 || target <= 0) {
+        if (nums == null) {
+            throw new IllegalArgumentException("Input nums array is null");
+        }
+
+        int len = nums.length;
+        if (len == 0 || target <= 0) {
             return 0;
         }
 
@@ -42,6 +47,54 @@ class Solution1 {
 }
 
 /**
+ * Dynamic Programming Bottom Up - Iterative Approach
+ * Added Sorting so that we can break early when target is small while filling
+ * the DP array.
+ *
+ * Refer:
+ * https://leetcode.com/problems/combination-sum-iv/discuss/85036/1ms-Java-DP-Solution-with-Detailed-Explanation
+ *
+ * DP[i] = Number of ways to achieve target i using all possible numbers in the
+ * nums array.
+ *
+ * DP[i] = (j = 0 -> N-1) ∑ DP[i-nums[j]]. where i-nums[j] >= 0. DP[0] = 1
+ *
+ * Time Complexity: O(N * T + N * log N)
+ *
+ * Space Complexity: O(T + N)
+ *
+ * N = Length of input array. T = Input target.
+ */
+class Solution2 {
+    public int combinationSum4(int[] nums, int target) {
+        if (nums == null) {
+            throw new IllegalArgumentException("Input nums array is null");
+        }
+
+        int len = nums.length;
+        if (len == 0 || target <= 0) {
+            return 0;
+        }
+
+        // Added Sort so that we can break early from inner for loop below.
+        Arrays.sort(nums);
+        int[] dp = new int[target + 1];
+        dp[0] = 1;
+
+        for (int i = 1; i <= target; i++) {
+            for (int n : nums) {
+                if (n > i) {
+                    break;
+                }
+                dp[i] += dp[i - n];
+            }
+        }
+
+        return dp[target];
+    }
+}
+
+/**
  * Dynamic Programming Top Down - Recursive Approach
  *
  * Refer:
@@ -53,7 +106,7 @@ class Solution1 {
  *
  * N = Length of input array. T = Input target.
  */
-class Solution2 {
+class Solution3 {
     public int combinationSum4(int[] nums, int target) {
         if (nums == null || nums.length == 0 || target <= 0) {
             return 0;
