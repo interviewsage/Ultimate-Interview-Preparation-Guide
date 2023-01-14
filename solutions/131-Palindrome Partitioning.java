@@ -25,7 +25,7 @@ import java.util.*;
 class Solution {
     public List<List<String>> partition(String s) {
         if (s == null) {
-            return new ArrayList<>();
+            throw new IllegalArgumentException("Input is invalid");
         }
 
         int len = s.length();
@@ -40,31 +40,33 @@ class Solution {
     }
 
     private List<List<String>> partitionHelper(String s, int start, List<List<String>>[] memo,
-            boolean[][] seenPalindromes) {
+            boolean[][] isPalindromes) {
         if (memo[start] != null) {
             return memo[start];
         }
 
-        List<List<String>> result = new ArrayList<>();
+        List<List<String>> palindromePartitions = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
+        char cStart = s.charAt(start);
 
         for (int i = start; i < s.length(); i++) {
-            sb.append(s.charAt(i));
+            char c = s.charAt(i);
+            sb.append(c);
 
-            if ((s.charAt(start) == s.charAt(i)) && (i - start <= 2 || seenPalindromes[start + 1][i - 1])) {
-                seenPalindromes[start][i] = true;
-                List<List<String>> tempResult = partitionHelper(s, i + 1, memo, seenPalindromes);
+            if (cStart == c && (i - start <= 2 || isPalindromes[start + 1][i - 1])) {
+                isPalindromes[start][i] = true;
+                List<List<String>> subPalindromePartitions = partitionHelper(s, i + 1, memo, isPalindromes);
                 String curWord = sb.toString();
-                for (List<String> temp : tempResult) {
+                for (List<String> sub : subPalindromePartitions) {
                     List<String> cur = new ArrayList<>();
                     cur.add(curWord);
-                    cur.addAll(temp);
-                    result.add(cur);
+                    cur.addAll(sub);
+                    palindromePartitions.add(cur);
                 }
             }
         }
 
-        memo[start] = result;
-        return result;
+        memo[start] = palindromePartitions;
+        return palindromePartitions;
     }
 }

@@ -12,42 +12,46 @@ import java.util.*;
  */
 class Solution {
     public int countCharacters(String[] words, String chars) {
-        if (words == null || words.length == 0 || chars == null || chars.length() == 0) {
-            return 0;
+        if (words == null || chars == null) {
+            throw new IllegalArgumentException("Input is invalid");
         }
 
         int charsLen = chars.length();
+        if (charsLen == 0 || words.length == 0) {
+            return 0;
+        }
+
         Map<Character, Integer> charsCountMap = new HashMap<>();
-        for (int i = 0; i < chars.length(); i++) {
+        for (int i = 0; i < charsLen; i++) {
             char c = chars.charAt(i);
             charsCountMap.put(c, charsCountMap.getOrDefault(c, 0) + 1);
         }
 
         int result = 0;
+
         for (String w : words) {
-            Map<Character, Integer> wCountMap = new HashMap<>();
-            int len = w.length();
-            if (len > charsLen) {
+            int wLen = w.length();
+            if (wLen > charsLen) {
                 continue;
             }
 
+            Map<Character, Integer> wCountMap = new HashMap<>();
             int i = 0;
-            while (i < len) {
+            while (i < wLen) {
                 char c = w.charAt(i);
                 Integer charsCount = charsCountMap.get(c);
                 if (charsCount == null) {
                     break;
                 }
-                int count = wCountMap.getOrDefault(c, 0);
-                if (count < charsCount) {
-                    wCountMap.put(c, count + 1);
-                } else {
+                int wCount = wCountMap.getOrDefault(c, 0) + 1;
+                if (wCount > charsCount) {
                     break;
                 }
+                wCountMap.put(c, wCount);
                 i++;
             }
-            if (i == len) {
-                result += len;
+            if (i == wLen) {
+                result += wLen;
             }
         }
 
