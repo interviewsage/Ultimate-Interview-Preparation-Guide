@@ -26,32 +26,34 @@ import java.util.*;
  */
 class Solution1 {
     public List<String> generatePalindromes(String s) {
-        List<String> result = new ArrayList<>();
         if (s == null) {
-            return result;
+            throw new IllegalArgumentException("Input string is null");
         }
 
-        int sLen = s.length();
-        if (sLen <= 1) {
+        int len = s.length();
+        List<String> result = new ArrayList<>();
+        if (len <= 1) {
             result.add(s);
             return result;
         }
 
-        HashMap<Character, Integer> countMap = new HashMap<>();
-        HashSet<Character> oddCharSet = new HashSet<>();
+        Map<Character, Integer> countMap = new HashMap<>();
+        Set<Character> oddCharSet = new HashSet<>();
 
-        for (int i = 0; i < sLen; i++) {
+        for (int i = 0; i < len; i++) {
             char c = s.charAt(i);
-            if (!oddCharSet.add(c)) {
-                oddCharSet.remove(c);
-            }
             // Below condition is a simplification of (oddCharSet.size() - (sLen-1-i)) >= 2
-            if (oddCharSet.size() > (sLen - i)) {
-                return result;
+            if (oddCharSet.add(c)) {
+                if (oddCharSet.size() > len - i) {
+                    return result;
+                }
+            } else {
+                oddCharSet.remove(c);
             }
             countMap.put(c, countMap.getOrDefault(c, 0) + 1);
         }
 
+        // All characters are same, thus only one permutation is possible.
         if (countMap.size() == 1) {
             result.add(s);
             return result;
@@ -66,22 +68,22 @@ class Solution1 {
             } else {
                 countMap.put(midChar, midCount - 1);
             }
-            sLen--;
         }
 
-        generatePalindromesHelper(result, countMap, midChar, new StringBuilder(), sLen / 2);
+        generatePalindromesHelper(result, countMap, midChar, new StringBuilder(), len / 2);
 
         return result;
     }
 
-    private void generatePalindromesHelper(List<String> result, HashMap<Character, Integer> countMap, Character midChar,
+    private void generatePalindromesHelper(List<String> result, Map<Character, Integer> countMap, Character midChar,
             StringBuilder sb, int length) {
-        if (sb.length() == length) {
+        if (length == 0) {
             StringBuilder sbCopy = new StringBuilder(sb);
             if (midChar != null) {
                 sbCopy.append(midChar);
             }
             sbCopy.append(sb.reverse());
+            // sbCopy + midChar + sb.reverse()
             result.add(sbCopy.toString());
             sb.reverse();
             return;
@@ -92,10 +94,9 @@ class Solution1 {
             if (count == 0) {
                 continue;
             }
-
             countMap.put(c, count - 2);
             sb.append(c);
-            generatePalindromesHelper(result, countMap, midChar, sb, length);
+            generatePalindromesHelper(result, countMap, midChar, sb, length - 1);
             sb.setLength(sb.length() - 1);
             countMap.put(c, count);
         }
