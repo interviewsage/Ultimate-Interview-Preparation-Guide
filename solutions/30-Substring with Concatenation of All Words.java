@@ -32,16 +32,27 @@ import java.util.*;
  */
 class Solution {
     public List<Integer> findSubstring(String s, String[] words) {
+        if (s == null || words == null) {
+            throw new IllegalArgumentException("Input is invalid");
+        }
+
         List<Integer> result = new ArrayList<>();
-        if (s == null || s.length() == 0 || words == null || words.length == 0) {
+        int sLen = s.length();
+        int numWords = words.length;
+
+        if (sLen == 0 || numWords == 0) {
             return result;
         }
 
-        int sLen = s.length();
-        int numWords = words.length;
         int wordLen = words[0].length();
 
-        if (wordLen == 0 || sLen < numWords * wordLen) {
+        if (wordLen == 0) {
+            for (int i = 0; i < sLen; i++) {
+                result.add(i);
+            }
+            return result;
+        }
+        if (sLen < numWords * wordLen) {
             return result;
         }
 
@@ -57,31 +68,31 @@ class Solution {
             int wordsFound = 0;
 
             while (end <= sLen - wordLen) {
-                String wEnd = s.substring(end, end + wordLen);
+                String endWord = s.substring(end, end + wordLen);
                 end += wordLen;
-                Integer wordCnt = countMap.get(wEnd);
+                Integer endWordCount = countMap.get(endWord);
 
-                if (wordCnt == null) {
+                if (endWordCount == null) {
                     wordsFoundMap = new HashMap<>();
                     wordsFound = 0;
                     start = end;
                     continue;
                 }
 
-                while (wordCnt.equals(wordsFoundMap.get(wEnd))) {
-                    String wStart = s.substring(start, start + wordLen);
-                    Integer count = wordsFoundMap.get(wStart);
+                while (endWordCount.equals(wordsFoundMap.get(endWord))) {
+                    String startWord = s.substring(start, start + wordLen);
+                    Integer count = wordsFoundMap.get(startWord);
                     if (count == 1) {
-                        wordsFoundMap.remove(wStart);
+                        wordsFoundMap.remove(startWord);
                     } else {
-                        wordsFoundMap.put(wStart, count - 1);
+                        wordsFoundMap.put(startWord, count - 1);
                     }
                     wordsFound--;
                     start += wordLen;
                 }
 
                 wordsFound++;
-                wordsFoundMap.put(wEnd, wordsFoundMap.getOrDefault(wEnd, 0) + 1);
+                wordsFoundMap.put(endWord, wordsFoundMap.getOrDefault(endWord, 0) + 1);
 
                 if (wordsFound == numWords) {
                     result.add(start);
