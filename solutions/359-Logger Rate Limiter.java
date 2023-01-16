@@ -1,7 +1,90 @@
 // LeetCode Question URL: https://leetcode.com/problems/logger-rate-limiter/
 // LeetCode Discuss URL:
 
+/**
+ * IMP:
+ * Refer this for all different Solutions:
+ * https://leetcode.com/problems/logger-rate-limiter/discuss/391558/Review-of-four-different-solutions:-HashMap-Two-Sets-Queue-with-Set-Radix-buckets-(Java-centric)
+ */
+
 import java.util.*;
+
+/**
+ * Using LinkedHashMap
+ *
+ * Time Complexity: Amortized O(1)
+ *
+ * Space Complexity: O(Number of messages in a valid window)
+ */
+class Logger1 {
+
+    Map<String, Integer> logMap;
+
+    public Logger1() {
+        logMap = new LinkedHashMap<>();
+    }
+
+    public boolean shouldPrintMessage(int timestamp, String message) {
+        Iterator<Map.Entry<String, Integer>> itr = logMap.entrySet().iterator();
+        while (itr.hasNext()) {
+            if (timestamp >= itr.next().getValue() + 10) {
+                itr.remove();
+            } else {
+                break;
+            }
+        }
+
+        if (logMap.containsKey(message)) {
+            return false;
+        }
+
+        logMap.put(message, timestamp);
+        return true;
+    }
+}
+
+/**
+ * Concurrent Using LinkedHashMap
+ *
+ * Time Complexity: Amortized O(1)
+ *
+ * Space Complexity: Difficult to Calculate. It can range from O(All messages
+ * seen so far) to O(Number of messages in a valid window)
+ */
+class Logger2 {
+
+    Map<String, Integer> logMap;
+    Object lock;
+
+    public Logger2() {
+        logMap = new LinkedHashMap<>();
+        lock = new Object();
+    }
+
+    public boolean shouldPrintMessage(int timestamp, String message) {
+        Integer preTime = logMap.get(message);
+
+        if (preTime == null || timestamp - preTime >= 10) {
+            synchronized (lock) {
+                Iterator<Map.Entry<String, Integer>> itr = logMap.entrySet().iterator();
+                while (itr.hasNext()) {
+                    if (timestamp - itr.next().getValue() >= 10) {
+                        itr.remove();
+                    } else {
+                        break;
+                    }
+                }
+
+                if (!logMap.containsKey(message)) {
+                    logMap.put(message, timestamp);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+}
 
 /**
  * Maintain a queue and a HashSet of log messages received in last 10 seconds.
@@ -13,12 +96,12 @@ import java.util.*;
  *
  * M = Number of unique messages received in last 10 seconds
  */
-class Logger {
+class Logger3 {
 
     Deque<Pair<String, Integer>> queue;
     Set<String> messages;
 
-    public Logger() {
+    public Logge3() {
         queue = new ArrayDeque<>();
         messages = new HashSet<>();
     }
@@ -37,7 +120,7 @@ class Logger {
     }
 }
 
-class Logger2 {
+class Logger4 {
 
     class Log {
         int time;
@@ -53,7 +136,7 @@ class Logger2 {
     HashSet<String> messages;
 
     /** Initialize your data structure here. */
-    public Logger2() {
+    public Logger4() {
         queue = new LinkedList<>();
         messages = new HashSet<>();
     }
