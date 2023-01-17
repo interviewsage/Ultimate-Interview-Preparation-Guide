@@ -16,11 +16,12 @@ import java.util.*;
 class Trie {
 
     public class TrieNode {
-        Map<Character, TrieNode> children;
-        boolean isWordEnd;
+        Map<Character, TrieNode> map;
+        boolean isEnd;
 
-        TrieNode() {
-            this.children = new HashMap<>();
+        public TrieNode() {
+            map = new HashMap<>();
+            isEnd = false;
         }
     }
 
@@ -32,48 +33,84 @@ class Trie {
 
     public void insert(String word) {
         if (word == null) {
-            return;
+            throw new IllegalArgumentException("Input word is null");
         }
 
         TrieNode cur = root;
         for (int i = 0; i < word.length(); i++) {
             char c = word.charAt(i);
-            cur.children.putIfAbsent(c, new TrieNode());
-            cur = cur.children.get(c);
+            TrieNode next = cur.map.get(c);
+            if (next == null) {
+                next = new TrieNode();
+                cur.map.put(c, next);
+            }
+            cur = next;
         }
-        cur.isWordEnd = true;
+
+        cur.isEnd = true;
     }
 
     public boolean search(String word) {
         if (word == null) {
-            return false;
+            throw new IllegalArgumentException("Input word is null");
         }
 
         TrieNode cur = root;
         for (int i = 0; i < word.length(); i++) {
             char c = word.charAt(i);
-            cur = cur.children.get(c);
+            cur = cur.map.get(c);
             if (cur == null) {
                 return false;
             }
         }
-        return cur.isWordEnd;
+
+        return cur.isEnd;
     }
 
     public boolean startsWith(String prefix) {
         if (prefix == null) {
-            return false;
+            throw new IllegalArgumentException("Input prefix is null");
         }
 
         TrieNode cur = root;
         for (int i = 0; i < prefix.length(); i++) {
             char c = prefix.charAt(i);
-            cur = cur.children.get(c);
+            cur = cur.map.get(c);
             if (cur == null) {
                 return false;
             }
         }
+
         return true;
+    }
+
+    public void delete(String word) {
+        if (word == null) {
+            throw new IllegalArgumentException("Input word is null");
+        }
+
+        deleteHelper(root, word, 0);
+    }
+
+    private boolean deleteHelper(TrieNode node, String word, int idx) {
+        if (node == null) {
+            return false;
+        }
+        if (idx == word.length()) {
+            if (!node.isEnd) {
+                return false;
+            }
+            node.isEnd = false;
+            return node.map.size() == 0;
+        }
+
+        char c = word.charAt(idx);
+        if (!deleteHelper(node.map.get(c), word, idx + 1)) {
+            return false;
+        }
+
+        node.map.remove(c);
+        return !node.isEnd && node.map.size() != 0;
     }
 }
 
