@@ -25,32 +25,38 @@ import java.util.*;
  * array. L = Maximum length of a word in the words array.
  */
 class Solution {
+
     private static final int[][] DIRS = new int[][] { { 0, 1 }, { 1, 0 }, { -1, 0 }, { 0, -1 } };
 
-    class TrieNode {
-        HashMap<Character, TrieNode> map;
+    public class TrieNode {
+        Map<Character, TrieNode> map;
         String word;
 
         public TrieNode() {
             map = new HashMap<>();
+            word = null;
         }
     }
 
     public List<String> findWords(char[][] board, String[] words) {
+        if (board == null) {
+            throw new IllegalArgumentException("Input board is null");
+        }
+
         List<String> result = new ArrayList<>();
-        if (board == null || board.length == 0 || board[0].length == 0 || words == null || words.length == 0) {
+        if (words == null || words.length == 0 || board.length == 0 || board[0].length == 0) {
             return result;
         }
 
         int rows = board.length;
         int cols = board[0].length;
-
         TrieNode root = buildTrie(words, rows * cols);
-        root.word.hashCode();
+
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                if (root.map.containsKey(board[i][j])) {
-                    dfsHelper(board, root, i, j, result);
+                TrieNode next = root.map.get(board[i][j]);
+                if (next != null) {
+                    dfsHelper(board, i, j, next, result);
                 }
             }
         }
@@ -60,44 +66,50 @@ class Solution {
 
     private TrieNode buildTrie(String[] words, int maxLen) {
         TrieNode root = new TrieNode();
+
         for (String w : words) {
             if (w == null || w.length() == 0 || w.length() > maxLen) {
                 continue;
             }
+
             TrieNode cur = root;
             for (int i = 0; i < w.length(); i++) {
                 char c = w.charAt(i);
-                if (!cur.map.containsKey(c)) {
-                    cur.map.put(c, new TrieNode());
+                TrieNode next = cur.map.get(c);
+                if (next == null) {
+                    next = new TrieNode();
+                    cur.map.put(c, next);
                 }
-                cur = cur.map.get(c);
+                cur = next;
             }
             cur.word = w;
         }
+
         return root;
     }
 
-    private void dfsHelper(char[][] board, TrieNode cur, int x, int y, List<String> result) {
-        if (cur == null) {
-            return;
-        }
-
-        if (cur.word != null) {
-            // A Valid word found. Add to the result.
-            result.add(cur.word);
+    private void dfsHelper(char[][] board, int r, int c, TrieNode node, List<String> result) {
+        if (node.word != null) {
+            result.add(node.word);
             // Set this word to null, so that its not added again.
-            cur.word = null;
+            node.word = null;
         }
 
-        if (x < 0 || x >= board.length || y < 0 || y >= board[0].length || !cur.map.containsKey(board[x][y])) {
-            return;
-        }
+        char curChar = board[r][c];
+        board[r][c] = '#';
 
-        char curChar = board[x][y];
-        board[x][y] = '#';
         for (int[] d : DIRS) {
-            dfsHelper(board, cur.map.get(curChar), x + d[0], y + d[1], result);
+            int x = r + d[0];
+            int y = c + d[1];
+
+            if (x >= 0 && y >= 0 && x < board.length && y < board[0].length) {
+                TrieNode next = node.map.get(board[x][y]);
+                if (next != null) {
+                    dfsHelper(board, x, y, next, result);
+                }
+            }
         }
-        board[x][y] = curChar;
+
+        board[r][c] = curChar;
     }
 }
