@@ -11,44 +11,29 @@ import java.util.*;
  * L = Average length of each sentence. / Also the length of search sentence.
  *
  * Time Complexity:
- * AutocompleteSystem() Constructor --> O(N * L * log 3) = O(N * L)
+ * AutocompleteSystem() Constructor --> O(N * L * 3log 3) = O(N * L)
  * input() --> Case 1: c != '#' --> O(1) -> Just goto next node and then just populate the result list.
- *         --> Case 2: c == '#'. New sentence has to be added --> O(L * log 3) = O(L)
+ *         --> Case 2: c == '#'. New sentence has to be added --> O(L * 3log 3) = O(L)
  *
  * Space Complexity:
  * 1. O(N*L) --> Maximum Number of Trie Nodes. Each TrieNode will have constant space.
  * 2. O(N*L) --> A copy of each sentence will be saved in the memory (JVM)
+ * 3. O(L) --> String Builder for search sentence
  * 3. Total Space Complexity = O(N*L)
  * </pre>
  */
 class AutocompleteSystem {
 
     public class TrieNode {
-        HashMap<Character, TrieNode> children;
+        Map<Character, TrieNode> map;
         int count;
         TreeSet<Pair<String, Integer>> hotSentences;
 
-        TrieNode() {
-            children = new HashMap<>();
+        public TrieNode() {
+            map = new HashMap<>();
+            count = 0;
             hotSentences = new TreeSet<>((a, b) -> (a.getValue() != b.getValue() ? b.getValue() - a.getValue()
                     : a.getKey().compareTo(b.getKey())));
-        }
-
-        public void addSentenceWithCount(String sentence, int count) {
-            TrieNode cur = this;
-            Pair<String, Integer> mapEntryWithOneLessCount = new Pair<>(sentence, count - 1);
-            Pair<String, Integer> mapEntryWithCurCount = new Pair<>(sentence, count);
-
-            for (int i = 0; i < sentence.length(); i++) {
-                char c = sentence.charAt(i);
-                cur.children.putIfAbsent(c, new TrieNode());
-                cur = cur.children.get(c);
-                cur.hotSentences.add(mapEntryWithCurCount);
-                if (!cur.hotSentences.remove(mapEntryWithOneLessCount) && cur.hotSentences.size() > 3) {
-                    cur.hotSentences.pollLast();
-                }
-            }
-            cur.count = count;
         }
     }
 
@@ -57,23 +42,53 @@ class AutocompleteSystem {
     StringBuilder sb;
 
     public AutocompleteSystem(String[] sentences, int[] times) {
+        if (sentences == null || times == null || sentences.length != times.length) {
+            throw new IllegalArgumentException("Input is invalid");
+        }
+
         root = new TrieNode();
         curSearchNode = root;
         sb = new StringBuilder();
 
-        if (sentences == null || times == null || sentences.length == 0 || sentences.length != times.length) {
-            return;
+        for (int i = 0; i < sentences.length; i++) {
+            insertSentence(sentences[i], times[i]);
+        }
+    }
+
+    private void insertSentence(String s, int count) {
+        TrieNode cur = root;
+
+        for (int i = 0; i < s.length(); i++) {
+            updateHotSentences(cur, s, count);
+
+            char c = s.charAt(i);
+            TrieNode next = cur.map.get(c);
+            if (next == null) {
+                next = new TrieNode();
+                cur.map.put(c, next);
+            }
+            cur = next;
         }
 
-        for (int i = 0; i < sentences.length; i++) {
-            root.addSentenceWithCount(sentences[i], times[i]);
+        updateHotSentences(cur, s, count);
+        cur.count = count;
+    }
+
+    private void updateHotSentences(TrieNode node, String s, int count) {
+        Pair<String, Integer> pairWithCount = new Pair<>(s, count);
+        Pair<String, Integer> pairWithOneLessCount = new Pair<>(s, count - 1);
+
+        node.hotSentences.add(pairWithCount);
+        if (!node.hotSentences.remove(pairWithOneLessCount) && node.hotSentences.size() > 3) {
+            node.hotSentences.pollLast();
         }
     }
 
     public List<String> input(char c) {
         List<String> result = new ArrayList<>();
+
         if (c == '#') {
-            root.addSentenceWithCount(sb.toString(), 1 + (curSearchNode == null ? 0 : curSearchNode.count));
+            insertSentence(sb.toString(), 1 + (curSearchNode == null ? 0 : curSearchNode.count));
             curSearchNode = root;
             sb.setLength(0);
             return result;
@@ -81,13 +96,14 @@ class AutocompleteSystem {
 
         sb.append(c);
         if (curSearchNode != null) {
-            curSearchNode = curSearchNode.children.get(c);
+            curSearchNode = curSearchNode.map.get(c);
         }
         if (curSearchNode == null) {
             return result;
         }
-        for (Pair<String, Integer> pair : curSearchNode.hotSentences) {
-            result.add(pair.getKey());
+
+        for (Pair<String, Integer> p : curSearchNode.hotSentences) {
+            result.add(p.getKey());
         }
         return result;
     }
