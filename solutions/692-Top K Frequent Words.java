@@ -23,25 +23,31 @@ import java.util.*;
  */
 class Solution1 {
     public List<String> topKFrequent(String[] words, int k) {
-        List<String> result = new LinkedList<>();
-        if (words == null || words.length == 0 || k <= 0) {
-            return result;
+        if (words == null || k < 0) {
+            throw new IllegalArgumentException("Input is invalid");
         }
-        if (words.length == 1) {
-            result.add(words[0]);
+
+        List<String> result = new LinkedList<>();
+        if (words.length == 0 || k == 0) {
             return result;
         }
 
         Map<String, Integer> countMap = new HashMap<>();
-        for (String word : words) {
-            countMap.put(word, countMap.getOrDefault(word, 0) + 1);
+        for (String w : words) {
+            countMap.put(w, countMap.getOrDefault(w, 0) + 1);
+        }
+        if (countMap.size() == 1) {
+            result.add(words[0]);
+            return result;
         }
 
+        // This is a min heap, thus the comparator will be opposite of what is given in
+        // the question.
         PriorityQueue<Map.Entry<String, Integer>> queue = new PriorityQueue<>((a,
                 b) -> (a.getValue() != b.getValue() ? a.getValue() - b.getValue() : b.getKey().compareTo(a.getKey())));
 
-        for (Map.Entry<String, Integer> entry : countMap.entrySet()) {
-            queue.offer(entry);
+        for (Map.Entry<String, Integer> e : countMap.entrySet()) {
+            queue.offer(e);
             if (queue.size() > k) {
                 queue.poll();
             }
@@ -68,11 +74,15 @@ class Solution1 {
  * 5. O(K) --> To add the Strings to result list.
  * 6. Total Time Complexity = O(N + N*L + K*L*logK + K) = O(N*L + K*L*LogK)
  *
+ * Here K = min(N, K);
+ *
  * Space Complexity:
  * 1. O(2*N) --> count map keys + values. We will only store reference of the input strings
  * 2. O(N) --> For list of entry set.
  * 3. O(K) --> For sorting of sub list.
  * 4. Total Space Complexity: O(N + K) = O(N)
+ *
+ * Here K = min(N, K);
  * </pre>
  *
  * N = Length of input array. L = Average length of each word. K = Input number.
@@ -83,40 +93,51 @@ class Solution2 {
     private static final Random random = new Random();
 
     public List<String> topKFrequent(String[] words, int k) {
-        List<String> result = new ArrayList<>();
-        if (words == null || words.length == 0 || k <= 0) {
-            return result;
+        if (words == null || k < 0) {
+            throw new IllegalArgumentException("Input is invalid");
         }
-        if (words.length == 1) {
-            result.add(words[0]);
+
+        List<String> result = new ArrayList<>();
+        int wordLen = words.length;
+        if (wordLen == 0 || k == 0) {
             return result;
         }
 
         Map<String, Integer> countMap = new HashMap<>();
-        for (String word : words) {
-            countMap.put(word, countMap.getOrDefault(word, 0) + 1);
+        for (String w : words) {
+            countMap.put(w, countMap.getOrDefault(w, 0) + 1);
+        }
+        int countMapSize = countMap.size();
+        if (countMapSize == 1) {
+            result.add(words[0]);
+            return result;
         }
 
-        List<Map.Entry<String, Integer>> list = new ArrayList<>(countMap.entrySet());
-        int start = 0;
-        int end = list.size() - 1;
-        k = Math.min(k, list.size()); // We migth have less than k unique words.
+        List<Map.Entry<String, Integer>> entryList = new ArrayList<>(countMap.entrySet());
 
-        while (start < end) {
-            int mid = quickSelectPartition(list, start, end);
-            if (mid == k - 1) {
-                break;
+        // No need to perform quick select if we have less than k unique words.
+        if (countMapSize > k) {
+            int start = 0;
+            int end = countMapSize - 1;
+
+            while (start < end) {
+                int partition = quickSelectPartition(entryList, start, end);
+                if (partition == k - 1) {
+                    break;
+                }
+                if (partition < k - 1) {
+                    start = partition + 1;
+                } else {
+                    end = partition - 1;
+                }
             }
-            if (mid < k - 1) {
-                start = mid + 1;
-            } else {
-                end = mid - 1;
-            }
+        } else {
+            k = countMapSize;
         }
 
-        Collections.sort(list.subList(0, k), comparator);
+        Collections.sort(entryList.subList(0, k), comparator);
         for (int i = 0; i < k; i++) {
-            result.add(list.get(i).getKey());
+            result.add(entryList.get(i).getKey());
         }
 
         return result;
@@ -125,26 +146,25 @@ class Solution2 {
     private int quickSelectPartition(List<Map.Entry<String, Integer>> list, int start, int end) {
         swap(list, start, start + random.nextInt(end - start + 1));
         int insertPos = start;
+        Map.Entry<String, Integer> startEntry = list.get(start);
 
         for (int i = start + 1; i <= end; i++) {
-            if (comparator.compare(list.get(start), list.get(i)) > 0) {
+            if (comparator.compare(list.get(i), startEntry) <= 0) {
                 insertPos++;
                 swap(list, insertPos, i);
             }
         }
 
-        swap(list, start, insertPos);
+        swap(list, insertPos, start);
         return insertPos;
     }
 
-    private void swap(List<Map.Entry<String, Integer>> list, int x, int y) {
-        if (x == y) {
-            return;
+    private void swap(List<Map.Entry<String, Integer>> list, int a, int b) {
+        if (a != b) {
+            Map.Entry<String, Integer> t = list.get(a);
+            list.set(a, list.get(b));
+            list.set(b, t);
         }
-
-        Map.Entry<String, Integer> t = list.get(x);
-        list.set(x, list.get(y));
-        list.set(y, t);
     }
 }
 

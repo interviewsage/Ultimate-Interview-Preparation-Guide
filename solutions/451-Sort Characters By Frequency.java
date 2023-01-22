@@ -4,21 +4,120 @@
 import java.util.*;
 
 /**
- * Using Bucket Sort
+ * First count the occurrence of each character and sort chars seen by count
  *
- * Time Complexity: O(4 * N) = O(N)
+ * Time Complexity: O(N + C + C log C + N + N) = O(N + ClogC) = O(N) if charset
+ * is a constant.
+ * = CountMap + CharList + Sort On Unique Chars + Build SB + To String
  *
- * Space Complexity: O(5 * N). = O(N)
+ * Space Complexity: O(C + C + C + C + N) = O(N).
+ * = CountMap + CharList + Sort + SB
  *
- * N = Length of the input string.
+ * N = Length of the input string. C = Number of unique characters in s.
  */
 class Solution1 {
     public String frequencySort(String s) {
-        if (s == null || s.length() <= 2) {
-            return s;
+        if (s == null) {
+            throw new IllegalArgumentException("Input string is null");
         }
 
         int len = s.length();
+        if (len <= 1) {
+            return s;
+        }
+
+        Map<Character, Integer> countMap = new HashMap<>();
+        for (int i = 0; i < len; i++) {
+            char c = s.charAt(i);
+            countMap.put(c, countMap.getOrDefault(c, 0) + 1);
+        }
+
+        List<Character> charList = new ArrayList<>(countMap.keySet());
+        Collections.sort(charList, (a, b) -> (countMap.get(b) - countMap.get(a)));
+
+        StringBuilder sb = new StringBuilder();
+        for (char c : charList) {
+            int count = countMap.get(c);
+            while (count-- > 0) {
+                sb.append(c);
+            }
+        }
+
+        return sb.toString();
+    }
+}
+
+/**
+ * Follow-Up: Characters with same frequency should appear in same order
+ * in output
+ *
+ * First count the occurrence of each character and sort chars seen by count
+ *
+ * Time Complexity: O(N + C + C log C + N + N) = O(N + ClogC) = O(N) if charset
+ * is a constant.
+ * = CountMap + CharList + Sort On Unique Chars + Build SB + To String
+ *
+ * Space Complexity: O(C + C + C + C + N) = O(N).
+ * = CountMap + CharList + Sort + SB
+ *
+ * N = Length of the input string. C = Number of unique characters in s.
+ */
+class Solution1FollowUp {
+    public String frequencySort(String s) {
+        if (s == null) {
+            throw new IllegalArgumentException("Input string is null");
+        }
+
+        int len = s.length();
+        if (len <= 1) {
+            return s;
+        }
+
+        Map<Character, Integer> countMap = new HashMap<>();
+        Map<Character, Integer> firstIdxMap = new HashMap<>();
+        for (int i = 0; i < len; i++) {
+            char c = s.charAt(i);
+            firstIdxMap.putIfAbsent(c, i);
+            countMap.put(c, countMap.getOrDefault(c, 0) + 1);
+        }
+
+        List<Character> charList = new ArrayList<>(countMap.keySet());
+        Collections.sort(charList, (a, b) -> (countMap.get(a) != countMap.get(b) ? countMap.get(b) - countMap.get(a)
+                : firstIdxMap.get(a) - firstIdxMap.get(b)));
+
+        StringBuilder sb = new StringBuilder();
+        for (char c : charList) {
+            int count = countMap.get(c);
+            while (count-- > 0) {
+                sb.append(c);
+            }
+        }
+
+        return sb.toString();
+    }
+}
+
+/**
+ * Using Bucket Sort
+ *
+ * Time Complexity: O(N + C + N + N + N) = O(N + C) = O(N)
+ * = CountMap + Buckets + MaxCount Loop + Add All Chars + To String
+ *
+ * Space Complexity: O(C + C + N) = O(N)
+ * = CountMap + Buckets + SB
+ *
+ * N = Length of the input string. C = Number of unique characters in s.
+ */
+class Solution2 {
+    public String frequencySort(String s) {
+        if (s == null) {
+            throw new IllegalArgumentException("Input string is null");
+        }
+
+        int len = s.length();
+        if (len <= 1) {
+            return s;
+        }
 
         Map<Character, Integer> countMap = new HashMap<>();
         for (int i = 0; i < len; i++) {
@@ -42,7 +141,7 @@ class Solution1 {
                 continue;
             }
             for (char c : bucket) {
-                for (int j = 0; j < i; j++) {
+                for (int k = 0; k < i; k++) {
                     sb.append(c);
                 }
             }
@@ -56,19 +155,24 @@ class Solution1 {
  * Using Bucket Sort (Characters with same frequency should appear in same order
  * in output)
  *
- * Time Complexity: O(4 * N) = O(N)
+ * Time Complexity: O(N + C + N + N + N) = O(N + C) = O(N)
+ * = CountMap + Buckets + MaxCount Loop + Add All Chars + To String
  *
- * Space Complexity: O(5 * N). = O(N)
+ * Space Complexity: O(C + C + N) = O(N)
+ * = CountMap + Buckets + SB
  *
- * N = Length of the input string.
+ * N = Length of the input string. C = Number of unique characters in s.
  */
-class SolutionFollowUp {
+class Solution2FollowUp {
     public String frequencySort(String s) {
-        if (s == null || s.length() <= 2) {
-            return s;
+        if (s == null) {
+            throw new IllegalArgumentException("Input string is null");
         }
 
         int len = s.length();
+        if (len <= 1) {
+            return s;
+        }
 
         Map<Character, Integer> countMap = new LinkedHashMap<>();
         for (int i = 0; i < len; i++) {
@@ -92,52 +196,9 @@ class SolutionFollowUp {
                 continue;
             }
             for (char c : bucket) {
-                for (int j = 0; j < i; j++) {
+                for (int k = 0; k < i; k++) {
                     sb.append(c);
                 }
-            }
-        }
-
-        return sb.toString();
-    }
-}
-
-/**
- * First count the occupance of each character and sort using PriorityQueue
- *
- * Time Complexity: O(N + M log M)
- *
- * Space Complexity: O(M + N). M = Size of HashMap & Priority queue. N = Size of
- * string builder.
- *
- * N = Length of the input string. M = Number of unique characters in s.
- */
-class Solution2 {
-    public String frequencySort(String s) {
-        if (s == null) {
-            return "";
-        }
-        if (s.length() <= 1) {
-            return s;
-        }
-
-        HashMap<Character, Integer> map = new HashMap<>();
-        for (char c : s.toCharArray()) {
-            map.put(c, map.getOrDefault(c, 0) + 1);
-        }
-
-        PriorityQueue<Map.Entry<Character, Integer>> queue = new PriorityQueue<>(
-                (a, b) -> (b.getValue() - a.getValue()));
-
-        for (Map.Entry<Character, Integer> e : map.entrySet()) {
-            queue.offer(e);
-        }
-
-        StringBuilder sb = new StringBuilder();
-        while (!queue.isEmpty()) {
-            Map.Entry<Character, Integer> cur = queue.poll();
-            for (int i = 0; i < cur.getValue(); i++) {
-                sb.append(cur.getKey());
             }
         }
 
