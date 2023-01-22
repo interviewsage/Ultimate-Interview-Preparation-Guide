@@ -4,6 +4,109 @@
 import java.util.*;
 
 /**
+ * Double-Ended BFS
+ *
+ * Find possible zero moves for each zero location. Use this to find next states
+ * of current state. Perform Double-Ended BFS to find the total number of moves.
+ *
+ * <pre>
+ * Time Complexity: O(V + E).
+ * V = Number of possible states = (R*C)!. Each state generation takes R*C time.
+ * E = 3 * V, because there can be a maximum of 3 edges from each vertex. Also, each state will take R*C time for String generation.
+ * Total TC = O(RC*(RC)! + RC*3*(RC)!) = O(RC*(RC)!) = O(4 * 6 * 6!)
+ * </pre>
+ *
+ * Space Complexity: O(R*C * (R*C)!) to save each state in begin, end and
+ * visited collections. SC = O(R*C * (R*C)!) = O(6 * 6!)
+ *
+ * R = Number of rows. C = Number of cols.
+ */
+class Solution1 {
+
+    private static final String FINAL_STATE = "123450";
+    private static final int[][] DIRS = { { 1, 3 }, { 0, 2, 4 }, { 1, 5 }, { 0, 4 }, { 1, 3, 5 }, { 2, 4 } };
+
+    public int slidingPuzzle(int[][] board) {
+        if (board == null || board.length != 2 || board[0].length != 3) {
+            throw new IllegalArgumentException("Input board is invalid");
+        }
+
+        StringBuilder sb = new StringBuilder();
+        int zeroIdx = -1;
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == 0) {
+                    if (zeroIdx != -1) {
+                        throw new IllegalArgumentException("Multiple zeros");
+                    }
+                    zeroIdx = 3 * i + j;
+                }
+                sb.append(board[i][j]);
+            }
+        }
+
+        if (zeroIdx == -1) {
+            throw new IllegalArgumentException("No zeros");
+        }
+
+        final String inputState = sb.toString();
+        if (FINAL_STATE.equals(inputState)) {
+            return 0;
+        }
+
+        Set<String> visitedStates = new HashSet<>();
+        int moves = 0;
+
+        Map<String, Integer> beginMap = new HashMap<>();
+        beginMap.put(inputState, zeroIdx);
+        visitedStates.add(inputState);
+
+        Map<String, Integer> endMap = new HashMap<>();
+        endMap.put(FINAL_STATE, 5);
+        visitedStates.add(FINAL_STATE);
+
+        while (!beginMap.isEmpty()) {
+            if (beginMap.size() > endMap.size()) {
+                Map<String, Integer> t = beginMap;
+                beginMap = endMap;
+                endMap = t;
+            }
+
+            Map<String, Integer> nextLevel = new HashMap<>();
+            moves++;
+            for (String curState : beginMap.keySet()) {
+                char[] curStateArr = curState.toCharArray();
+                int curZeroIdx = beginMap.get(curState);
+
+                for (int d : DIRS[curZeroIdx]) {
+                    swap(curStateArr, curZeroIdx, d);
+                    String nextState = new String(curStateArr);
+                    if (endMap.containsKey(nextState)) {
+                        return moves;
+                    }
+                    if (visitedStates.add(nextState)) {
+                        nextLevel.put(nextState, d);
+                    }
+                    swap(curStateArr, curZeroIdx, d);
+                }
+            }
+
+            beginMap = nextLevel;
+        }
+
+        return -1;
+    }
+
+    private void swap(char[] chArr, int a, int b) {
+        if (a != b) {
+            char t = chArr[a];
+            chArr[a] = chArr[b];
+            chArr[b] = t;
+        }
+    }
+}
+
+/**
  * Double-Ended BFS + Bit Manipulation
  *
  * Find possible zero moves for each zero location. Use this to find next states
@@ -25,7 +128,7 @@ import java.util.*;
  *
  * M = Number of rows. N = Number of cols.
  */
-class Solution1 {
+class Solution2 {
     // 3-Bit Binary representation of 123450
     private static final int FINAL_STATE = 0b001010011100101000;
     // Possible destination of zero. Here DIRS[0] represents the most significant
@@ -109,97 +212,6 @@ class Solution1 {
         state &= ~mask;
         // Setting num at zeroIdx
         return state | num;
-    }
-}
-
-/**
- * Double-Ended BFS
- *
- * Find possible zero moves for each zero location. Use this to find next states
- * of current state. Perform Double-Ended BFS to find the total number of moves.
- *
- * <pre>
- * Time Complexity: O(V + E).
- * V = Number of possible states = (R*C)!. Each state generation takes R*C time.
- * E = 3 * V, because there can be a maximum of 3 edges from each vertex. Also, each state will take R*C time for String generation.
- * Total TC = O(RC*(RC)! + RC*3*(RC)!) = O(RC*(RC)!) = O(4 * 6 * 6!)
- * </pre>
- *
- * Space Complexity: O(R*C * (R*C)!) to save each state in begin, end and
- * visited collections. SC = O(R*C * (R*C)!) = O(6 * 6!)
- *
- * R = Number of rows. C = Number of cols.
- */
-class Solution2 {
-    private static final String FINAL_STATE = "123450";
-    private static final int[][] DIRS = { { 1, 3 }, { 0, 2, 4 }, { 1, 5 }, { 0, 4 }, { 1, 3, 5 }, { 2, 4 } };
-
-    public int slidingPuzzle(int[][] board) {
-        if (board == null || board.length != 2 || board[0].length != 3) {
-            throw new IllegalArgumentException("Input board is invalid");
-        }
-
-        int zeroIdx = -1;
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 3; j++) {
-                sb.append(board[i][j]);
-                if (board[i][j] == 0) {
-                    zeroIdx = i * 3 + j;
-                }
-            }
-        }
-        String inputState = sb.toString();
-        if (FINAL_STATE.equals(inputState)) {
-            return 0;
-        }
-
-        HashSet<String> visited = new HashSet<>();
-        int moves = 0;
-
-        HashMap<String, Integer> begin = new HashMap<>();
-        begin.put(inputState, zeroIdx);
-        visited.add(inputState);
-
-        HashMap<String, Integer> end = new HashMap<>();
-        end.put(FINAL_STATE, 5);
-        visited.add(FINAL_STATE);
-
-        while (!begin.isEmpty()) {
-            if (begin.size() > end.size()) {
-                HashMap<String, Integer> tempSet = begin;
-                begin = end;
-                end = tempSet;
-            }
-
-            HashMap<String, Integer> next = new HashMap<>();
-            moves++;
-            for (Map.Entry<String, Integer> cur : begin.entrySet()) {
-                char[] curState = cur.getKey().toCharArray();
-                zeroIdx = cur.getValue();
-
-                for (int d : DIRS[zeroIdx]) {
-                    swap(curState, zeroIdx, d);
-                    String newState = new String(curState);
-                    if (end.containsKey(newState)) {
-                        return moves;
-                    }
-                    if (visited.add(newState)) {
-                        next.put(newState, d);
-                    }
-                    swap(curState, zeroIdx, d);
-                }
-            }
-            begin = next;
-        }
-
-        return -1;
-    }
-
-    private void swap(char[] charArr, int x, int y) {
-        char t = charArr[x];
-        charArr[x] = charArr[y];
-        charArr[y] = t;
     }
 }
 
