@@ -7,13 +7,44 @@ import java.util.*;
  * Find signature of each string and then put that in a HashSet. Size of set is
  * the result.
  *
- * Time Complexity: O(N * (L + 52*11)) = O(N * L)
+ * Time Complexity: O(N * (L + 52*12)) = O(N * L)
  *
- * Space Complexity: O(N * 52*11) = O(N)
+ * Space Complexity: O(N * 52*12) = O(N)
  *
  * N = Number of words. L = Average length of all words.
  */
 class Solution1 {
+    public int numSpecialEquivGroups(String[] words) {
+        if (words == null) {
+            throw new IllegalArgumentException("Input words array is null");
+        }
+
+        if (words.length <= 1) {
+            return words.length;
+        }
+
+        Set<String> signatures = new HashSet<>();
+        for (String w : words) {
+            int[] count = new int[52];
+            for (int i = 0; i < w.length(); i++) {
+                int chIdx = w.charAt(i) - 'a';
+                if ((i & 1) == 0) {
+                    // Even Index
+                    count[chIdx]++;
+                } else {
+                    // Odd Index
+                    count[chIdx + 26]++;
+                }
+            }
+
+            signatures.add(Arrays.toString(count));
+        }
+
+        return signatures.size();
+    }
+}
+
+class Solution2 {
     public int numSpecialEquivGroups(String[] words) {
         if (words == null || words.length == 0) {
             return 0;
@@ -57,7 +88,7 @@ class Solution1 {
     }
 }
 
-class Solution2 {
+class Solution3 {
     public int numSpecialEquivGroups(String[] words) {
         if (words == null || words.length == 0) {
             return 0;

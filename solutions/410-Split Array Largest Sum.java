@@ -22,18 +22,22 @@
  * (inclusive) is large enough but still less than mid.
  *
  * 3. We'll end up with two results: either we can divide the array into more
- * than m subarrays or we cannot.
+ * than k subarrays or we cannot.
  *
  * If we can, it means that the mid value we pick is too small because we've
  * already tried our best to make sure each part holds as many non-negative
  * numbers as we can but we still have numbers left. So, it is impossible to cut
- * the array into m parts and make sure each parts is no larger than mid. We
+ * the array into k parts and make sure each parts is no larger than mid. We
  * should increase mid. This leads to l = mid + 1;
  *
- * If we can't, it is either we successfully divide the array into m parts and
+ * If we can't, it is either we successfully divide the array into k parts and
  * the sum of each part is less than mid, or we used up all numbers before we
- * reach m. Both of them mean that we should lower mid because we need to find
+ * reach k. Both of them mean that we should lower mid because we need to find
  * the minimum one. This leads to r = mid;
+ *
+ * Why this works? Why this result sum will exist in the array? --> This is the
+ * first point at which this partitioning is possible. Any point before this we
+ * will have more than k partitions.
  *
  * Time Complexity: O(N + N * log(Sum-Max)) = O(N * log S)
  *
@@ -42,8 +46,8 @@
  * N = Length of input array. S = Sum of all numbers in the array.
  */
 class Solution {
-    public int splitArray(int[] nums, int m) {
-        if (nums == null || m <= 0 || nums.length < m) {
+    public int splitArray(int[] nums, int k) {
+        if (nums == null || k <= 0 || nums.length < k) {
             throw new IllegalArgumentException("Input is invalid");
         }
 
@@ -55,10 +59,10 @@ class Solution {
             sum += nums[i];
         }
 
-        if (m == 1) {
+        if (k == 1) {
             return sum;
         }
-        if (m == len) {
+        if (k == len) {
             return max;
         }
 
@@ -66,7 +70,7 @@ class Solution {
         int end = sum;
         while (start < end) {
             int mid = start + (end - start) / 2;
-            if (isValid(nums, m, mid)) {
+            if (canCutIntoAtMostKSubsets(nums, k, mid)) {
                 end = mid;
             } else {
                 start = mid + 1;
@@ -76,19 +80,20 @@ class Solution {
         return start;
     }
 
-    private boolean isValid(int[] nums, int m, int maxSum) {
-        int sum = nums[0];
-        for (int i = 1; i < nums.length; i++) {
-            if (sum + nums[i] > maxSum) {
-                if (m == 1) {
+    private boolean canCutIntoAtMostKSubsets(int[] nums, int k, int maxSum) {
+        int sum = 0;
+
+        for (int n : nums) {
+            if (sum + n > maxSum) {
+                if (--k == 0) {
                     return false;
                 }
-                m--;
-                sum = nums[i];
+                sum = n;
             } else {
-                sum += nums[i];
+                sum += n;
             }
         }
+
         return true;
     }
 }

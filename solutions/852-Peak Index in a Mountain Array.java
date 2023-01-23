@@ -24,11 +24,11 @@
 class Solution1 {
     public int peakIndexInMountainArray(int[] arr) {
         if (arr == null || arr.length < 3) {
-            throw new IllegalArgumentException("Input is invalid");
+            throw new IllegalArgumentException("Input arr in invalid");
         }
 
-        int start = 0;
-        int end = arr.length - 1;
+        int start = 1;
+        int end = arr.length - 2;
 
         while (start < end) {
             int mid = start + (end - start) / 2;

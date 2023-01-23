@@ -6,7 +6,7 @@
  * https://leetcode.com/problems/koko-eating-bananas/discuss/152324/JavaC++Python-Binary-Search
  *
  * Find the max number of bananas in a pile. Use Binary Search to find the
- * hourly eating rate between 1 and max.
+ * hourly eating rate between average and max.
  *
  * Time Complexity: O(N + N * log (max-avg))
  *
@@ -17,32 +17,37 @@
  */
 class Solution {
     public int minEatingSpeed(int[] piles, int h) {
-        if (h <= 0 || piles == null || piles.length > h) {
+        if (piles == null || h <= 0 || piles.length > h) {
             throw new IllegalArgumentException("Input is invalid");
         }
 
-        int len = piles.length;
-
-        if (len == 0) {
+        int numPiles = piles.length;
+        if (numPiles == 0) {
             return 0;
         }
-
-        int max = piles[0];
-        long sum = piles[0];
-        for (int i = 1; i < len; i++) {
-            max = Math.max(max, piles[i]);
-            sum += piles[i];
+        if (h == 1) {
+            return piles[0];
+        }
+        if (numPiles == 1) {
+            return piles[0] / h + (piles[0] % h != 0 ? 1 : 0);
         }
 
-        if (h == len) {
+        int max = 0;
+        int sum = 0;
+        for (int p : piles) {
+            max = Math.max(max, p);
+            sum += p;
+        }
+
+        if (numPiles == h) {
             return max;
         }
 
-        int start = (int) (sum / h) + (sum % h != 0 ? 1 : 0);
+        int start = sum / h + (sum % h != 0 ? 1 : 0);
         int end = max;
         while (start < end) {
             int mid = start + (end - start) / 2;
-            if (isPossible(piles, h, mid)) {
+            if (canEatInAtMostHHours(piles, h, mid)) {
                 end = mid;
             } else {
                 start = mid + 1;
@@ -52,14 +57,13 @@ class Solution {
         return start;
     }
 
-    private boolean isPossible(int[] piles, int h, int speed) {
+    private boolean canEatInAtMostHHours(int[] piles, int h, int speed) {
         for (int p : piles) {
             h -= p / speed + (p % speed != 0 ? 1 : 0);
             if (h < 0) {
                 return false;
             }
         }
-
         return true;
     }
 }

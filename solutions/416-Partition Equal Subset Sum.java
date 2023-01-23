@@ -31,35 +31,42 @@
 class Solution1 {
     public boolean canPartition(int[] nums) {
         if (nums == null) {
-            return false;
+            throw new IllegalArgumentException("Input nums array is null");
         }
+
+        int numsLen = nums.length;
         // Empty array can be divided in two empty subsets.
-        if (nums.length == 0) {
+        if (numsLen == 0) {
             return true;
+        }
+        if (numsLen == 1) {
+            return nums[0] == 0;
         }
 
         int sum = 0;
-        for (int num : nums) {
-            sum += num;
+        for (int n : nums) {
+            sum += n;
         }
-        if (sum % 2 == 1) {
+        // if (sum % 2 != 0) {
+        if ((sum & 1) != 0) {
             return false;
         }
-        sum /= 2;
 
+        // sum /= 2;
+        sum >>= 1;
         boolean[] dp = new boolean[sum + 1];
         dp[0] = true;
 
         for (int n : nums) {
+            if (sum >= n && dp[sum - n]) {
+                return true;
+            }
             for (int s = sum; s >= n; s--) {
-                dp[s] = dp[s] || dp[s - n];
-                if (s == sum && dp[s]) {
-                    return true;
-                }
+                dp[s] |= dp[s - n];
             }
         }
 
-        return dp[sum];
+        return false;
     }
 }
 

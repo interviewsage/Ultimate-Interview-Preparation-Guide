@@ -23,23 +23,19 @@
 class Solution {
     public int maximizeSweetness(int[] sweetness, int k) {
         // Invalid Input
-        if (sweetness == null || k < 0 || sweetness.length < k) {
+        if (sweetness == null || k < 0 || sweetness.length <= k) {
             throw new IllegalArgumentException("Input is invalid");
         }
 
         int len = sweetness.length;
-        // If length is zero then cannot cut teh chocolate bar
-        if (len == 0) {
-            return 0;
-        }
 
         // Find minimum sweetness and sum of all sweetness. This will help us in
         // defining the search space of the binary search
-        int min = sweetness[0];
         int sum = sweetness[0];
+        int min = sweetness[0];
         for (int i = 1; i < len; i++) {
-            min = Math.min(min, sweetness[i]);
             sum += sweetness[i];
+            min = Math.min(min, sweetness[i]);
         }
 
         // If number of friends is zero, then return sum. You can eat the whole
@@ -47,9 +43,10 @@ class Solution {
         if (k == 0) {
             return sum;
         }
+
         // Length is same as the number of pieces required, then each piece will have
         // one chunk. You will get the chuck with minimum sweetness.
-        if (len == k + 1) {
+        if (k + 1 == len) {
             return min;
         }
 
@@ -60,8 +57,8 @@ class Solution {
                                  // pieces.
         while (start < end) {
             // Here +1 is required to avoid Infinite Loop
-            int mid = start + (end + 1 - start) / 2;
-            if (canDivideChocolate(sweetness, k, mid)) {
+            int mid = start + (end - start + 1) / 2;
+            if (canCutAtLeastKPieces(sweetness, k + 1, mid)) {
                 start = mid;
             } else {
                 end = mid - 1;
@@ -78,21 +75,19 @@ class Solution {
      * canDivideChocolate() function will scan the whole array each time. Thus it
      * will take O(N) time.
      */
-    private boolean canDivideChocolate(int[] sweetness, int k, int minDesiredSweetness) {
+    private boolean canCutAtLeastKPieces(int[] sweetness, int k, int minSum) {
         int sum = 0;
-        for (int i = 0; i < sweetness.length; i++) {
-            sum += sweetness[i];
+        for (int s : sweetness) {
+            sum += s;
             // As soon as the minimum desired sweetness is met, cut the piece and start
             // finding the next piece.
-            if (sum >= minDesiredSweetness) {
-                if (k == 0) {
+            if (sum >= minSum) {
+                if (--k == 0) {
                     return true;
                 }
-                k--;
                 sum = 0;
             }
         }
-
         return false;
     }
 }

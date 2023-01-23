@@ -32,13 +32,51 @@ interface Robot {
 /**
  * Backtracking DFS
  *
- * Time Complexity: O(4 * (N - M))
+ * Time Complexity: O(4 * Total Number of reachable cells)
+ * In worst case, Total Number of reachable cells = N - M;
  *
- * Space Complexity: O(N - M)
+ * Space Complexity: O(Total Number of reachable cells) = O(HashSet + Recursion
+ * Depth)
  *
  * N = Number of cells in the grid. M = Number of bricks
  */
 class Solution1 {
+    private static final int[][] DIRS = { { -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 } };
+
+    public void cleanRoom(Robot robot) {
+        if (robot == null) {
+            throw new IllegalArgumentException("Input is null");
+        }
+
+        dfsHelper(robot, new HashSet<>(), 0, 0, 0, "0,0");
+    }
+
+    private void dfsHelper(Robot robot, Set<String> visited, int r, int c, int dir, String pos) {
+        visited.add(pos);
+        robot.clean();
+
+        for (int i = 0; i < 4; i++) {
+            int x = r + DIRS[dir][0];
+            int y = c + DIRS[dir][1];
+            String newPos = new StringBuilder().append(x).append(',').append(y).toString();
+
+            if (!visited.contains(newPos) && robot.move()) {
+                dfsHelper(robot, visited, x, y, dir, newPos);
+
+                robot.turnRight();
+                robot.turnRight();
+                robot.move();
+                robot.turnRight();
+                robot.turnRight();
+            }
+
+            dir = (dir + 1) % 4;
+            robot.turnRight();
+        }
+    }
+}
+
+class Solution2 {
     public void cleanRoom(Robot robot) {
         if (robot == null) {
             throw new IllegalArgumentException("Input is null");
@@ -88,7 +126,7 @@ class Solution1 {
     }
 }
 
-class Solution2 {
+class Solution3 {
     public void cleanRoom(Robot robot) {
         if (robot == null) {
             return;
