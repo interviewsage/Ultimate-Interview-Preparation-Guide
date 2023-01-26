@@ -27,27 +27,33 @@
  */
 class Solution1 {
     public int maxProduct(int[] nums) {
-        if (nums == null || nums.length == 0) {
-            return 0;
+        if (nums == null) {
+            throw new IllegalArgumentException("Input nums array is null");
         }
 
         int len = nums.length;
-        if (len == 1) {
-            return nums[0];
+        if (len == 0) {
+            return 0;
         }
 
-        int minHere = nums[0];
         int maxHere = nums[0];
+        int minHere = nums[0];
         int maxSoFar = nums[0];
 
         for (int i = 1; i < len; i++) {
+            // multiplied by a negative makes big number smaller, small number bigger
+            // so we redefine by swapping them
             if (nums[i] < 0) {
                 int t = maxHere;
                 maxHere = minHere;
                 minHere = t;
             }
+
+            // max/min product for the current number is either the current number itself
+            // or the max/min by the previous number times the current one
             maxHere = Math.max(nums[i], maxHere * nums[i]);
             minHere = Math.min(nums[i], minHere * nums[i]);
+            // the newly computed max value is a candidate for our global result
             maxSoFar = Math.max(maxSoFar, maxHere);
         }
 
@@ -57,11 +63,14 @@ class Solution1 {
 
 class Solution2 {
     public int maxProduct(int[] nums) {
-        if (nums == null || nums.length == 0) {
-            return 0;
+        if (nums == null) {
+            throw new IllegalArgumentException("Input nums array is null");
         }
 
         int len = nums.length;
+        if (len == 0) {
+            return 0;
+        }
         if (len == 1) {
             return nums[0];
         }
