@@ -24,16 +24,17 @@ import java.util.*;
  *
  * N = length of the input array.
  */
-class Solution1 {
+class Solution {
 
     int[] nums;
     int[] orig;
     Random random;
 
-    public Solution1(int[] nums) {
+    public Solution(int[] nums) {
         if (nums == null) {
-            throw new IllegalArgumentException("Input nums is null");
+            throw new IllegalArgumentException("Input nums array is null");
         }
+
         this.nums = nums;
         this.orig = Arrays.copyOf(nums, nums.length);
         this.random = new Random();
@@ -51,63 +52,12 @@ class Solution1 {
         return nums;
     }
 
-    private static void swap(int[] nums, int x, int y) {
-        if (x != y) {
-            int t = nums[x];
-            nums[x] = nums[y];
-            nums[y] = t;
+    private void swap(int[] nums, int a, int b) {
+        if (a != b) {
+            int t = nums[a];
+            nums[a] = nums[b];
+            nums[b] = t;
         }
-    }
-}
-
-class Solution2 {
-
-    int[] orig;
-    int[] nums;
-    Random rand;
-
-    public Solution2(int[] _nums) {
-        if (_nums == null) {
-            return;
-        }
-
-        nums = _nums;
-        orig = Arrays.copyOf(nums, nums.length);
-        rand = new Random();
-    }
-
-    /** Resets the array to its original configuration and return it. */
-    public int[] reset() {
-        if (orig == null) {
-            return null;
-        }
-
-        nums = Arrays.copyOf(orig, orig.length);
-        return nums;
-    }
-
-    /** Returns a random shuffling of the array. */
-    public int[] shuffle() {
-        if (nums == null || nums.length < 2) {
-            return nums;
-        }
-
-        for (int i = 1; i < nums.length; i++) {
-            int idx = rand.nextInt(i + 1);
-            swap(nums, i, idx);
-        }
-
-        return nums;
-    }
-
-    private void swap(int[] nums, int x, int y) {
-        if (x == y) {
-            return;
-        }
-
-        int t = nums[x];
-        nums[x] = nums[y];
-        nums[y] = t;
     }
 }
 

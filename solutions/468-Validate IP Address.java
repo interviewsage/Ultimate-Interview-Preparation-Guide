@@ -10,6 +10,89 @@
  */
 class Solution {
     public String validIPAddress(String queryIP) {
+        if (queryIP == null) {
+            throw new IllegalArgumentException("Input queryIP is null");
+        }
+
+        if (isIPV4(queryIP)) {
+            return "IPv4";
+        }
+        if (isIPV6(queryIP)) {
+            return "IPv6";
+        }
+
+        return "Neither";
+    }
+
+    private boolean isIPV4(String queryIP) {
+        int len = queryIP.length();
+        if (len < 7 || len > 15 || !Character.isDigit(queryIP.charAt(0))
+                || !Character.isDigit(queryIP.charAt(len - 1))) {
+            return false;
+        }
+
+        String[] octets = queryIP.split("\\.");
+        if (octets.length != 4) {
+            return false;
+        }
+
+        for (String octet : octets) {
+            int oLen = octet.length();
+            if (oLen == 0 || oLen > 3 || (oLen > 1 && octet.charAt(0) == '0')) {
+                return false;
+            }
+
+            try {
+                int val = Integer.parseInt(octet);
+                if (val < 0 || val > 255) {
+                    return false;
+                }
+            } catch (NumberFormatException nfe) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean isIPV6(String queryIP) {
+        int len = queryIP.length();
+        if (len < 15 || len > 39 || isHexaDecimalChar(queryIP.charAt(0))
+                || isHexaDecimalChar(queryIP.charAt(len - 1))) {
+            return false;
+        }
+
+        String[] hextets = queryIP.split(":");
+        if (hextets.length != 8) {
+            return false;
+        }
+
+        for (String hextet : hextets) {
+            int hLen = hextet.length();
+            if (hLen == 0 || hLen > 4) {
+                return false;
+            }
+
+            try {
+                int val = Integer.parseInt(hextet, 16);
+                if (val < 0) {
+                    return false;
+                }
+            } catch (NumberFormatException nfe) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean isHexaDecimalChar(char c) {
+        return Character.isDigit(c) || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f');
+    }
+}
+
+class Solution2 {
+    public String validIPAddress(String queryIP) {
         return isIPv4(queryIP) ? "IPv4" : (isIPv6(queryIP) ? "IPv6" : "Neither");
     }
 
@@ -89,7 +172,7 @@ class Solution {
     }
 }
 
-class Solution2 {
+class Solution3 {
     public String validIPAddress(String queryIP) {
         return validIPv4Address(queryIP) ? "IPv4" : (validIPv6Address(queryIP) ? "IPv6" : "Neither");
     }
@@ -166,7 +249,7 @@ class Solution2 {
     }
 }
 
-class Solution3 {
+class Solution4 {
     public String validIPAddress(String IP) {
         if (IP == null) {
             return "Neither";
@@ -252,7 +335,7 @@ class Solution3 {
  *
  * N = length of input string.
  */
-class Solution4 {
+class Solution5 {
     public String validIPAddress(String IP) {
         if (IP == null) {
             return "Neither";
