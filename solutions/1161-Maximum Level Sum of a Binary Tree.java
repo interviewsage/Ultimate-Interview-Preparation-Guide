@@ -24,7 +24,7 @@ class TreeNode {
 }
 
 /**
- * BFS
+ * BFS - Iterative
  *
  * Time Complexity: O(N)
  *
@@ -40,14 +40,13 @@ class Solution1 {
 
         Queue<TreeNode> queue = new ArrayDeque<>();
         queue.offer(root);
-
-        int maxSum = Integer.MIN_VALUE;
-        int maxSumLevelId = 1;
-        int levelId = 0;
+        int maxSum = root.val;
+        int resultLevel = 1;
+        int curLevel = 0;
 
         while (!queue.isEmpty()) {
             int levelSize = queue.size();
-            levelId++;
+            curLevel++;
             int sum = 0;
 
             for (int i = 0; i < levelSize; i++) {
@@ -64,16 +63,16 @@ class Solution1 {
 
             if (sum > maxSum) {
                 maxSum = sum;
-                maxSumLevelId = levelId;
+                resultLevel = curLevel;
             }
         }
 
-        return maxSumLevelId;
+        return resultLevel;
     }
 }
 
 /**
- * DFS
+ * DFS - Recursive
  *
  * Time Complexity: O(N + H)
  *
@@ -87,34 +86,34 @@ class Solution2 {
             return 0;
         }
 
-        List<Integer> levelSum = new ArrayList<>();
-        dfsHelper(root, levelSum, 0);
+        List<Integer> depthSum = new ArrayList<>();
+        maxLevelSumHelper(root, 0, depthSum);
 
-        int maxSum = levelSum.get(0);
-        int maxSumLevelId = 0;
+        int resultLevel = 0;
+        int maxSum = depthSum.get(0);
 
-        for (int i = 1; i < levelSum.size(); i++) {
-            if (levelSum.get(i) > maxSum) {
-                maxSum = levelSum.get(i);
-                maxSumLevelId = i;
+        for (int i = 1; i < depthSum.size(); i++) {
+            if (depthSum.get(i) > maxSum) {
+                maxSum = depthSum.get(i);
+                resultLevel = i;
             }
         }
 
-        return maxSumLevelId + 1;
+        return resultLevel + 1;
     }
 
-    private void dfsHelper(TreeNode node, List<Integer> levelSum, int level) {
+    private void maxLevelSumHelper(TreeNode node, int depth, List<Integer> depthSum) {
         if (node == null) {
             return;
         }
 
-        if (levelSum.size() == level) {
-            levelSum.add(node.val);
+        if (depth == depthSum.size()) {
+            depthSum.add(node.val);
         } else {
-            levelSum.set(level, levelSum.get(level) + node.val);
+            depthSum.set(depth, depthSum.get(depth) + node.val);
         }
 
-        dfsHelper(node.left, levelSum, level + 1);
-        dfsHelper(node.right, levelSum, level + 1);
+        maxLevelSumHelper(node.left, depth + 1, depthSum);
+        maxLevelSumHelper(node.right, depth + 1, depthSum);
     }
 }

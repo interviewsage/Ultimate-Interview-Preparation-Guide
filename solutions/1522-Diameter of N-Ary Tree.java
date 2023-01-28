@@ -26,7 +26,7 @@ class Node {
 /**
  * <pre>
  * For complexity calculation Purposes, lets assume:
- * N = Maximum number of children of a node. Each node can have 0 t0 N nodes.
+ * N = Maximum number of children of a node. Each node can have 0 to N nodes.
  * M = Total number of nodes.
  *
  * Time Complexity:
@@ -52,33 +52,32 @@ class Solution {
             return 0;
         }
 
-        int[] maxDiameter = new int[1];
-        diameterHelper(root, maxDiameter);
-        return maxDiameter[0];
+        int[] diameter = { 0 };
+        diameterHelper(root, diameter);
+        return diameter[0];
     }
 
-    private int diameterHelper(Node root, int[] maxDiameter) {
-        if (root.children.size() == 0) {
+    private int diameterHelper(Node node, int[] diameter) {
+        if (node.children.size() == 0) {
             return 0;
         }
 
         // Setting below maximums to -1 helps in the case if there is only one child
-        // node of this root node.
-        // Also, height of the empty tree is -1.
-        int maxHeight1 = -1;
-        int maxHeight2 = -1;
+        // node of this node.
+        int max1 = -1;
+        int max2 = -1;
 
-        for (Node child : root.children) {
-            int childHeight = diameterHelper(child, maxDiameter);
-            if (childHeight > maxHeight1) {
-                maxHeight2 = maxHeight1;
-                maxHeight1 = childHeight;
-            } else if (childHeight > maxHeight2) {
-                maxHeight2 = childHeight;
+        for (Node child : node.children) {
+            int height = diameterHelper(child, diameter);
+            if (height > max1) {
+                max2 = max1;
+                max1 = height;
+            } else if (height > max2) {
+                max2 = height;
             }
         }
 
-        maxDiameter[0] = Math.max(maxDiameter[0], maxHeight1 + maxHeight2 + 2);
-        return maxHeight1 + 1;
+        diameter[0] = Math.max(diameter[0], max1 + max2 + 2);
+        return max1 + 1;
     }
 }
