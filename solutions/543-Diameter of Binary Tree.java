@@ -1,4 +1,5 @@
 // LeetCode Question URL: https://leetcode.com/problems/diameter-of-binary-tree/
+// LeetCode Discuss URL:
 
 // Definition for a binary tree node.
 class TreeNode {
