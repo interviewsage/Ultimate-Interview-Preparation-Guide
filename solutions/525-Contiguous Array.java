@@ -4,6 +4,8 @@
 import java.util.*;
 
 /**
+ * This question is similar to: 325. Maximum Size Subarray Sum Equals k
+ *
  * In this approach, we make use of a sum variable, which is used to store the
  * relative number of ones and zeros encountered so far while traversing the
  * array. The sum variable is incremented by one for every 1 encountered and the
@@ -25,24 +27,27 @@ import java.util.*;
  */
 class Solution {
     public int findMaxLength(int[] nums) {
-        if (nums == null || nums.length <= 1) {
+        if (nums == null) {
+            throw new IllegalArgumentException("Input nums array is null");
+        }
+
+        int len = nums.length;
+        if (len <= 1) {
             return 0;
         }
 
-        Map<Integer, Integer> firstSeenMap = new HashMap<>();
+        Map<Integer, Integer> prefixSumMap = new HashMap<>();
+        prefixSumMap.put(0, -1);
         int sum = 0;
-        firstSeenMap.put(0, -1);
         int maxLen = 0;
 
-        for (int i = 0; i < nums.length; i++) {
+        for (int i = 0; i < len; i++) {
             sum += nums[i] == 0 ? -1 : 1;
-            Integer prevIdx = firstSeenMap.get(sum);
-
-            if (prevIdx != null) {
-                maxLen = Math.max(maxLen, i - prevIdx);
-            } else {
-                firstSeenMap.put(sum, i);
+            Integer foundIdx = prefixSumMap.get(sum);
+            if (foundIdx != null) {
+                maxLen = Math.max(maxLen, i - foundIdx);
             }
+            prefixSumMap.putIfAbsent(sum, i);
         }
 
         return maxLen;

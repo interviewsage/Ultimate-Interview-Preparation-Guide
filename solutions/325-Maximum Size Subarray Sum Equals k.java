@@ -4,6 +4,8 @@
 import java.util.*;
 
 /**
+ * This question is similar to: 525. Contiguous Array
+ *
  * Using hashmap to store the first index of the cumulative sum.
  *
  * Time Complexity: O(N)
@@ -12,11 +14,14 @@ import java.util.*;
  */
 class Solution {
     public int maxSubArrayLen(int[] nums, int k) {
-        if (nums == null || nums.length == 0) {
-            return 0;
+        if (nums == null) {
+            throw new IllegalArgumentException("Input nums array is null");
         }
 
         int len = nums.length;
+        if (len == 0) {
+            return 0;
+        }
         if (len == 1) {
             return nums[0] == k ? 1 : 0;
         }
@@ -24,8 +29,8 @@ class Solution {
         // Key = Sum, Value = First index at which this sum was seen.
         Map<Integer, Integer> prefixSumMap = new HashMap<>();
         prefixSumMap.put(0, -1);
-        int maxLen = 0;
         int sum = 0;
+        int maxLen = 0;
 
         for (int i = 0; i < len; i++) {
             sum += nums[i];

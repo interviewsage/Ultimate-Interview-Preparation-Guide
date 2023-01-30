@@ -23,7 +23,6 @@ class TreeNode {
  *
  * Space Complexity -> O(height of the tree)
  */
-
 class BSTIterator implements Iterator<Integer> {
 
     Deque<TreeNode> stack;
