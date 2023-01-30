@@ -22,20 +22,23 @@ class Solution {
             return true;
         }
 
-        Map<String, Set<String>> map = new HashMap<>();
-        for (List<String> pair : similarPairs) {
-            map.putIfAbsent(pair.get(0), new HashSet<>());
-            map.get(pair.get(0)).add(pair.get(1));
-            map.putIfAbsent(pair.get(1), new HashSet<>());
-            map.get(pair.get(1)).add(pair.get(0));
+        Map<String, Set<String>> similarPairsMap = new HashMap<>();
+        if (similarPairs != null) {
+            for (List<String> pair : similarPairs) {
+                similarPairsMap.putIfAbsent(pair.get(0), new HashSet<>());
+                similarPairsMap.get(pair.get(0)).add(pair.get(1));
+                similarPairsMap.putIfAbsent(pair.get(1), new HashSet<>());
+                similarPairsMap.get(pair.get(1)).add(pair.get(0));
+            }
         }
 
         for (int i = 0; i < len; i++) {
             if (sentence1[i].equals(sentence2[i])) {
                 continue;
             }
-            Set<String> set = map.get(sentence1[i]);
-            if (set == null || !set.contains(sentence2[i])) {
+
+            Set<String> similarWords = similarPairsMap.get(sentence1[i]);
+            if (similarWords == null || !similarWords.contains(sentence2[i])) {
                 return false;
             }
         }

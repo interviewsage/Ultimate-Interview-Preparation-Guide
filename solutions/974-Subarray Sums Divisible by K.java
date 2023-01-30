@@ -28,27 +28,36 @@ import java.util.*;
  */
 class Solution1 {
     public int subarraysDivByK(int[] nums, int k) {
-        if (k == 0) {
-            throw new IllegalArgumentException("k is zero");
+        if (nums == null || k == 0) {
+            throw new IllegalArgumentException("Input is invalid");
         }
-        if (nums == null || nums.length == 0) {
+
+        int len = nums.length;
+        if (len == 0) {
             return 0;
         }
+        if (k == -1 || k == 1) {
+            return len * (len + 1) / 2;
+        }
+        if (len == 1) {
+            return nums[0] % k == 0 ? 1 : 0;
+        }
 
-        Map<Integer, Integer> map = new HashMap<>();
-        map.put(0, 1);
-        int prefixSum = 0;
+        Map<Integer, Integer> remainderMap = new HashMap<>();
+        remainderMap.put(0, 1);
         int result = 0;
+        int prefixSumRem = 0;
 
         for (int n : nums) {
-            // prefixSum = (prefixSum + n % k + k) % k;
-            prefixSum = (prefixSum + n % k) % k;
-            if ((k > 0 && prefixSum < 0) || (k < 0 && prefixSum > 0)) {
-                prefixSum += k;
+            // prefixSumRem = (prefixSumRem + n % k + k) % k;
+            prefixSumRem = (prefixSumRem + n % k) % k;
+            if ((k < 0 && prefixSumRem > 0) || (k > 0 && prefixSumRem < 0)) {
+                prefixSumRem += k;
             }
-            int count = map.getOrDefault(prefixSum, 0);
+
+            int count = remainderMap.getOrDefault(prefixSumRem, 0);
             result += count;
-            map.put(prefixSum, count + 1);
+            remainderMap.put(prefixSumRem, count + 1);
         }
 
         return result;
