@@ -14,8 +14,8 @@ import java.util.*;
  * as the sequence in the array
  *
  * Now only those elements within [i-(k-1),i] are in the deque. We then discard
- * elements smaller than a[i] from the tail. This is because if a[x] <a[i] and
- * x<i, then a[x] has no chance to be the "max" in [i-(k-1),i], or any other
+ * elements smaller than a[i] from the tail. This is because if a[x] < a[i] and
+ * x < i, then a[x] has no chance to be the "max" in [i-(k-1),i], or any other
  * subsequent window: a[i] would always be a better candidate.
  *
  * As a result elements in the deque are ordered in both sequence in array and
