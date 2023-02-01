@@ -12,9 +12,10 @@ import java.util.*;
  * Very similar to https://leetcode.com/problems/find-median-from-data-stream/
  *
  * <pre>
- * Time Complexity: O((N-K)*log K + N*log K) = O(N * log K)
- * Add Elements = O(N*Log K)
- * Remove Elements = O((N-K)*log K) ==> TreeSet.remove() in JAVA is O(log K)
+ * Add Elements = O(5*Log(K/2) * N)
+ * Remove Elements = O(4*Log(K/2) * (N-K)) ==> TreeSet.remove() in JAVA is O(log K)
+ * Get Median = O(2*Log(K/2) * (N-K+1))
+ * Total Time Complexity: O(log(K/2) * (11*N - 6*K + 2)) = O((N-K) * log(K))
  * </pre>
  *
  * Space Complexity: O(K)
@@ -24,19 +25,29 @@ import java.util.*;
 class Solution1 {
     public double[] medianSlidingWindow(int[] nums, int k) {
         if (nums == null || k <= 0) {
-            throw new IllegalArgumentException("Input is invalid");
+            throw new IllegalArgumentException("Invalid input");
         }
 
         int len = nums.length;
-        double[] result = new double[len - k + 1];
-        if (k == 1) {
+        if (len <= 1 || k == 1) {
+            double[] result = new double[len];
             for (int i = 0; i < len; i++) {
                 result[i] = (double) nums[i];
             }
             return result;
             // return Arrays.stream(nums).asDoubleStream().toArray();
         }
+        if (len < k) {
+            Arrays.sort(nums);
+            double[] result = new double[1];
+            if (len % 2 != 0) {
+                result[0] = (double) nums[len / 2];
+            } else {
+                result[0] = (nums[len / 2 - 1] + nums[len / 2]) / 2.0;
+            }
+        }
 
+        double[] result = new double[len - k + 1];
         Comparator<Integer> comparator = (a,
                 b) -> (nums[a] != nums[b] ? Integer.compare(nums[a], nums[b]) : Integer.compare(a, b));
         TreeSet<Integer> smallNums = new TreeSet<>(comparator.reversed());
@@ -44,11 +55,11 @@ class Solution1 {
 
         for (int i = 0; i < len; i++) {
             if (i >= k) {
-                removeElement(smallNums, largeNums, nums, i - k);
+                removeElement(smallNums, largeNums, i - k);
             }
             addElement(smallNums, largeNums, i);
             if (i >= k - 1) {
-                result[i - (k - 1)] = getMedian(smallNums, largeNums, nums);
+                result[i - k + 1] = getMedian(smallNums, largeNums, nums);
             }
         }
 
@@ -63,7 +74,7 @@ class Solution1 {
         }
     }
 
-    private void removeElement(TreeSet<Integer> smallNums, TreeSet<Integer> largeNums, int[] nums, int idx) {
+    private void removeElement(TreeSet<Integer> smallNums, TreeSet<Integer> largeNums, int idx) {
         if (largeNums.contains(idx)) {
             largeNums.remove(idx);
             if (smallNums.size() == largeNums.size() + 2) {
@@ -80,8 +91,9 @@ class Solution1 {
     private double getMedian(TreeSet<Integer> smallNums, TreeSet<Integer> largeNums, int[] nums) {
         if (smallNums.size() == largeNums.size()) {
             return ((double) nums[smallNums.first()] + nums[largeNums.first()]) / 2;
+        } else {
+            return (double) nums[smallNums.first()];
         }
-        return nums[smallNums.first()];
     }
 }
 
