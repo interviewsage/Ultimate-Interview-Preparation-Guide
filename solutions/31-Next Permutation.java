@@ -1,4 +1,5 @@
 // LeetCode Question URL: https://leetcode.com/problems/next-permutation/
+// LeetCode Discuss URL:
 
 /**
  * Refer: 1)
