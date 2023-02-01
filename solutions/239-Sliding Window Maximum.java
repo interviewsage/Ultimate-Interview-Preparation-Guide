@@ -34,39 +34,37 @@ class Solution {
         if (nums == null || k <= 0) {
             throw new IllegalArgumentException("Input is invalid");
         }
+
         int len = nums.length;
         if (len == 0 || k == 1) {
             return Arrays.copyOf(nums, len);
         }
         if (len <= k) {
-            return new int[] { getMaxVal(nums) };
+            int[] result = new int[] { nums[0] };
+            for (int i = 1; i < len; i++) {
+                result[0] = Math.max(result[0], nums[i]);
+            }
+            return result;
         }
 
-        Deque<Integer> deque = new ArrayDeque<>();
         int[] result = new int[len - k + 1];
+        Deque<Integer> deque = new ArrayDeque<>();
 
         for (int i = 0; i < len; i++) {
-            if (!deque.isEmpty() && deque.peekFirst() == i - k) {
+            if (!deque.isEmpty() && deque.peekFirst() <= i - k) {
                 deque.pollFirst();
             }
+
             while (!deque.isEmpty() && nums[deque.peekLast()] <= nums[i]) {
                 deque.pollLast();
             }
-            deque.offerLast(i);
 
+            deque.offer(i);
             if (i >= k - 1) {
                 result[i - k + 1] = nums[deque.peekFirst()];
             }
         }
 
         return result;
-    }
-
-    private int getMaxVal(int[] nums) {
-        int max = nums[0];
-        for (int n : nums) {
-            max = Math.max(max, n);
-        }
-        return max;
     }
 }
