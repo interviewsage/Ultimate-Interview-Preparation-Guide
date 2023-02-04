@@ -8,9 +8,9 @@
  * <pre>
  * Time Complexity:
  * O(N/2) -> for rotating along horizontal axis (swap rows). Only rows reference will be visited not the whole rows.
- * O(N*N - N) -> Transpose of the matrix. All elements will be visited once except the diagonal. Diagonal has N elements
+ * O((N*N - N)/2) -> Transpose of the matrix. All elements will be visited once except the diagonal. Diagonal has N elements
  *
- * Total time complexity = O(N/2 + N*N - N) ~ O(N^2)
+ * Total time complexity = O(N/2 + (N*N - N)/2) = O(N^2 / 2) = O(N^2)
  * </pre>
  *
  * Space Complexity: O(1)
@@ -22,25 +22,28 @@
  */
 class Solution1 {
     public void rotate(int[][] matrix) {
-        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
-            return;
+        if (matrix == null || matrix.length == 0 || matrix.length != matrix[0].length) {
+            throw new IllegalArgumentException("Input matrix is null");
         }
 
         int n = matrix.length;
+        if (n == 1) {
+            return;
+        }
 
         // Rotate the original matrix on horizontal axis. (swap rows)
         for (int i = 0; i < n / 2; i++) {
-            int[] tempRow = matrix[i]; // Only reference will be saved
-            matrix[i] = matrix[n - i - 1];
-            matrix[n - i - 1] = tempRow;
+            int[] t = matrix[i]; // Only reference will be swapped
+            matrix[i] = matrix[n - 1 - i];
+            matrix[n - 1 - i] = t;
         }
 
         // Transpose the rotated matrix
         for (int i = 0; i < n - 1; i++) { // Selecting a row
             for (int j = i + 1; j < n; j++) {
-                int temp = matrix[i][j];
+                int t = matrix[i][j];
                 matrix[i][j] = matrix[j][i];
-                matrix[j][i] = temp;
+                matrix[j][i] = t;
             }
         }
     }
