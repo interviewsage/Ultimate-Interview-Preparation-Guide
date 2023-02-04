@@ -14,8 +14,8 @@
  */
 class Solution1 {
     public void rotate(int[] nums, int k) {
-        if (k < 0 || nums == null) {
-            throw new IllegalArgumentException("input is invalid");
+        if (nums == null || k < 0) {
+            throw new IllegalArgumentException("Invalid input");
         }
 
         int len = nums.length;
@@ -33,13 +33,11 @@ class Solution1 {
         reverse(nums, k, len - 1);
     }
 
-    private void reverse(int[] nums, int start, int end) {
-        while (start < end) {
-            int tmp = nums[start];
-            nums[start] = nums[end];
-            nums[end] = tmp;
-            start++;
-            end--;
+    private void reverse(int[] nums, int i, int j) {
+        while (i < j) {
+            int t = nums[i];
+            nums[i++] = nums[j];
+            nums[j--] = t;
         }
     }
 }
@@ -49,8 +47,9 @@ class Solution1 {
  *
  * <pre>
  * Refer for proof of this solution
- * 1) https://leetcode.com/problems/rotate-array/solution/356363
- * 2) https://leetcode.com/problems/rotate-array/discuss/54277/Summary-of-C++-solutions/497566
+ * 1) https://leetcode.com/problems/rotate-array/solution/
+ * 2) https://leetcode.com/problems/rotate-array/solution/356363
+ * 3) https://leetcode.com/problems/rotate-array/discuss/54277/Summary-of-C++-solutions/497566
  * </pre>
  *
  * Time Complexity: O(N)
@@ -61,8 +60,8 @@ class Solution1 {
  */
 class Solution2 {
     public void rotate(int[] nums, int k) {
-        if (k < 0 || nums == null) {
-            throw new IllegalArgumentException("input is invalid");
+        if (nums == null || k < 0) {
+            throw new IllegalArgumentException("Invalid input");
         }
 
         int len = nums.length;
@@ -75,20 +74,23 @@ class Solution2 {
             return;
         }
 
-        int count = 0;
         int start = 0;
+        int count = 0;
+        // We need this while loop when len % k == 0. Here we will find a cycle and thus
+        // we need to move the start to next idx to complete the whole array.
         while (count < len) {
             int curIdx = start;
-            int toBeMoved = nums[start];
+            // It's not about swapping. We need to keep moving the number to nextIdx.
+            int toBeMoved = nums[curIdx];
 
             do {
                 int nextIdx = (curIdx + k) % len;
-                int temp = nums[nextIdx];
+                int nextNum = nums[nextIdx];
                 nums[nextIdx] = toBeMoved;
-                toBeMoved = temp;
+                toBeMoved = nextNum;
                 curIdx = nextIdx;
                 count++;
-            } while (start != curIdx);
+            } while (curIdx != start);
 
             start++;
         }
