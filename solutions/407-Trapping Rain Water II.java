@@ -23,12 +23,18 @@ class Solution1 {
     private static final int[][] DIRS = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
 
     public int trapRainWater(int[][] heightMap) {
-        if (heightMap == null || heightMap.length <= 2 || heightMap[0].length <= 2) {
-            return 0;
+        if (heightMap == null) {
+            throw new IllegalArgumentException("Input heightMap is null");
         }
 
         int rows = heightMap.length;
+        if (rows <= 2) {
+            return 0;
+        }
         int cols = heightMap[0].length;
+        if (cols <= 2) {
+            return 0;
+        }
 
         PriorityQueue<int[]> queue = new PriorityQueue<>((a, b) -> (a[2] - b[2]));
         boolean[][] visited = new boolean[rows][cols];
@@ -57,12 +63,12 @@ class Solution1 {
                     continue;
                 }
 
+                visited[x][y] = true;
                 int h = heightMap[x][y];
                 if (h < cur[2]) {
                     waterTrapped += cur[2] - h;
                     h = cur[2];
                 }
-                visited[x][y] = true;
                 queue.offer(new int[] { x, y, h });
             }
         }

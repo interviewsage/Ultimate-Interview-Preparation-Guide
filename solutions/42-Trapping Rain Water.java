@@ -19,13 +19,18 @@
  */
 class Solution1 {
     public int trap(int[] height) {
-        if (height == null || height.length <= 2) {
+        if (height == null) {
+            throw new IllegalArgumentException("Input height array is null");
+        }
+
+        int len = height.length;
+        if (len <= 2) {
             return 0;
         }
 
-        int left = 0;
-        int right = height.length - 1;
         int waterTrapped = 0;
+        int left = 0;
+        int right = len - 1;
 
         while (left < right) {
             if (height[left] <= height[right]) {
