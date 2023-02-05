@@ -21,34 +21,50 @@ import java.util.*;
  */
 class Solution {
     public int ladderLength(String beginWord, String endWord, List<String> wordList) {
-        if (beginWord == null || endWord == null || wordList == null || wordList.size() == 0
-                || beginWord.length() != endWord.length()) {
-            return 0;
+        if (beginWord == null || endWord == null) {
+            throw new IllegalArgumentException("Input is null");
         }
 
-        Set<String> wordSet = new HashSet<>(wordList);
+        int wLen = beginWord.length();
+        if (wLen != endWord.length()) {
+            return 0;
+        }
+        if (beginWord.equals(endWord)) {
+            return 1;
+        }
+
+        Set<String> wordSet = new HashSet<>();
+        if (wordList != null) {
+            for (String w : wordList) {
+                if (w != null && w.length() == wLen) {
+                    wordSet.add(w);
+                }
+            }
+        }
+
         if (!wordSet.contains(endWord)) {
             return 0;
         }
 
         Set<String> beginSet = Set.of(beginWord);
-        Set<String> endSet = Set.of(endWord);
         wordSet.remove(beginWord);
+        Set<String> endSet = Set.of(endWord);
         wordSet.remove(endWord);
-        int ladder = 1; // This is set to 1 as we have to include beginWord in the ladder length
+
+        int ladderLen = 1; // This is set to 1 as we have to include beginWord in the ladder length
 
         while (!beginSet.isEmpty()) {
             if (beginSet.size() > endSet.size()) {
-                Set<String> tempSet = beginSet;
+                Set<String> t = beginSet;
                 beginSet = endSet;
-                endSet = tempSet;
+                endSet = t;
             }
 
-            ladder++;
+            ladderLen++;
             Set<String> nextLevel = new HashSet<>();
             for (String word : beginSet) {
                 char[] w = word.toCharArray();
-                for (int i = 0; i < w.length; i++) {
+                for (int i = 0; i < wLen; i++) {
                     char old = w[i];
                     for (char c = 'a'; c <= 'z'; c++) {
                         if (c == old) {
@@ -57,7 +73,7 @@ class Solution {
                         w[i] = c;
                         String newWord = new String(w);
                         if (endSet.contains(newWord)) {
-                            return ladder;
+                            return ladderLen;
                         }
                         if (wordSet.remove(newWord)) {
                             nextLevel.add(newWord);
