@@ -13,20 +13,24 @@
 class Solution1 {
     public int strStr(String haystack, String needle) {
         if (haystack == null || needle == null) {
-            throw new IllegalArgumentException("Input strings are null");
+            throw new IllegalArgumentException("Input is null");
         }
 
         int hLen = haystack.length();
         int nLen = needle.length();
-        if (nLen == 0) {
-            return 0;
-        }
         if (hLen < nLen) {
             return -1;
         }
+        if (nLen == 0) {
+            return 0;
+        }
 
         for (int i = 0; i <= hLen - nLen; i++) {
-            int j = 0;
+            if (haystack.charAt(i) != needle.charAt(0)) {
+                continue;
+            }
+
+            int j = 1;
             while (j < nLen && haystack.charAt(i + j) == needle.charAt(j)) {
                 j++;
             }
