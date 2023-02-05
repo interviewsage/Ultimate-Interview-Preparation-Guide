@@ -12,7 +12,7 @@
  * For 3rd set of 3 digits = 4 * L + L (for Thousands word) +  9*L (For old result)
  * For Last digit          = L     + L (for Thousands word) + 14*L (For old result)
  *
- * Thus, total time complexity = O(43*L + 16*L(fot toString)) = O(59 * L)
+ * Thus, total time complexity = O(43*L + 16*L(for toString)) = O(59 * L)
  * </pre>
  *
  * Space Complexity: At a point of time, there can be 2 StringBuilders. Thus,
@@ -21,19 +21,21 @@
  * L = Average length of each word in the output.
  */
 class Solution1 {
-    private static final String[] LESS_THAN_20 = { "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight",
-            "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen",
-            "Nineteen" };
+
+    private static final String[] LESS_THAN_20 = { "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven",
+            "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
+            "Eighteen", "Nineteen" };
     private static final String[] TENS = { "", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy",
             "Eighty", "Ninety" };
+    private static final String HUNDRED = "Hundred";
     private static final String[] THOUSANDS = { "", "Thousand", "Million", "Billion" };
 
     public String numberToWords(int num) {
         if (num < 0) {
-            throw new IllegalArgumentException("Input is negative");
+            throw new IllegalArgumentException("Input is negative number");
         }
-        if (num == 0) {
-            return "Zero";
+        if (num < 20) {
+            return LESS_THAN_20[num];
         }
 
         StringBuilder result = new StringBuilder();
@@ -42,13 +44,13 @@ class Solution1 {
         while (num > 0) {
             if (num % 1000 > 0) {
                 StringBuilder sb = new StringBuilder();
-                getWordsLessThanThousand(num % 1000, sb);
+                getWordsForLessThanThousand(num % 1000, sb);
                 if (i > 0) {
-                    sb.append(" ");
+                    sb.append(' ');
+                    sb.append(THOUSANDS[i]);
                 }
-                sb.append(THOUSANDS[i]);
                 if (result.length() > 0) {
-                    sb.append(" ").append(result);
+                    sb.append(' ').append(result);
                 }
                 result = sb;
             }
@@ -59,24 +61,24 @@ class Solution1 {
         return result.toString();
     }
 
-    private void getWordsLessThanThousand(int n, StringBuilder sb) {
-        if (n >= 100) {
-            sb.append(LESS_THAN_20[n / 100]);
-            sb.append(" Hundred");
-            n %= 100;
-            if (n > 0) {
-                sb.append(" ");
+    private void getWordsForLessThanThousand(int num, StringBuilder sb) {
+        if (num >= 100) {
+            sb.append(LESS_THAN_20[num / 100]);
+            sb.append(' ').append(HUNDRED);
+            num %= 100;
+            if (num > 0) {
+                sb.append(' ');
             }
         }
-        if (n >= 20) {
-            sb.append(TENS[n / 10]);
-            n %= 10;
-            if (n > 0) {
-                sb.append(" ");
+        if (num >= 20) {
+            sb.append(TENS[num / 10]);
+            num %= 10;
+            if (num > 0) {
+                sb.append(' ');
             }
         }
-        if (n > 0) {
-            sb.append(LESS_THAN_20[n]);
+        if (num > 0) {
+            sb.append(LESS_THAN_20[num]);
         }
     }
 }
