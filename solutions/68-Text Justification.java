@@ -24,42 +24,41 @@ class Solution {
         }
 
         List<String> result = new ArrayList<>();
-
-        int len = words.length;
+        int numWords = words.length;
         int wIdx = 0;
-        while (wIdx < len) {
+
+        while (wIdx < numWords) {
             int startIdx = wIdx++;
-            int wordsLen = words[startIdx].length();
-            while (wIdx < len && (wordsLen + words[wIdx].length() + 1) <= maxWidth) {
-                wordsLen += words[wIdx].length() + 1;
-                wIdx++;
+            int lineLen = words[startIdx].length();
+            while (wIdx < numWords && (lineLen + 1 + words[wIdx].length()) <= maxWidth) {
+                lineLen += 1 + words[wIdx++].length();
             }
 
             int spaceCount = wIdx - startIdx - 1;
             int evenSpaces = 1;
             int extraSpaces = 0;
-            if (spaceCount != 0 && wIdx != len) {
-                evenSpaces = 1 + (maxWidth - wordsLen) / spaceCount;
-                extraSpaces = (maxWidth - wordsLen) % spaceCount;
+            if (wIdx != numWords && spaceCount != 0) {
+                evenSpaces = 1 + (maxWidth - lineLen) / spaceCount;
+                extraSpaces = (maxWidth - lineLen) % spaceCount;
             }
 
-            StringBuilder sb = new StringBuilder(maxWidth);
-            sb.append(words[startIdx]);
+            StringBuilder line = new StringBuilder(maxWidth);
+            line.append(words[startIdx]);
             for (int i = startIdx + 1; i < wIdx; i++) {
                 for (int j = 0; j < evenSpaces; j++) {
-                    sb.append(' ');
+                    line.append(' ');
                 }
                 if (extraSpaces > 0) {
-                    sb.append(' ');
+                    line.append(' ');
                     extraSpaces--;
                 }
-                sb.append(words[i]);
+                line.append(words[i]);
             }
-            while (sb.length() < maxWidth) {
-                sb.append(' ');
+            while (line.length() < maxWidth) {
+                line.append(' ');
             }
 
-            result.add(sb.toString());
+            result.add(line.toString());
         }
 
         return result;
