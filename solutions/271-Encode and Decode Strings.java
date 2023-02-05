@@ -30,45 +30,54 @@ import java.util.*;
  */
 class Codec {
 
-    private char[] numToBytes(int n) {
-        char[] num = new char[2];
-        num[0] = (char) (n >> 16);
-        num[1] = (char) (n & 0xffff);
-        return num;
-    }
+    private static final char[] MINUS_ONE_CHAR_ARR = numToCharArray(-1);
 
     // Encodes a list of strings to a single string.
     public String encode(List<String> strs) {
         if (strs == null) {
-            return null;
+            throw new IllegalArgumentException("Input strs list is null");
         }
 
         StringBuilder sb = new StringBuilder();
-        for (String str : strs) {
-            sb.append(numToBytes(str.length())).append(str);
+        for (String s : strs) {
+            if (s == null) {
+                sb.append(MINUS_ONE_CHAR_ARR);
+            } else {
+                sb.append(numToCharArray(s.length())).append(s);
+            }
         }
+
         return sb.toString();
     }
 
     // Decodes a single string to a list of strings.
     public List<String> decode(String s) {
         if (s == null) {
-            return null;
+            throw new IllegalArgumentException("Input string is null");
         }
 
         List<String> result = new ArrayList<>();
-        int len = s.length();
         int idx = 0;
-
-        while (idx < len) {
+        while (idx < s.length()) {
             int val = s.charAt(idx++);
             val = (val << 16) + s.charAt(idx++);
 
-            result.add(s.substring(idx, idx + val));
-            idx += val;
+            if (val == -1) {
+                result.add(null);
+            } else {
+                result.add(s.substring(idx, idx + val));
+                idx += val;
+            }
         }
 
         return result;
+    }
+
+    private static char[] numToCharArray(int num) {
+        char[] chArr = new char[2];
+        chArr[0] = (char) (num >>> 16);
+        chArr[1] = (char) (num & 0xffff);
+        return chArr;
     }
 }
 
