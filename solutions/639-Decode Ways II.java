@@ -17,51 +17,112 @@
  *
  * N = Length of the input string.
  */
-class Solution {
+class Solution1 {
+    private static final int MOD = 1000000007;
+
     public int numDecodings(String s) {
         if (s == null) {
             throw new IllegalArgumentException("Input string is null");
         }
-        if (s.length() == 0 || s.charAt(0) == '0') {
+
+        int len = s.length();
+        if (len == 0 || s.charAt(0) == '0') {
             return 0;
         }
 
+        char preChar = s.charAt(0);
         long pre = 1; // dp[i-2]
-        long cur = s.charAt(0) == '*' ? 9 : 1; // dp[i-1]
+        long cur = preChar == '*' ? 9 : 1; // dp[i-1]
 
-        for (int i = 1; i < s.length(); i++) {
-            long sum = 0; // dp[i]
+        for (int i = 1; i < len; i++) {
             char curChar = s.charAt(i);
-            char preChar = s.charAt(i - 1);
+            if (preChar == '0' && curChar == '0') {
+                return 0;
+            }
+
+            long ways = 0; // dp[i]
 
             if (curChar != '0') {
-                sum = cur * (curChar == '*' ? 9 : 1);
+                ways = cur * (curChar == '*' ? 9 : 1);
             }
+
             if (preChar == '*') {
                 if (curChar == '*') {
-                    sum += pre * 15;
+                    ways += 15 * pre;
                 } else if (curChar <= '6') {
-                    sum += pre * 2;
+                    ways += 2 * pre;
                 } else {
-                    sum += pre;
+                    ways += pre;
+                }
+            } else if (preChar == '2') {
+                if (curChar == '*') {
+                    ways += 6 * pre;
+                } else if (curChar <= '6') {
+                    ways += pre;
+                }
+            } else if (preChar == '1') {
+                ways += pre * (curChar == '*' ? 9 : 1);
+            }
+
+            pre = cur;
+            cur = ways % MOD;
+            preChar = curChar;
+        }
+
+        return (int) cur;
+    }
+}
+
+class Solution2 {
+    private static final int MOD = 1000000007;
+
+    public int numDecodings(String s) {
+        if (s == null) {
+            throw new IllegalArgumentException("Input string is null");
+        }
+
+        int len = s.length();
+        if (len == 0 || s.charAt(0) == '0') {
+            return 0;
+        }
+
+        char preChar = s.charAt(0);
+        long pre = 1; // dp[i-2]
+        long cur = preChar == '*' ? 9 : 1; // dp[i-1]
+
+        for (int i = 1; i < len; i++) {
+            char curChar = s.charAt(i);
+            if (preChar == '0' && curChar == '0') {
+                return 0;
+            }
+
+            long ways = 0; // dp[i]
+
+            if (curChar == '*') {
+                ways += 9 * cur;
+
+                if (preChar == '*') {
+                    ways += 15 * pre;
+                } else if (preChar == '2') {
+                    ways += 6 * pre;
+                } else if (preChar == '1') {
+                    ways += 9 * pre;
                 }
             } else {
-                if (curChar == '*') {
-                    if (preChar == '1') {
-                        sum += pre * 9;
-                    } else if (preChar == '2') {
-                        sum += pre * 6;
-                    }
-                } else {
-                    int num = Integer.parseInt(s.substring(i - 1, i + 1));
-                    if (num >= 10 && num <= 26) {
-                        sum += pre;
-                    }
+                if (curChar != '0') {
+                    ways += cur;
+                }
+
+                if (preChar == '*') {
+                    ways += curChar <= '6' ? 2 * pre : pre;
+                } else if (preChar == '1' || (preChar == '2' && curChar <= '6')) {
+                    ways += pre;
                 }
             }
 
             pre = cur;
-            cur = sum % 1000000007;
+            cur = ways % MOD;
+            preChar = curChar;
         }
 
         return (int) cur;

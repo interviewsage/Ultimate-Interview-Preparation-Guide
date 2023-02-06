@@ -25,17 +25,19 @@
  */
 class Solution {
     public int[][] updateMatrix(int[][] mat) {
-        if (mat == null || mat.length == 0 || mat[0].length == 0) {
-            return mat;
+        if (mat == null) {
+            throw new IllegalArgumentException("Input matrix is null");
         }
 
         int rows = mat.length;
+        if (rows == 0) {
+            return mat;
+        }
         int cols = mat[0].length;
-        if (rows == 1 && cols == 1) {
+        if (cols == 0 || (rows == 1 && cols == 1)) {
             return mat;
         }
 
-        int[][] result = new int[rows][cols];
         // Confirm with interviewer: Can the sum of rows+cols be greater than
         // Integer.MAX_VALUE. Also check if at least once zero exists in the input
         // matrix. If it does not exist what should we return.
@@ -49,12 +51,13 @@ class Solution {
                 if (mat[i][j] == 0) {
                     continue;
                 }
-                result[i][j] = maxDistance;
+
+                mat[i][j] = maxDistance;
                 if (i > 0) {
-                    result[i][j] = Math.min(result[i][j], result[i - 1][j] + 1);
+                    mat[i][j] = Math.min(mat[i][j], mat[i - 1][j] + 1);
                 }
                 if (j > 0) {
-                    result[i][j] = Math.min(result[i][j], result[i][j - 1] + 1);
+                    mat[i][j] = Math.min(mat[i][j], mat[i][j - 1] + 1);
                 }
             }
         }
@@ -64,16 +67,17 @@ class Solution {
                 if (mat[i][j] == 0) {
                     continue;
                 }
+
                 if (i < rows - 1) {
-                    result[i][j] = Math.min(result[i][j], result[i + 1][j] + 1);
+                    mat[i][j] = Math.min(mat[i][j], mat[i + 1][j] + 1);
                 }
                 if (j < cols - 1) {
-                    result[i][j] = Math.min(result[i][j], result[i][j + 1] + 1);
+                    mat[i][j] = Math.min(mat[i][j], mat[i][j + 1] + 1);
                 }
             }
         }
 
-        return result;
+        return mat;
     }
 }
 

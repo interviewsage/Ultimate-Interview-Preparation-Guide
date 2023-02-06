@@ -4,6 +4,11 @@
 import java.util.*;
 
 /**
+ * The algorithm of 542. 01 Matrix (https://leetcode.com/problems/01-matrix/)
+ * does not work in this question because of the walls (blockers)
+ */
+
+/**
  * Optimized BFS Solution. Find all gates and add them to a queue. Start the BFS
  * from gates level.
  *
@@ -34,7 +39,7 @@ class Solution {
             return;
         }
 
-        Deque<int[]> queue = new ArrayDeque<>();
+        Queue<int[]> queue = new ArrayDeque<>();
         int emptyRooms = 0;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
