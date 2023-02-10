@@ -16,8 +16,12 @@
  *
  * Space Complexity: O(1)
  */
-class Solution1 {
+class Solution {
     public boolean isRectangleOverlap(int[] rec1, int[] rec2) {
+        if (rec1 == null || rec2 == null || rec1.length != 4 || rec2.length != 4) {
+            throw new IllegalArgumentException("Input is invalid");
+        }
+
         int cx1 = Math.max(rec1[0], rec2[0]);
         int cx2 = Math.min(rec1[2], rec2[2]);
         if (cx1 >= cx2) {
@@ -36,23 +40,26 @@ class Solution1 {
 
 class Solution2 {
     public boolean isRectangleOverlap(int[] rec1, int[] rec2) {
-        return Math.max(rec1[0], rec2[0]) < Math.min(rec1[2], rec2[2])
-                && Math.max(rec1[1], rec2[1]) < Math.min(rec1[3], rec2[3]);
+        if (rec1 == null || rec2 == null || rec1.length != 4 || rec2.length != 4) {
+            throw new IllegalArgumentException("Input is invalid");
+        }
+
+        // check if either rectangle is actually a line
+        if (rec1[0] == rec1[2] || rec1[1] == rec1[3] || rec2[0] == rec2[2] || rec2[1] == rec2[3]) {
+            // the line cannot have positive overlap
+            return false;
+        }
+        return !(rec1[2] <= rec2[0] || rec1[3] <= rec2[1] || rec1[0] >= rec2[2] || rec1[1] >= rec2[3]);
     }
 }
 
 class Solution3 {
     public boolean isRectangleOverlap(int[] rec1, int[] rec2) {
-        // check if either rectangle is actually a line
-        if (rec1[0] == rec1[2] || rec1[1] == rec1[3] ||
-                rec2[0] == rec2[2] || rec2[1] == rec2[3]) {
-            // the line cannot have positive overlap
-            return false;
+        if (rec1 == null || rec2 == null || rec1.length != 4 || rec2.length != 4) {
+            throw new IllegalArgumentException("Input is invalid");
         }
 
-        return !(rec1[2] <= rec2[0] || // left
-                rec1[3] <= rec2[1] || // bottom
-                rec1[0] >= rec2[2] || // right
-                rec1[1] >= rec2[3]); // top
+        return Math.max(rec1[0], rec2[0]) < Math.min(rec1[2], rec2[2])
+                && Math.max(rec1[1], rec2[1]) < Math.min(rec1[3], rec2[3]);
     }
 }

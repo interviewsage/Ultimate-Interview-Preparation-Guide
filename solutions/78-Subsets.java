@@ -13,7 +13,12 @@ import java.util.*;
  * If we add these two together, we get
  * 2S(n) = n × (n C 0) + n × (n C 1) + … + n × (n C n)
  *       = n × (n C 0 + n C 1 + … + n C n)
- * As per binomial theorem, (n C 0 + n C 1 + … + n C n) = 2^n, so
+ *
+ * As per binomial theorem, (n C 0 + n C 1 + … + n C n) = 2^n,
+ * Here we have 2 options for each number. Either we can include the number or exclude the number.
+ * Thus (n C 0 + n C 1 + … + n C n) = 2^n
+ *
+ * Thus, :
  * 2*S(n) = n * 2^n => S(n) = n * 2^(n-1)
  *
  * Refer https://stackoverflow.com/a/20711498
@@ -27,22 +32,22 @@ import java.util.*;
  */
 class Solution1 {
     public List<List<Integer>> subsets(int[] nums) {
-        List<List<Integer>> result = new ArrayList<>();
         if (nums == null) {
-            return result;
+            throw new IllegalArgumentException("Input nums array is null");
         }
 
+        List<List<Integer>> result = new ArrayList<>();
         subsetsHelper(nums, 0, new ArrayList<>(), result);
         return result;
     }
 
-    private void subsetsHelper(int[] nums, int start, List<Integer> temp, List<List<Integer>> result) {
-        result.add(new ArrayList<>(temp));
+    private void subsetsHelper(int[] nums, int start, List<Integer> cur, List<List<Integer>> result) {
+        result.add(new ArrayList<>(cur));
 
         for (int i = start; i < nums.length; i++) {
-            temp.add(nums[i]);
-            subsetsHelper(nums, i + 1, temp, result);
-            temp.remove(temp.size() - 1);
+            cur.add(nums[i]);
+            subsetsHelper(nums, i + 1, cur, result);
+            cur.remove(cur.size() - 1);
         }
     }
 }
@@ -58,18 +63,19 @@ class Solution1 {
  */
 class Solution2 {
     public List<List<Integer>> subsets(int[] nums) {
-        List<List<Integer>> result = new ArrayList<>();
         if (nums == null) {
-            return result;
+            throw new IllegalArgumentException("Input nums array is null");
         }
 
+        List<List<Integer>> result = new ArrayList<>();
         result.add(new ArrayList<>());
+
         for (int n : nums) {
             int size = result.size();
             for (int i = 0; i < size; i++) {
-                List<Integer> temp = new ArrayList<>(result.get(i));
-                temp.add(n);
-                result.add(temp);
+                List<Integer> cur = new ArrayList<>(result.get(i));
+                cur.add(n);
+                result.add(cur);
             }
         }
 

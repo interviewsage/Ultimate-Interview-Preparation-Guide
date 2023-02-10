@@ -13,13 +13,18 @@ import java.util.*;
  * If we add these two together, we get
  * 2S(n) = n × (n C 0) + n × (n C 1) + … + n × (n C n)
  *       = n × (n C 0 + n C 1 + … + n C n)
- * As per binomial theorem, (n C 0 + n C 1 + … + n C n) = 2^n, so
+ *
+ * As per binomial theorem, (n C 0 + n C 1 + … + n C n) = 2^n,
+ * Here we have 2 options for each number. Either we can include the number or exclude the number.
+ * Thus (n C 0 + n C 1 + … + n C n) = 2^n
+ *
+ * Thus, :
  * 2*S(n) = n * 2^n => S(n) = n * 2^(n-1)
  *
  * Refer https://stackoverflow.com/a/20711498
  * </pre>
  *
- * Time Complexity: O(S(N) + n C 0) = O(N * 2^(N-1) + 1) = O(N * 2^N)
+ * Time Complexity: O(N + S(N) + n C 0) = O(N + N * 2^(N-1) + 1) = O(N * 2^N)
  *
  * Space Complexity: O(N) (Excluding the result space)
  *
@@ -27,9 +32,8 @@ import java.util.*;
  */
 class Solution1 {
     public List<List<Integer>> subsetsWithDup(int[] nums) {
-        List<List<Integer>> result = new ArrayList<>();
         if (nums == null) {
-            return result;
+            throw new IllegalArgumentException("Input nums array is null");
         }
 
         Map<Integer, Integer> countMap = new HashMap<>();
@@ -37,24 +41,62 @@ class Solution1 {
             countMap.put(n, countMap.getOrDefault(n, 0) + 1);
         }
 
-        subsetsWithDupHelper(countMap, new ArrayList<>(countMap.keySet()), 0, new ArrayList<>(), result);
+        List<List<Integer>> result = new ArrayList<>();
+        subsetsWithDup(countMap, new ArrayList<>(countMap.keySet()), 0, new ArrayList<>(), result);
         return result;
     }
 
-    private void subsetsWithDupHelper(Map<Integer, Integer> countMap, List<Integer> uniqueNums, int start,
-            List<Integer> temp, List<List<Integer>> result) {
-        result.add(new ArrayList<>(temp));
+    private void subsetsWithDup(Map<Integer, Integer> countMap, List<Integer> uniqueNums, int start, List<Integer> cur,
+            List<List<Integer>> result) {
+        result.add(new ArrayList<>(cur));
 
         for (int i = start; i < uniqueNums.size(); i++) {
             int num = uniqueNums.get(i);
             int count = countMap.get(num);
-            temp.add(num);
+            cur.add(num);
             countMap.put(num, count - 1);
 
-            subsetsWithDupHelper(countMap, uniqueNums, (count == 1 ? i + 1 : i), temp, result);
+            subsetsWithDup(countMap, uniqueNums, (count == 1 ? i + 1 : i), cur, result);
 
             countMap.put(num, count);
-            temp.remove(temp.size() - 1);
+            cur.remove(cur.size() - 1);
+        }
+    }
+}
+
+/**
+ * Backtracking (Recursion) - Using Sort
+ *
+ * Time Complexity: O(N*logN + N * 2 ^ N) Refer to above explanation
+ *
+ * Space Complexity: O(Unique Nums) (Excluding the result space)
+ *
+ * N = Length of input nums array
+ */
+class Solution2 {
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        if (nums == null) {
+            throw new IllegalArgumentException("Input nums array is null");
+        }
+
+        Arrays.sort(nums);
+
+        List<List<Integer>> result = new ArrayList<>();
+        subsetsWithDup(nums, 0, new ArrayList<>(), result);
+        return result;
+    }
+
+    private void subsetsWithDup(int[] nums, int start, List<Integer> cur, List<List<Integer>> result) {
+        result.add(new ArrayList<>(cur));
+
+        for (int i = start; i < nums.length; i++) {
+            if (i > start && nums[i - 1] == nums[i]) {
+                continue;
+            }
+
+            cur.add(nums[i]);
+            subsetsWithDup(nums, i + 1, cur, result);
+            cur.remove(cur.size() - 1);
         }
     }
 }
@@ -68,11 +110,10 @@ class Solution1 {
  *
  * N = Length of input nums array
  */
-class Solution2 {
+class Solution3 {
     public List<List<Integer>> subsetsWithDup(int[] nums) {
-        List<List<Integer>> result = new ArrayList<>();
         if (nums == null) {
-            return result;
+            throw new IllegalArgumentException("Input nums array is null");
         }
 
         Map<Integer, Integer> countMap = new HashMap<>();
@@ -80,6 +121,7 @@ class Solution2 {
             countMap.put(n, countMap.getOrDefault(n, 0) + 1);
         }
 
+        List<List<Integer>> result = new ArrayList<>();
         result.add(new ArrayList<>());
 
         for (int n : countMap.keySet()) {
@@ -88,13 +130,54 @@ class Solution2 {
 
             for (int i = 0; i < size; i++) {
                 List<Integer> cur = result.get(i);
-                for (int k = 0; k < count; k++) {
+                for (int j = 0; j < count; j++) {
                     List<Integer> temp = new ArrayList<>(cur);
                     temp.add(n);
                     result.add(temp);
                     cur = temp;
                 }
             }
+        }
+
+        return result;
+    }
+}
+
+/**
+ * Iterative Solution (Using Sort)
+ *
+ * Time Complexity: O(N*logN + N * 2 ^ N) Refer to above explanation
+ *
+ * Space Complexity: O(Unique Nums) (Excluding the result space)
+ *
+ * N = Length of input nums array
+ */
+class Solution4 {
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        if (nums == null) {
+            throw new IllegalArgumentException("Input nums array is null");
+        }
+
+        Arrays.sort(nums);
+
+        List<List<Integer>> result = new ArrayList<>();
+        result.add(new ArrayList<>());
+        int preLevelStartIdx = 0;
+
+        for (int i = 0; i < nums.length; i++) {
+            int size = result.size();
+            int startIdx = 0;
+            if (i > 0 && nums[i - 1] == nums[i]) {
+                startIdx = preLevelStartIdx;
+            }
+
+            for (int j = startIdx; j < size; j++) {
+                List<Integer> cur = new ArrayList<>(result.get(j));
+                cur.add(nums[i]);
+                result.add(cur);
+            }
+
+            preLevelStartIdx = size;
         }
 
         return result;

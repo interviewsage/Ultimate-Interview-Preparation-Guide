@@ -99,7 +99,7 @@ class Solution2 {
             long ways = 0; // dp[i]
 
             if (curChar == '*') {
-                ways += 9 * cur;
+                ways = 9 * cur;
 
                 if (preChar == '*') {
                     ways += 15 * pre;
@@ -110,7 +110,7 @@ class Solution2 {
                 }
             } else {
                 if (curChar != '0') {
-                    ways += cur;
+                    ways = cur;
                 }
 
                 if (preChar == '*') {
