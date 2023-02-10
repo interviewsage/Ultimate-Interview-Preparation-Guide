@@ -11,32 +11,82 @@
  * Initially code R^2 * C solution and explain the optimized solution. If
  * required then code the optimized solution.
  *
+ * Time Complexity: O(R^2 * C)
+ *
+ * Space Complexity: O(1)
+ */
+class Solution1 {
+    public int countCornerRectangles(int[][] grid) {
+        if (grid == null) {
+            throw new IllegalArgumentException("Input grid is null");
+        }
+
+        int rows = grid.length;
+        if (rows <= 1) {
+            return 0;
+        }
+        int cols = grid[0].length;
+        if (cols <= 1) {
+            return 0;
+        }
+
+        int result = 0;
+
+        for (int i = 0; i < rows - 1; i++) {
+            for (int j = i + 1; j < rows; j++) {
+                int count = 0;
+                for (int k = 0; k < cols; k++) {
+                    count += grid[i][k] & grid[j][k];
+                }
+                result += count * (count - 1) / 2;
+            }
+        }
+
+        return result;
+    }
+}
+
+/**
+ * To find a corner rectangle, the idea is to fix two rows (or two columns)
+ * first, then check column by column (or row by row) to find "1" on both rows.
+ * Say you find n pairs, then just pick any 2 of those to form a corner
+ * rectangle. Total Number of corner rectangles for these 2 rows will be C(N,2)
+ * (Combination)
+ *
+ * Initially code R^2 * C solution and explain the optimized solution. If
+ * required then code the optimized solution.
+ *
  * Time Complexity: O(max(M,N) * (min(M,N))^2)
  *
  * Space Complexity: O(1)
  *
  * M = Number of rows. N = Number of cols.
  */
-class Solution1 {
+class Solution2 {
     public int countCornerRectangles(int[][] grid) {
-        if (grid == null || grid.length <= 1 || grid[0].length <= 1) {
-            return 0;
+        if (grid == null) {
+            throw new IllegalArgumentException("Input grid is null");
         }
 
         int rows = grid.length;
+        if (rows <= 1) {
+            return 0;
+        }
         int cols = grid[0].length;
+        if (cols <= 1) {
+            return 0;
+        }
 
         if (rows < cols) {
-            return helper(grid, rows, cols, true);
-            // return solveIfRowsAreLess(grid, rows, cols);
+            return countCornerRectanglesHelper(grid, rows, cols, true);
         } else {
-            return helper(grid, cols, rows, false);
-            // return solveIfColsAreLess(grid, rows, cols);
+            return countCornerRectanglesHelper(grid, cols, rows, false);
         }
     }
 
-    private int helper(int[][] grid, int small, int big, boolean isRowsSmall) {
+    private int countCornerRectanglesHelper(int[][] grid, int small, int big, boolean isRowsSmall) {
         int result = 0;
+
         for (int i = 0; i < small - 1; i++) {
             for (int j = i + 1; j < small; j++) {
                 int count = 0;
@@ -50,34 +100,7 @@ class Solution1 {
                 result += count * (count - 1) / 2;
             }
         }
-        return result;
-    }
 
-    private int solveIfRowsAreLess(int[][] grid, int rows, int cols) {
-        int result = 0;
-        for (int i = 0; i < rows - 1; i++) {
-            for (int j = i + 1; j < rows; j++) {
-                int count = 0;
-                for (int k = 0; k < cols; k++) {
-                    count += grid[i][k] & grid[j][k];
-                }
-                result += count * (count - 1) / 2;
-            }
-        }
-        return result;
-    }
-
-    private int solveIfColsAreLess(int[][] grid, int rows, int cols) {
-        int result = 0;
-        for (int i = 0; i < cols - 1; i++) {
-            for (int j = i + 1; j < cols; j++) {
-                int count = 0;
-                for (int k = 0; k < rows; k++) {
-                    count += grid[k][i] & grid[k][j];
-                }
-                result += count * (count - 1) / 2;
-            }
-        }
         return result;
     }
 }
@@ -95,14 +118,21 @@ class Solution1 {
  *
  * M = Number of rows. N = Number of cols.
  */
-class Solution2 {
+class Solution3 {
     public int countCornerRectangles(int[][] grid) {
-        if (grid == null || grid.length <= 1 || grid[0].length <= 1) {
-            return 0;
+        if (grid == null) {
+            throw new IllegalArgumentException("Input grid is null");
         }
 
         int rows = grid.length;
+        if (rows <= 1) {
+            return 0;
+        }
         int cols = grid[0].length;
+        if (cols <= 1) {
+            return 0;
+        }
+
         int[][] dp = new int[cols][cols];
         int result = 0;
 
