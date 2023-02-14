@@ -1,10 +1,14 @@
 // LeetCode Question URL: https://leetcode.com/problems/unique-binary-search-trees/
+// LeetCode Discuss URL:
 
 /**
  * Dynamic Programming
  *
- * Refer to this link for awesome explaination:
+ * Refer to this link for awesome explanation:
  * https://leetcode.com/problems/unique-binary-search-trees/discuss/31666/DP-Solution-in-6-lines-with-explanation.-F(i-n)-G(i-1)-*-G(n-i)
+ *
+ * Refer to explanation for empty trees:
+ * https://1drv.ms/u/s!As-WcqEPhQRDgrh0xekUn4t2PNrzPg?e=Iyz8TC
  *
  * G(n): the number of unique BST for a sequence of length n.
  *
@@ -19,7 +23,7 @@
  *
  * G(n) = G(0) * G(n-1) + G(1) * G(n-2) + … + G(n-1) * G(0)
  *
- * Time Complexity: O(N^2)
+ * Time Complexity: O(2 * n/2 * (n/2 + 1) / 2) = O(N^2)
  *
  * Space Complexity: O(N)
  *
@@ -29,7 +33,7 @@ class Solution {
     public int numTrees(int n) {
         // Checking for Invalid Input
         if (n < 0) {
-            throw new IllegalArgumentException("Invalid Input");
+            throw new IllegalArgumentException("Input number of nodes in invalid");
         }
         // For n == 0, empty tree is a valid BST.
         // For n == 1, valid BST can have only one node.
@@ -47,12 +51,12 @@ class Solution {
             // dp[i] = dp[0]*dp[4] + dp[1]*dp[3] + dp[2]*dp[2] + dp[3]*dp[1] + dp[4]*dp[0]
             // Here except dp[2]*dp[2] all others are appearing twice.
             for (int j = 0; j < i / 2; j++) {
-                dp[i] += dp[j] * dp[i - 1 - j];
+                dp[i] += dp[j] * dp[i - j - 1];
             }
             dp[i] *= 2;
 
             // Only add i/2 * i/2 for odd numbers.
-            if ((i & 1) == 1) {
+            if ((i & 1) != 0) {
                 dp[i] += dp[i / 2] * dp[i / 2];
             }
         }

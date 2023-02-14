@@ -13,7 +13,7 @@
 class Solution {
     public int removeDuplicates(int[] nums) {
         if (nums == null) {
-            throw new IllegalArgumentException("Input array is null");
+            throw new IllegalArgumentException("Input nums array is null");
         }
 
         int len = nums.length;
@@ -46,14 +46,14 @@ class Solution {
  *
  * N = Length of input array.
  */
-class Solution2 {
+class SolutionFollowUp {
     public int removeDuplicates(int[] nums) {
         return removeDuplicatesMoreThanK(nums, 2);
     }
 
-    public int removeDuplicatesMoreThanK(int[] nums, int k) {
+    private int removeDuplicatesMoreThanK(int[] nums, int k) {
         if (nums == null || k < 0) {
-            throw new IllegalArgumentException("Invalid Input");
+            throw new IllegalArgumentException("Input is invalid");
         }
         if (k == 0) {
             return 0;
