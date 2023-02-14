@@ -9,19 +9,76 @@ import java.util.*;
 */
 
 /**
- * Time Complexity : O(3^3) = O(27) = O(1) --> assuming substring takes O(1). In
- * newer versions of Java substring takes O(N).. then total complexity will
- * become O(N).
+ * Time Complexity : O(3^3* 12*3) = O(27) = O(1) --> 12 * 3 for substring,
+ * stringbuilder, toString.
+ * --> assuming substring takes O(1). In newer versions of Java substring takes
+ * O(N).. then total complexity will become O(N).
  *
  * For every i, j runs thrice. For every j, k runs thrice. Thus for every i, k
  * runs 3*3 times. Since i runs thrice too, all for loops will run for 3*3*3
  * times.
  *
- * Space Complexity: O(N) .. This is required for Substring
+ * Space Complexity: O(12) .. This is required for Substring
  *
  * N = Length of the input string
  */
-class Solution {
+class Solution1 {
+    public List<String> restoreIpAddresses(String s) {
+        List<String> result = new ArrayList<>();
+        if (s == null || s.length() < 4 || s.length() > 12) {
+            return result;
+        }
+
+        int len = s.length();
+
+        for (int i = Math.max(1, len - 9); i <= Math.min(3, len - 3); i++) {
+            String o1 = s.substring(0, i);
+            if (!isValidOctet(o1)) {
+                break;
+            }
+            StringBuilder sb = new StringBuilder(o1).append('.');
+            int sbLen1 = sb.length();
+
+            for (int j = Math.max(i + 1, len - 6); j <= Math.min(i + 3, len - 2); j++) {
+                String o2 = s.substring(i, j);
+                if (!isValidOctet(o2)) {
+                    break;
+                }
+                sb.append(o2).append('.');
+                int sbLen2 = sb.length();
+
+                for (int k = Math.max(j + 1, len - 3); k <= Math.min(j + 3, len - 1); k++) {
+                    String o3 = s.substring(j, k);
+                    if (!isValidOctet(o3)) {
+                        break;
+                    }
+                    String o4 = s.substring(k, len);
+                    if (!isValidOctet(o4)) {
+                        continue;
+                    }
+                    sb.append(o3).append('.').append(o4);
+                    result.add(sb.toString());
+                    sb.setLength(sbLen2);
+                }
+
+                sb.setLength(sbLen1);
+            }
+        }
+
+        return result;
+    }
+
+    private boolean isValidOctet(String o) {
+        try {
+            return Character.isDigit(o.charAt(0)) && !(o.length() > 1 && o.charAt(0) == '0')
+                    && Integer.parseInt(o) <= 255;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+}
+
+class Solution2 {
     public List<String> restoreIpAddresses(String s) {
         List<String> result = new ArrayList<>();
         if (s == null || s.length() < 4 || s.length() > 12) {
@@ -86,7 +143,7 @@ class Solution {
     }
 }
 
-class Solution2 {
+class Solution3 {
     public List<String> restoreIpAddresses(String s) {
         List<String> result = new ArrayList<>();
         if (s == null || s.length() < 4 || s.length() > 12) {

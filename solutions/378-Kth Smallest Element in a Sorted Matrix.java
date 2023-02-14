@@ -37,17 +37,15 @@ class Solution1 {
         }
 
         PriorityQueue<int[]> queue = new PriorityQueue<>((a, b) -> (matrix[a[0]][a[1]] - matrix[b[0]][b[1]]));
-
         for (int i = 0; i < Math.min(n, k); i++) {
             queue.offer(new int[] { i, 0 });
         }
-        while (k > 1) {
+        while (k-- > 1) {
             int[] cur = queue.poll();
             if (cur[1] < n - 1) {
                 cur[1]++;
                 queue.offer(cur);
             }
-            k--;
         }
 
         return matrix[queue.peek()[0]][queue.peek()[1]];
@@ -86,11 +84,10 @@ class Solution2 {
 
         int start = matrix[0][0];
         int end = matrix[n - 1][n - 1];
-
         while (start < end) {
             int mid = start + (end - start) / 2;
-            int[] smallLargePair = { start, end };
-            int count = countLessThanAndEqual(matrix, mid, smallLargePair);
+            int[] smallLargePair = new int[] { start, end };
+            int count = countSmallerEqualNums(matrix, mid, smallLargePair);
             if (count == k) {
                 return smallLargePair[0];
             }
@@ -104,25 +101,27 @@ class Solution2 {
         return start;
     }
 
-    private int countLessThanAndEqual(int[][] matrix, int mid, int[] smallLargePair) {
+    private int countSmallerEqualNums(int[][] matrix, int mid, int[] smallLargePair) {
         int count = 0;
         int n = matrix.length;
-        int row = 0;
-        int col = n - 1;
-        while (row < n && col >= 0) {
-            if (matrix[row][col] > mid) {
-                // as matrix[row][col] is bigger than the mid, let's keep track of the
+        int r = 0;
+        int c = n - 1;
+
+        while (r < n && c >= 0) {
+            if (mid < matrix[r][c]) {
+                // as matrix[r][c] is bigger than the mid, let's keep track of the
                 // smallest number greater than the mid
-                smallLargePair[1] = Math.min(smallLargePair[1], matrix[row][col]);
-                col--;
+                smallLargePair[1] = Math.min(smallLargePair[1], matrix[r][c]);
+                c--;
             } else {
-                // as matrix[row][col] is less than or equal to the mid, let's keep track of the
+                // as matrix[r][c] is less than or equal to the mid, let's keep track of the
                 // biggest number less than or equal to the mid
-                smallLargePair[0] = Math.max(smallLargePair[0], matrix[row][col]);
-                row++;
-                count += col + 1;
+                smallLargePair[0] = Math.max(smallLargePair[0], matrix[r][c]);
+                r++;
+                count += c + 1;
             }
         }
+
         return count;
     }
 }
