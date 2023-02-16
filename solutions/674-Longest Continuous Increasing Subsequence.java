@@ -13,7 +13,7 @@
 class Solution {
     public int findLengthOfLCIS(int[] nums) {
         if (nums == null) {
-            return 0;
+            throw new IllegalArgumentException("Input nums array is null");
         }
 
         int len = nums.length;
@@ -21,18 +21,17 @@ class Solution {
             return len;
         }
 
-        int maxCount = 1;
-        int curCount = 1;
-
+        int maxLen = 1;
+        int curLen = 1;
         for (int i = 1; i < len; i++) {
             if (nums[i - 1] < nums[i]) {
-                curCount++;
+                curLen++;
             } else {
-                maxCount = Math.max(maxCount, curCount);
-                curCount = 1;
+                maxLen = Math.max(maxLen, curLen);
+                curLen = 1;
             }
         }
 
-        return Math.max(maxCount, curCount);
+        return Math.max(maxLen, curLen);
     }
 }

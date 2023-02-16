@@ -22,11 +22,11 @@
 class Solution {
     public boolean checkValidString(String s) {
         if (s == null) {
-            return false;
+            throw new IllegalArgumentException("Input string is null");
         }
 
-        int countMin = 0;
         int countMax = 0;
+        int countMin = 0;
 
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
