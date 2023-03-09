@@ -1,4 +1,5 @@
 // LeetCode Question URL: https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string/
+// LeetCode Discuss URL:
 
 /**
  * Using StringBuilder as Stack. Iterative One Pass Solution
