@@ -15,17 +15,16 @@ import java.util.*;
  */
 class Solution {
     public boolean canFormArray(int[] arr, int[][] pieces) {
-        if (arr == null || pieces == null || pieces.length > arr.length) {
-            return false;
+        if (arr == null || pieces == null) {
+            throw new IllegalArgumentException("Input array is null");
         }
 
-        int len = arr.length;
+        int arrLen = arr.length;
         int numPieces = pieces.length;
-
-        if (len == 0 && numPieces == 0) {
+        if (arrLen == 0 && numPieces == 0) {
             return true;
         }
-        if (numPieces == 0) {
+        if (numPieces == 0 || numPieces > arrLen) {
             return false;
         }
 
@@ -35,21 +34,28 @@ class Solution {
         }
 
         int i = 0;
-        while (i < len) {
+        while (i < arrLen) {
             Integer pieceIdx = piecesMap.remove(arr[i]);
-            if (pieceIdx == null || pieces[pieceIdx].length > len - i) {
+            if (pieceIdx == null || pieces[pieceIdx].length > arrLen - i) {
                 return false;
             }
 
-            i++;
-            for (int j = 1; j < pieces[pieceIdx].length; j++) {
-                if (arr[i++] != pieces[pieceIdx][j]) {
+            for (int p : pieces[pieceIdx]) {
+                if (arr[i++] != p) {
                     return false;
                 }
             }
-
+            // i++;
+            // int j = 1;
+            // while (j < pieces[pieceIdx].length) {
+            // if (arr[i++] != pieces[pieceIdx][j++]) {
+            // return false;
+            // }
+            // }
         }
 
+        // Ask the interviewer if we need to use all pieces.
         return piecesMap.size() == 0;
+        // return true;
     }
 }

@@ -22,13 +22,13 @@ class Solution {
         if (img == null) {
             throw new IllegalArgumentException("Input image is null");
         }
-        if (img.length == 0 || img[0].length == 0) {
-            return img;
-        }
 
         int rows = img.length;
+        if (rows == 0) {
+            return img;
+        }
         int cols = img[0].length;
-        if (rows == 1 && cols == 1) {
+        if (cols == 0 || (rows == 1 && cols == 1)) {
             return img;
         }
 
@@ -39,7 +39,7 @@ class Solution {
                 for (int[] d : DIRS) {
                     int x = i + d[0];
                     int y = j + d[1];
-                    if (x >= 0 && x < rows && y >= 0 && y < cols) {
+                    if (x >= 0 && y >= 0 && x < rows && y < cols) {
                         sum += img[x][y] & 0xFF;
                         count++;
                     }
