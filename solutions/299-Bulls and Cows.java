@@ -12,14 +12,14 @@
  *
  * Time Complexity: O(S)
  *
- * Space Complexity: O(10)
+ * Space Complexity: O(10) = O(1)
  *
  * S = Length of secret string.
  */
 class Solution1 {
     public String getHint(String secret, String guess) {
         if (secret == null || guess == null || secret.length() != guess.length()) {
-            throw new IllegalArgumentException("Input is invalid");
+            throw new IllegalArgumentException("Input is null");
         }
 
         int len = secret.length();

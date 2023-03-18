@@ -25,8 +25,9 @@ class Solution1 {
         if (x < 0) {
             throw new IllegalArgumentException("Input number is negative. Only positive numbers are supported");
         }
-        if (x < 2) {
-            return x;
+        // Base case to handle Input <= 3.
+        if (x <= 3) {
+            return x == 0 ? 0 : 1;
         }
 
         int result = 0;
@@ -43,10 +44,11 @@ class Solution1 {
             // mask >>= 1;
 
             int next = result | mask;
-            if (next == x / next) {
+            int div = x / next;
+            if (next == div) {
                 return next;
             }
-            if (next < x / next) {
+            if (next < div) {
                 result = next;
             }
             mask >>= 1;
@@ -75,6 +77,43 @@ class Solution1 {
  * N = Input number x.
  */
 class Solution2 {
+    public int mySqrt(int x) {
+        if (x < 0) {
+            throw new IllegalArgumentException("Input number is negative. Only positive numbers are supported");
+        }
+        // Base case to handle Input <= 3.
+        if (x <= 3) {
+            return x == 0 ? 0 : 1;
+        }
+
+        // Binary Search space will start from 2 to x/2.
+        // Since we have already handled upto x=3 in the base case, 2 will be correct
+        // answer for next possible input x=4.
+        // For x>=4, Square root is always less than x/2. Thus end will be x/2.
+        int start = 2;
+        int end = x / 2;
+
+        while (start < end) {
+            int mid = start + (end - start) / 2 + 1;
+            int div = x / mid;
+
+            // x == (mid * mid). To Avoid Integer Overflow, we will do (x / mid) == mid.
+            if (mid == div) {
+                return mid;
+            }
+            if (mid > div) {
+                end = mid - 1;
+            } else {
+                start = mid;
+            }
+        }
+
+        // Here start == end.
+        return start;
+    }
+}
+
+class Solution3 {
     public int mySqrt(int x) {
         if (x < 0) {
             throw new IllegalArgumentException("Input number is negative. Only positive numbers are supported");
