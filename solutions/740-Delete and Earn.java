@@ -24,47 +24,13 @@ import java.util.*;
  */
 class Solution1 {
     public int deleteAndEarn(int[] nums) {
-        if (nums == null || nums.length == 0) {
-            return 0;
-        }
-        if (nums.length == 1) {
-            return nums[0];
+        if (nums == null) {
+            throw new IllegalArgumentException("Input nums arrays is null");
         }
 
-        Map<Integer, Integer> sumMap = new HashMap<>();
-        int maxNum = nums[0];
-        int minNum = nums[0];
-        for (int n : nums) {
-            sumMap.put(n, sumMap.getOrDefault(n, 0) + n);
-            maxNum = Math.max(maxNum, n);
-            minNum = Math.min(minNum, n);
-        }
-
-        int delete = 0;
-        int noDelete = 0;
-
-        for (int i = minNum; i <= maxNum; i++) {
-            Integer val = sumMap.get(i);
-            if (val == null) {
-                val = 0;
-            }
-
-            int prevDelete = delete;
-            delete = noDelete + val;
-            noDelete = Math.max(prevDelete, noDelete);
-        }
-
-        return Math.max(delete, noDelete);
-    }
-}
-
-class Solution2 {
-    public int deleteAndEarn(int[] nums) {
-        if (nums == null || nums.length == 0) {
-            return 0;
-        }
-        if (nums.length == 1) {
-            return nums[0];
+        int len = nums.length;
+        if (len <= 1) {
+            return len == 0 ? 0 : nums[0];
         }
 
         Map<Integer, Integer> countMap = new HashMap<>();
@@ -78,25 +44,57 @@ class Solution2 {
 
         int delete = 0;
         int noDelete = 0;
-        boolean numMissing = false;
 
         for (int i = minNum; i <= maxNum; i++) {
-            Integer count = countMap.get(i);
-            if (count == null) {
-                numMissing = true;
-                continue;
-            }
-
-            int prevDelete = delete;
-            if (numMissing) {
-                delete = Math.max(delete, noDelete) + i * count;
-            } else {
-                delete = noDelete + i * count;
-            }
-            noDelete = Math.max(prevDelete, noDelete);
-            numMissing = false;
+            int preDelete = delete;
+            delete = noDelete + countMap.getOrDefault(i, 0) * i;
+            noDelete = Math.max(preDelete, noDelete);
         }
 
         return Math.max(delete, noDelete);
     }
 }
+
+class Solution2 {
+    public int deleteAndEarn(int[] nums) {
+        if (nums == null) {
+            throw new IllegalArgumentException("Input nums arrays is null");
+        }
+
+        int len = nums.length;
+        if (len <= 1) {
+            return len == 0 ? 0 : nums[0];
+        }
+
+        Map<Integer, Integer> countMap = new HashMap<>();
+        for (int n : nums) {
+            countMap.put(n, countMap.getOrDefault(n, 0) + 1);
+        }
+
+        List<Integer> uniqueNums = new ArrayList<>(countMap.keySet());
+        Collections.sort(uniqueNums);
+        int preNum = uniqueNums.get(0);
+        int delete = preNum * countMap.get(preNum);
+        int noDelete = 0;
+
+        for (int i = 1; i < uniqueNums.size(); i++) {
+            int n = uniqueNums.get(i);
+            int preDelete = delete;
+
+            if (uniqueNums.get(i - 1) == n - 1) {
+                delete = noDelete + countMap.get(n) * n;
+            } else {
+                delete = Math.max(preDelete, noDelete) + countMap.get(n) * n;
+            }
+
+            noDelete = Math.max(preDelete, noDelete);
+        }
+
+        return Math.max(delete, noDelete);
+    }
+}
+
+/**
+ * Further Thoughts: Combined solution to get best of both solutions
+ * https://leetcode.com/problems/delete-and-earn/solution/
+ */

@@ -33,19 +33,21 @@ import java.util.*;
  */
 class Solution1 {
     public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
-        if (queries == null || queries.size() == 0) {
-            return new double[0];
+        if (equations == null || values == null || queries == null || equations.size() != values.length) {
+            throw new IllegalArgumentException("Input is invalid");
         }
 
-        int len = queries.size();
-        double[] result = new double[len];
-        if (equations == null || values == null || equations.size() != values.length || equations.size() == 0) {
+        int numQueries = queries.size();
+        int numEquations = equations.size();
+        double[] result = new double[numQueries];
+
+        if (numEquations == 0 || numQueries == 0) {
             Arrays.fill(result, -1.0);
             return result;
         }
 
         Map<String, Map<String, Double>> graph = new HashMap<>();
-        for (int i = 0; i < values.length; i++) {
+        for (int i = 0; i < numEquations; i++) {
             String a = equations.get(i).get(0);
             String b = equations.get(i).get(1);
 
@@ -56,7 +58,7 @@ class Solution1 {
             graph.get(b).put(a, 1 / values[i]);
         }
 
-        for (int i = 0; i < len; i++) {
+        for (int i = 0; i < numQueries; i++) {
             String a = queries.get(i).get(0);
             String b = queries.get(i).get(1);
 
@@ -67,17 +69,18 @@ class Solution1 {
                 result[i] = 1.0;
             } else {
                 Double val = numeratorMap.get(b);
-                result[i] = val != null ? val : calcEquationHelper(graph, a, b, new HashSet<>());
+                result[i] = val != null ? val : calcEquationDfsHelper(graph, a, b, new HashSet<>());
             }
         }
 
         return result;
     }
 
-    private double calcEquationHelper(Map<String, Map<String, Double>> graph, String src, String dest,
+    private double calcEquationDfsHelper(Map<String, Map<String, Double>> graph, String src, String dest,
             Set<String> visited) {
-        Map<String, Double> neighbors = graph.get(src);
-        Double destVal = neighbors.get(dest);
+        Map<String, Double> numeratorMap = graph.get(src);
+        Double destVal = numeratorMap.get(dest);
+
         if (destVal != null) {
             return destVal;
         }
@@ -85,13 +88,14 @@ class Solution1 {
         visited.add(src);
         double result = -1.0;
 
-        for (String next : neighbors.keySet()) {
-            if (visited.contains(next) || neighbors.get(next) == -1.0) {
+        for (String next : numeratorMap.keySet()) {
+            double nextVal = numeratorMap.get(next);
+            if (visited.contains(next) || nextVal == -1.0) {
                 continue;
             }
-            double nextRes = calcEquationHelper(graph, next, dest, visited);
-            if (nextRes != -1.0) {
-                result = neighbors.get(next) * nextRes;
+            double nextResult = calcEquationDfsHelper(graph, next, dest, visited);
+            if (nextResult != -1) {
+                result = nextVal * nextResult;
                 break;
             }
         }
