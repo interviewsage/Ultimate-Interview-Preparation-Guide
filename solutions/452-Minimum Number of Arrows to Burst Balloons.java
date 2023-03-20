@@ -34,7 +34,7 @@ import java.util.*;
 class Solution1 {
     public int findMinArrowShots(int[][] points) {
         if (points == null) {
-            return 0;
+            throw new IllegalArgumentException("Input points array is null");
         }
 
         int numPoints = points.length;
@@ -43,17 +43,17 @@ class Solution1 {
         }
 
         Arrays.sort(points, (a, b) -> (Integer.compare(a[1], b[1])));
-        int curEnd = points[0][1];
-        int arrowCount = 1;
+        int priorEnd = points[0][1];
+        int numArrows = 1;
 
         for (int i = 1; i < numPoints; i++) {
-            if (points[i][0] > curEnd) {
-                curEnd = points[i][1];
-                arrowCount++;
+            if (points[i][0] > priorEnd) {
+                priorEnd = points[i][1];
+                numArrows++;
             }
         }
 
-        return arrowCount;
+        return numArrows;
     }
 }
 
@@ -89,5 +89,57 @@ class Solution2 {
         }
 
         return arrowCount;
+    }
+}
+
+/**
+ * This solution can be used when the range of end is small or finite.
+ *
+ * Time Complexity: O(2*N + Range) = O(N + Range)
+ *
+ * Space Complexity: O(Range)
+ *
+ * N = Number of intervals
+ * Range = Range of end = maxEnd - minEnd + 1
+ */
+class Solution3 {
+    public int findMinArrowShots(int[][] points) {
+        if (points == null) {
+            throw new IllegalArgumentException("Input points array is null");
+        }
+
+        int numPoints = points.length;
+        if (numPoints <= 1) {
+            return numPoints;
+        }
+
+        int minEnd = points[0][1];
+        int maxEnd = points[0][1];
+        for (int i = 1; i < numPoints; i++) {
+            minEnd = Math.min(minEnd, points[i][1]);
+            maxEnd = Math.max(maxEnd, points[i][1]);
+        }
+
+        long range = (long) maxEnd - minEnd + 1;
+        Integer[] maxStart = new Integer[range];
+        for (int[] point : points) {
+            int s = point[0] - minEnd;
+            int e = point[1] - minEnd;
+
+            if (maxStart[e] == null || s > maxStart[e]) {
+                maxStart[e] = s;
+            }
+        }
+
+        int numArrows = 1;
+        int priorEnd = 0;
+        for (int end = 1; end < range; end++) {
+            if (maxStart[end] != null && maxStart[end] > priorEnd) {
+                priorEnd = end;
+                numArrows++;
+            }
+        }
+
+        return numArrows;
     }
 }
