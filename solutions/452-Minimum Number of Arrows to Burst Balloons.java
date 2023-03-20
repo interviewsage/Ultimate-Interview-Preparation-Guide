@@ -120,7 +120,7 @@ class Solution3 {
             maxEnd = Math.max(maxEnd, points[i][1]);
         }
 
-        long range = (long) maxEnd - minEnd + 1;
+        int range = maxEnd - minEnd + 1;
         Integer[] maxStart = new Integer[range];
         for (int[] point : points) {
             int s = point[0] - minEnd;
